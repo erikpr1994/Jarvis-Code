@@ -14,6 +14,16 @@ source "${SCRIPT_DIR}/lib/common.sh"
 init_hook "coderabbit-review" "optional"
 
 # ============================================================================
+# COMMAND DETECTION (early, needed for bypass checks)
+# ============================================================================
+
+# Read input from stdin
+INPUT=$(cat)
+
+# Parse command from Bash tool input
+COMMAND=$(parse_command "$INPUT")
+
+# ============================================================================
 # BYPASS CONDITIONS
 # ============================================================================
 
@@ -24,15 +34,12 @@ if bypass_enabled "SKIP_CODERABBIT"; then
     exit 0
 fi
 
-# ============================================================================
-# COMMAND DETECTION
-# ============================================================================
-
-# Read input from stdin
-INPUT=$(cat)
-
-# Parse command from Bash tool input
-COMMAND=$(parse_command "$INPUT")
+# Check for inline bypass in command
+if echo "$COMMAND" | grep -qE '^SKIP_CODERABBIT=1\s'; then
+    log_info "Bypass enabled: SKIP_CODERABBIT=1 (inline in command)"
+    finalize_hook 0
+    exit 0
+fi
 
 log_debug "Checking command: $COMMAND"
 

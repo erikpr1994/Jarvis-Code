@@ -14,6 +14,17 @@ source "${SCRIPT_DIR}/lib/common.sh"
 init_hook "require-isolation"
 
 # ============================================================================
+# INPUT PARSING (early, needed for bypass checks)
+# ============================================================================
+
+# Read input from stdin
+INPUT=$(cat)
+
+# Parse tool information
+TOOL_NAME=$(parse_tool_name "$INPUT")
+FILE_PATH=$(parse_file_path "$INPUT")
+
+# ============================================================================
 # BYPASS CONDITIONS
 # ============================================================================
 
@@ -22,6 +33,17 @@ if bypass_enabled "CLAUDE_ALLOW_MAIN_MODIFICATIONS"; then
     log_info "Bypass enabled: CLAUDE_ALLOW_MAIN_MODIFICATIONS=1"
     finalize_hook 0
     exit 0
+fi
+
+# Check for inline bypass in command (for Bash tool calls)
+# Handles: CLAUDE_ALLOW_MAIN_MODIFICATIONS=1 some_command
+if [[ "$TOOL_NAME" == "Bash" ]]; then
+    COMMAND=$(parse_command "$INPUT")
+    if echo "$COMMAND" | grep -qE '^CLAUDE_ALLOW_MAIN_MODIFICATIONS=1\s'; then
+        log_info "Bypass enabled: CLAUDE_ALLOW_MAIN_MODIFICATIONS=1 (inline in command)"
+        finalize_hook 0
+        exit 0
+    fi
 fi
 
 # Check if running in Conductor session (has its own isolation)
@@ -41,13 +63,6 @@ fi
 # ============================================================================
 # ISOLATION ENFORCEMENT
 # ============================================================================
-
-# Read input from stdin
-INPUT=$(cat)
-
-# Parse tool information
-TOOL_NAME=$(parse_tool_name "$INPUT")
-FILE_PATH=$(parse_file_path "$INPUT")
 
 log_debug "Tool: $TOOL_NAME, File: $FILE_PATH"
 

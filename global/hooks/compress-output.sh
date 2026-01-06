@@ -39,18 +39,7 @@ WRAPPERS_DIR="${SCRIPT_DIR}/../lib/context/wrappers"
 SUMMARIZE_SCRIPT="${SCRIPT_DIR}/../lib/context/summarize-output.sh"
 
 # ============================================================================
-# BYPASS CONDITIONS
-# ============================================================================
-
-# Check for verbose output mode
-if bypass_enabled "VERBOSE_OUTPUT" || bypass_enabled "JARVIS_DISABLE_COMPRESS"; then
-    log_info "Bypass enabled: compression disabled"
-    finalize_hook 0
-    exit 0
-fi
-
-# ============================================================================
-# INPUT PARSING
+# INPUT PARSING (early, needed for bypass checks)
 # ============================================================================
 
 # Read input from stdin
@@ -68,6 +57,24 @@ fi
 
 # Parse command from Bash tool input
 COMMAND=$(parse_command "$INPUT")
+
+# ============================================================================
+# BYPASS CONDITIONS
+# ============================================================================
+
+# Check for verbose output mode
+if bypass_enabled "VERBOSE_OUTPUT" || bypass_enabled "JARVIS_DISABLE_COMPRESS"; then
+    log_info "Bypass enabled: compression disabled"
+    finalize_hook 0
+    exit 0
+fi
+
+# Check for inline bypass in command
+if echo "$COMMAND" | grep -qE '^(VERBOSE_OUTPUT|JARVIS_DISABLE_COMPRESS)=1\s'; then
+    log_info "Bypass enabled: compression disabled (inline in command)"
+    finalize_hook 0
+    exit 0
+fi
 
 log_debug "Processing command: $COMMAND"
 
