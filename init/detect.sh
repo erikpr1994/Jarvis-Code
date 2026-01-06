@@ -51,6 +51,7 @@ detect_project() {
     frameworks=$(detect_frameworks "$project_dir")
     tools=$(detect_tools "$project_dir")
     suggested_template=$(suggest_template "$project_type" "$stack" "$frameworks")
+    testing_strategy=$(detect_testing_strategy "$project_dir" "$project_type" "$stack")
 
     # Build final JSON output
     jq -n \
@@ -60,13 +61,15 @@ detect_project() {
         --argjson tools "$tools" \
         --arg suggested_template "$suggested_template" \
         --argjson has_existing_claude "$has_existing_claude" \
+        --arg testing_strategy "$testing_strategy" \
         '{
             project_type: $project_type,
             stack: $stack,
             frameworks: $frameworks,
             tools: $tools,
             suggested_template: $suggested_template,
-            has_existing_claude: $has_existing_claude
+            has_existing_claude: $has_existing_claude,
+            testing_strategy: $testing_strategy
         }'
 }
 
@@ -507,6 +510,67 @@ suggest_template() {
 
     # Default to minimal
     echo "minimal"
+}
+
+# =============================================================================
+# TESTING STRATEGY DETECTION
+# =============================================================================
+
+# Detect appropriate testing strategy based on project type and characteristics
+# Returns: pyramid, trophy, or balanced
+detect_testing_strategy() {
+    local project_dir="${1:-.}"
+    local project_type="${2:-standalone}"
+    local stack="${3:-[]}"
+
+    # Check for explicit override in existing settings
+    local project_settings="${project_dir}/.claude/settings.json"
+    if [[ -f "$project_settings" ]]; then
+        local override
+        override=$(jq -r '.testing.strategy // empty' "$project_settings" 2>/dev/null || true)
+        if [[ -n "$override" && "$override" != "null" ]]; then
+            echo "$override"
+            return
+        fi
+    fi
+
+    # Strategy by project type
+    case "$project_type" in
+        library|rust-package|go-module|python-package)
+            echo "pyramid"
+            return
+            ;;
+        next-app|react-app|flutter-app)
+            echo "trophy"
+            return
+            ;;
+        monorepo)
+            echo "balanced"
+            return
+            ;;
+    esac
+
+    # Strategy by stack detection
+    # React/Next.js/UI-heavy → Trophy
+    if echo "$stack" | jq -e 'index("react") or index("next.js") or index("vue") or index("svelte")' > /dev/null 2>&1; then
+        echo "trophy"
+        return
+    fi
+
+    # Backend with DB → Trophy (integration matters)
+    if echo "$stack" | jq -e '(index("prisma") or index("drizzle") or index("supabase")) and (index("express") or index("fastify") or index("hono"))' > /dev/null 2>&1; then
+        echo "trophy"
+        return
+    fi
+
+    # Pure backend/API → Pyramid (test contracts)
+    if echo "$stack" | jq -e 'index("express") or index("fastify") or index("hono") or index("fastapi") or index("django")' > /dev/null 2>&1; then
+        echo "pyramid"
+        return
+    fi
+
+    # Default: trophy for modern apps (integration-focused)
+    echo "trophy"
 }
 
 # =============================================================================

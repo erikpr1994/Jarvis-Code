@@ -53,5 +53,33 @@
     "capturePatterns": true,
     "updateSkillRules": true,
     "archiveSessions": true
+  },
+
+  "testing": {
+    "defaultStrategy": "auto",
+    "strategyByProjectType": {
+      "library": "pyramid",
+      "rust-package": "pyramid",
+      "go-module": "pyramid",
+      "python-package": "pyramid",
+      "next-app": "trophy",
+      "react-app": "trophy",
+      "flutter-app": "trophy",
+      "node-api": "trophy",
+      "monorepo": "balanced",
+      "standalone": "auto"
+    },
+    "strategyByDirectory": {
+      "lib/**": "pyramid",
+      "packages/**": "pyramid",
+      "utils/**": "pyramid",
+      "src/components/**": "trophy",
+      "src/app/**": "trophy",
+      "app/**": "trophy",
+      "api/**": "trophy",
+      "server/**": "trophy",
+      "algorithms/**": "pyramid",
+      "core/**": "pyramid"
+    }
   }
 }

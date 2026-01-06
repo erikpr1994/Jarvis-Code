@@ -20,7 +20,28 @@ Decision guide for testing strategies focusing on Vitest for unit/integration an
 
 ## Testing Strategy
 
-Choose based on project configuration (see `settings.json` → `testing.strategy`):
+Strategy is auto-detected based on project type and can be configured per-directory.
+
+### Automatic Strategy Detection
+
+Check current project strategy:
+```bash
+# Via detect.sh
+source ~/.claude/lib/testing/strategy-detector.sh
+detect_testing_strategy "."              # Project-level
+detect_directory_strategy "." "src/lib"  # Directory-level
+```
+
+Or check `settings.json` → `testing.strategy` if explicitly set.
+
+### Per-Directory Strategy Rules
+
+| Directory Pattern | Strategy | Rationale |
+|-------------------|----------|-----------|
+| `lib/**`, `packages/**`, `utils/**` | Pyramid | Pure functions, edge cases |
+| `src/components/**`, `app/**` | Trophy | User-facing, integration |
+| `api/**`, `server/**` | Trophy | Test real queries |
+| `algorithms/**`, `core/**` | Pyramid | Complex logic, fast feedback |
 
 ### Testing Pyramid (Traditional)
 ```
@@ -29,6 +50,12 @@ Choose based on project configuration (see `settings.json` → `testing.strategy
    /   Unit    \      Many - fast, isolated, low confidence
 ```
 **Best for:** Libraries, utilities, pure logic, microservices
+
+**Guidance:**
+- Test every public function with unit tests
+- Cover edge cases extensively (null, empty, boundaries)
+- Mock external dependencies
+- Aim for >80% unit test coverage
 
 ### Testing Trophy (Kent C. Dodds)
 ```
@@ -39,16 +66,40 @@ Choose based on project configuration (see `settings.json` → `testing.strategy
 ```
 **Best for:** React apps, user-facing features, full-stack apps
 
+**Guidance:**
+- Test user workflows, not implementation details
+- Use Testing Library patterns (query by role, text)
+- Mock only network/external services
+- Unit test only complex business logic
+
 ### When to Use Each
 
-| Project Type | Recommended | Reasoning |
-|--------------|-------------|-----------|
+| Project Type | Auto-Detected | Reasoning |
+|--------------|---------------|-----------|
 | UI-heavy app | Trophy | Integration tests catch real user issues |
 | Pure library | Pyramid | Unit tests cover edge cases efficiently |
-| API/Backend | Pyramid | Unit + contract tests are faster |
+| API/Backend with DB | Trophy | Integration tests verify real queries |
+| API/Backend pure | Pyramid | Unit + contract tests are faster |
 | Full-stack | Trophy | Integration through API boundaries |
+| Monorepo | Balanced | Per-directory strategy applies |
 
-**Default:** Follow project's `settings.json` or ask the user
+### Override Strategy
+
+**Project-level** - Add to `.claude/settings.json`:
+```json
+{
+  "testing": {
+    "strategy": "pyramid"
+  }
+}
+```
+
+**Directory-level** - Add frontmatter to folder's `CLAUDE.md`:
+```markdown
+---
+testing_strategy: trophy
+---
+```
 
 ## Vitest Patterns
 
