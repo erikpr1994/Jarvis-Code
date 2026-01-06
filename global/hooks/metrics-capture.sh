@@ -15,8 +15,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
 
-# Initialize hook
-init_hook "metrics-capture"
+# Initialize hook (standard category - runs unless degraded)
+init_hook "metrics-capture" "standard"
 
 # Configuration
 JARVIS_ROOT="${JARVIS_ROOT:-$HOME/.jarvis}"

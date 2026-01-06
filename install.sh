@@ -22,7 +22,15 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GLOBAL_SOURCE="${SCRIPT_DIR}/global"
 CLAUDE_DIR="${HOME}/.claude"
 BACKUP_DIR="${CLAUDE_DIR}/backups/$(date +%Y%m%d_%H%M%S)"
-VERSION="1.0.0"
+VERSION_FILE="${SCRIPT_DIR}/VERSION"
+INSTALLED_VERSION_FILE="${CLAUDE_DIR}/.jarvis-version"
+
+# Read version from VERSION file
+if [[ -f "$VERSION_FILE" ]]; then
+    VERSION=$(cat "$VERSION_FILE" | tr -d '[:space:]')
+else
+    VERSION="1.0.0"
+fi
 
 # Logging functions
 log_info() {
@@ -65,6 +73,123 @@ EOF
 # Check if a command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
+}
+
+# ============================================================================
+# VERSION MANAGEMENT
+# ============================================================================
+
+# Compare two semantic versions (returns 0 if v1 >= v2, 1 otherwise)
+version_gte() {
+    local v1="$1"
+    local v2="$2"
+
+    # Split versions into components
+    local IFS='.'
+    read -ra v1_parts <<< "$v1"
+    read -ra v2_parts <<< "$v2"
+
+    # Compare each component
+    for i in 0 1 2; do
+        local n1="${v1_parts[i]:-0}"
+        local n2="${v2_parts[i]:-0}"
+        if [[ "$n1" -gt "$n2" ]]; then
+            return 0
+        elif [[ "$n1" -lt "$n2" ]]; then
+            return 1
+        fi
+    done
+
+    return 0  # Equal versions
+}
+
+# Get installed version
+get_installed_version() {
+    if [[ -f "$INSTALLED_VERSION_FILE" ]]; then
+        grep -E "^version=" "$INSTALLED_VERSION_FILE" 2>/dev/null | cut -d= -f2 | tr -d '[:space:]'
+    else
+        echo ""
+    fi
+}
+
+# Check if upgrade is needed
+check_upgrade_needed() {
+    local installed_version
+    installed_version=$(get_installed_version)
+
+    if [[ -z "$installed_version" ]]; then
+        log_info "No previous installation found"
+        return 0  # Fresh install
+    fi
+
+    log_info "Installed version: $installed_version"
+    log_info "New version: $VERSION"
+
+    if version_gte "$VERSION" "$installed_version"; then
+        if [[ "$VERSION" == "$installed_version" ]]; then
+            log_info "Already at version $VERSION"
+        else
+            log_info "Upgrade available: $installed_version -> $VERSION"
+        fi
+        return 0
+    else
+        log_warning "Installed version ($installed_version) is newer than package ($VERSION)"
+        log_warning "Use --force to downgrade"
+        return 1
+    fi
+}
+
+# Save version information
+save_version_info() {
+    local timestamp
+    timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+    cat > "$INSTALLED_VERSION_FILE" << EOF
+version=$VERSION
+installed=$timestamp
+source=$SCRIPT_DIR
+previous_version=$(get_installed_version)
+EOF
+
+    log_info "Version info saved to $INSTALLED_VERSION_FILE"
+}
+
+# Show version command
+show_version() {
+    echo "Jarvis AI Assistant"
+    echo "Package version: $VERSION"
+    local installed
+    installed=$(get_installed_version)
+    if [[ -n "$installed" ]]; then
+        echo "Installed version: $installed"
+    else
+        echo "Installed version: Not installed"
+    fi
+}
+
+# Check for updates (placeholder for remote check)
+check_for_updates() {
+    log_info "Checking for updates..."
+
+    # In a real implementation, this would check a remote source
+    # For now, just compare local VERSION file with installed
+
+    local installed_version
+    installed_version=$(get_installed_version)
+
+    if [[ -z "$installed_version" ]]; then
+        log_info "Jarvis is not installed. Run ./install.sh to install."
+        return 0
+    fi
+
+    if [[ "$VERSION" == "$installed_version" ]]; then
+        log_success "You're running the latest version ($VERSION)"
+    elif version_gte "$VERSION" "$installed_version"; then
+        log_info "Update available: $installed_version -> $VERSION"
+        log_info "Run ./install.sh to update"
+    else
+        log_info "You're running a newer version ($installed_version) than the package ($VERSION)"
+    fi
 }
 
 # Check prerequisites
@@ -309,16 +434,10 @@ make_executable() {
     log_success "Permissions set"
 }
 
-# Create version file
+# Create version file (uses save_version_info from version management section)
 create_version_file() {
     log_step "Creating version marker..."
-
-    cat > "${CLAUDE_DIR}/.jarvis-version" << EOF
-version=${VERSION}
-installed=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-source=${SCRIPT_DIR}
-EOF
-
+    save_version_info
     log_success "Version marker created"
 }
 
@@ -360,9 +479,7 @@ print_usage() {
 
 # Main installation flow
 main() {
-    print_banner
-
-    # Parse arguments
+    # Parse arguments first (some don't need banner)
     local force=false
     while [[ $# -gt 0 ]]; do
         case "$1" in
@@ -370,12 +487,27 @@ main() {
                 force=true
                 shift
                 ;;
+            -v|--version)
+                show_version
+                exit 0
+                ;;
+            -c|--check-update)
+                check_for_updates
+                exit 0
+                ;;
             -h|--help)
                 echo "Usage: $0 [OPTIONS]"
                 echo ""
                 echo "Options:"
-                echo "  -f, --force    Force installation without prompts"
-                echo "  -h, --help     Show this help message"
+                echo "  -f, --force        Force installation without prompts"
+                echo "  -v, --version      Show version information"
+                echo "  -c, --check-update Check for updates"
+                echo "  -h, --help         Show this help message"
+                echo ""
+                echo "Examples:"
+                echo "  $0              Install/update Jarvis"
+                echo "  $0 --version    Show current version"
+                echo "  $0 --force      Force reinstall"
                 echo ""
                 exit 0
                 ;;
@@ -385,6 +517,16 @@ main() {
                 ;;
         esac
     done
+
+    print_banner
+
+    # Check if upgrade is needed/allowed
+    if [[ "$force" != true ]]; then
+        if ! check_upgrade_needed; then
+            log_error "Installation cancelled. Use --force to override."
+            exit 1
+        fi
+    fi
 
     # Run installation steps
     check_prerequisites

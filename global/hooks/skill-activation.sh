@@ -9,8 +9,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
 
-# Initialize hook
-init_hook "skill-activation"
+# Initialize hook (optional category - may be skipped under load)
+init_hook "skill-activation" "optional"
 
 # ============================================================================
 # CONFIGURATION

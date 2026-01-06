@@ -15,8 +15,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
 
-# Initialize hook
-init_hook "learning-capture"
+# Initialize hook (standard category - runs unless degraded)
+init_hook "learning-capture" "standard"
 
 # Configuration
 JARVIS_ROOT="${JARVIS_ROOT:-$HOME/.jarvis}"
@@ -277,19 +277,213 @@ EOF
 # Detect repeated manual guidance from user prompts
 detect_manual_guidance() {
     local tool_name="$1"
+    local tool_input="$2"
 
-    # Track when user provides guidance after tool use
-    # This is detected when Edit/Write is followed by similar Edit/Write
-    # suggesting the AI needed correction
+    local guidance_file="${JARVIS_ROOT}/learnings/.guidance-tracking.json"
+    local timestamp
+    timestamp=$(date '+%Y-%m-%dT%H:%M:%SZ')
+
+    if [[ ! -f "$guidance_file" ]]; then
+        echo '{"guidance_patterns":[],"last_operations":[],"corrections":[]}' > "$guidance_file"
+    fi
+
+    # Track recent operations for pattern detection
+    if command -v jq &>/dev/null; then
+        # Extract file path from tool input
+        local file_path
+        file_path=$(echo "$tool_input" | grep -o '"file_path"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*: *"//' | sed 's/"$//' || echo "")
+
+        # Add to recent operations (keep last 10)
+        local updated
+        updated=$(jq --arg tool "$tool_name" --arg file "$file_path" --arg ts "$timestamp" '
+            .last_operations = ([{
+                "tool": $tool,
+                "file": $file,
+                "timestamp": $ts
+            }] + .last_operations[0:9])
+        ' "$guidance_file" 2>/dev/null)
+
+        if [[ -n "$updated" ]]; then
+            echo "$updated" > "$guidance_file"
+        fi
+
+        # Check for correction patterns:
+        # Same file edited multiple times in short succession = likely correction
+        if [[ -n "$file_path" ]]; then
+            local recent_same_file
+            recent_same_file=$(jq -r --arg file "$file_path" '
+                [.last_operations[] | select(.file == $file)] | length
+            ' "$guidance_file" 2>/dev/null || echo "0")
+
+            if [[ "$recent_same_file" -ge 2 ]]; then
+                log_debug "Detected potential correction pattern: $file_path edited $recent_same_file times"
+                track_correction_pattern "$file_path" "$recent_same_file"
+            fi
+        fi
+    fi
+}
+
+# Track detected correction patterns
+track_correction_pattern() {
+    local file_path="$1"
+    local edit_count="$2"
+    local timestamp
+    timestamp=$(date '+%Y-%m-%dT%H:%M:%SZ')
 
     local guidance_file="${JARVIS_ROOT}/learnings/.guidance-tracking.json"
 
-    if [[ ! -f "$guidance_file" ]]; then
-        echo '{"guidance_patterns":[]}' > "$guidance_file"
-    fi
+    if command -v jq &>/dev/null && [[ -f "$guidance_file" ]]; then
+        # Check if we already have this pattern
+        local existing
+        existing=$(jq -r --arg file "$file_path" '
+            .corrections | map(select(.file == $file)) | length
+        ' "$guidance_file" 2>/dev/null || echo "0")
 
-    # This will be called from the UserPromptSubmit hook
-    # Here we just track tool sequences that might indicate guidance needed
+        if [[ "$existing" -eq 0 ]]; then
+            # Add new correction pattern
+            local updated
+            updated=$(jq --arg file "$file_path" --argjson count "$edit_count" --arg ts "$timestamp" '
+                .corrections += [{
+                    "file": $file,
+                    "edit_count": $count,
+                    "first_seen": $ts,
+                    "last_seen": $ts,
+                    "occurrences": 1
+                }]
+            ' "$guidance_file" 2>/dev/null)
+
+            if [[ -n "$updated" ]]; then
+                echo "$updated" > "$guidance_file"
+            fi
+        else
+            # Update existing pattern
+            local updated
+            updated=$(jq --arg file "$file_path" --argjson count "$edit_count" --arg ts "$timestamp" '
+                .corrections = [.corrections[] |
+                    if .file == $file then
+                        . + {"last_seen": $ts, "occurrences": (.occurrences + 1), "edit_count": (if .edit_count < $count then $count else .edit_count end)}
+                    else . end
+                ]
+            ' "$guidance_file" 2>/dev/null)
+
+            if [[ -n "$updated" ]]; then
+                echo "$updated" > "$guidance_file"
+            fi
+        fi
+
+        # If pattern seen 3+ times, promote to learning
+        local occurrences
+        occurrences=$(jq -r --arg file "$file_path" '
+            [.corrections[] | select(.file == $file)][0].occurrences // 0
+        ' "$guidance_file" 2>/dev/null || echo "0")
+
+        if [[ "$occurrences" -ge 3 ]]; then
+            promote_correction_to_learning "$file_path" "$occurrences"
+        fi
+    fi
+}
+
+# Promote high-frequency correction pattern to learning
+promote_correction_to_learning() {
+    local file_path="$1"
+    local frequency="$2"
+    local timestamp
+    timestamp=$(date '+%Y-%m-%dT%H:%M:%SZ')
+    local learning_id
+    learning_id="cor_$(date '+%Y%m%d%H%M%S')_$$"
+
+    # Determine pattern type from file extension
+    local extension="${file_path##*.}"
+    local pattern_context="general"
+    case "$extension" in
+        ts|tsx) pattern_context="typescript" ;;
+        js|jsx) pattern_context="javascript" ;;
+        py) pattern_context="python" ;;
+        sh|bash) pattern_context="shell" ;;
+    esac
+
+    # Create learning entry
+    local learning_file="${LEARNING_INBOX}/${learning_id}.json"
+
+    cat > "$learning_file" << EOF
+{
+    "id": "${learning_id}",
+    "type": "user_correction",
+    "pattern_key": "correction:${file_path}",
+    "description": "Repeated edits to ${file_path} suggest guidance needed",
+    "frequency": ${frequency},
+    "status": "pending",
+    "tier": "hot",
+    "context": {
+        "detected_by": "learning-capture-hook",
+        "file_path": "${file_path}",
+        "language": "${pattern_context}",
+        "session": "${SESSION_ID:-unknown}"
+    },
+    "suggested_action": "Review editing patterns for ${file_path} to identify skill gap",
+    "created_at": "${timestamp}",
+    "last_updated": "${timestamp}"
+}
+EOF
+
+    log_info "Correction pattern promoted to learning: $learning_id ($file_path)"
+}
+
+# Detect explicit user corrections from prompts (called by UserPromptSubmit hook)
+detect_explicit_correction() {
+    local user_prompt="$1"
+    local timestamp
+    timestamp=$(date '+%Y-%m-%dT%H:%M:%SZ')
+
+    # Common correction phrases
+    local correction_patterns=(
+        "instead of"
+        "should be"
+        "not .* but"
+        "change .* to"
+        "use .* not"
+        "wrong"
+        "fix"
+        "correct"
+        "actually"
+        "I meant"
+    )
+
+    local is_correction=false
+    for pattern in "${correction_patterns[@]}"; do
+        if echo "$user_prompt" | grep -qi "$pattern"; then
+            is_correction=true
+            break
+        fi
+    done
+
+    if [[ "$is_correction" == true ]]; then
+        local correction_file="${JARVIS_ROOT}/learnings/.explicit-corrections.json"
+
+        if [[ ! -f "$correction_file" ]]; then
+            echo '{"corrections":[]}' > "$correction_file"
+        fi
+
+        if command -v jq &>/dev/null; then
+            # Extract the correction (first 200 chars)
+            local excerpt="${user_prompt:0:200}"
+
+            local updated
+            updated=$(jq --arg prompt "$excerpt" --arg ts "$timestamp" '
+                .corrections += [{
+                    "prompt": $prompt,
+                    "timestamp": $ts,
+                    "session": "'"${SESSION_ID:-unknown}"'"
+                }] | .corrections = .corrections[-50:]
+            ' "$correction_file" 2>/dev/null)
+
+            if [[ -n "$updated" ]]; then
+                echo "$updated" > "$correction_file"
+            fi
+
+            log_debug "Explicit correction detected: ${excerpt:0:50}..."
+        fi
+    fi
 }
 
 # ============================================================================
@@ -374,6 +568,9 @@ main() {
 
     # Detect patterns based on tool type
     detect_code_patterns "$TOOL_NAME" "$TOOL_INPUT"
+
+    # Detect manual guidance/corrections
+    detect_manual_guidance "$TOOL_NAME" "$TOOL_INPUT"
 
     # Log successful operation
     log_successful_operation "$TOOL_NAME" "$TOOL_INPUT"

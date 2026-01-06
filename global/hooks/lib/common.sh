@@ -237,18 +237,197 @@ bypass_enabled() {
 }
 
 # ============================================================================
+# ERROR RECOVERY INTEGRATION
+# ============================================================================
+
+# Source error-handler if available
+ERROR_HANDLER_PATH="${HOME}/.claude/lib/error-handler.sh"
+ERROR_HANDLER_LOADED=false
+
+if [[ -f "$ERROR_HANDLER_PATH" ]]; then
+    # shellcheck source=/dev/null
+    source "$ERROR_HANDLER_PATH" 2>/dev/null && ERROR_HANDLER_LOADED=true
+fi
+
+# Also check local installation path if not loaded yet
+if [[ "$ERROR_HANDLER_LOADED" != true ]]; then
+    COMMON_LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"
+    LOCAL_ERROR_HANDLER="${COMMON_LIB_DIR}/../../lib/error-handler.sh"
+    if [[ -f "$LOCAL_ERROR_HANDLER" ]]; then
+        # shellcheck source=/dev/null
+        source "$LOCAL_ERROR_HANDLER" 2>/dev/null && ERROR_HANDLER_LOADED=true
+    fi
+fi
+
+# Check if error handler is available
+has_error_handler() {
+    [[ "$ERROR_HANDLER_LOADED" == true ]]
+}
+
+# Initialize error recovery system for this hook
+init_error_recovery() {
+    if has_error_handler; then
+        init_error_system 2>/dev/null || true
+    fi
+}
+
+# Execute with error recovery (L1: retry, then L2: alternatives, then fail gracefully)
+execute_with_recovery() {
+    local cmd="$1"
+    local fallback="${2:-}"
+    local max_retries="${3:-2}"
+
+    if has_error_handler; then
+        # Try with backoff first
+        if retry_with_backoff "$cmd" "$max_retries" 1 5 2 2>/dev/null; then
+            return 0
+        fi
+
+        # If retry failed and fallback provided, try fallback
+        if [[ -n "$fallback" ]]; then
+            log_warn "Primary command failed, trying fallback"
+            if eval "$fallback" 2>/dev/null; then
+                return 0
+            fi
+        fi
+
+        # Log the failure
+        log_error "Command failed after recovery attempts: $cmd"
+        return 1
+    else
+        # No error handler - just run directly
+        if eval "$cmd" 2>/dev/null; then
+            return 0
+        elif [[ -n "$fallback" ]]; then
+            eval "$fallback" 2>/dev/null
+        else
+            return 1
+        fi
+    fi
+}
+
+# Check if hook should run based on degradation level
+should_hook_run() {
+    local hook_category="${1:-essential}"  # essential, standard, optional
+
+    if ! has_error_handler; then
+        return 0  # No handler = always run
+    fi
+
+    # Load current degradation level
+    load_health_state 2>/dev/null || true
+
+    case "$CURRENT_DEGRADATION_LEVEL" in
+        0)  # Full system - all hooks run
+            return 0
+            ;;
+        1)  # Reduced - only essential and standard
+            [[ "$hook_category" != "optional" ]]
+            ;;
+        2)  # Minimal - only essential
+            [[ "$hook_category" == "essential" ]]
+            ;;
+        3)  # Emergency - no hooks
+            return 1
+            ;;
+        *)  # Unknown - run
+            return 0
+            ;;
+    esac
+}
+
+# Report hook failure to error system
+report_hook_failure() {
+    local error_type="${1:-unknown}"
+    local details="${2:-}"
+
+    if has_error_handler; then
+        log_error "$error_type" "$HOOK_NAME" "$details" "logged"
+        ((SESSION_HOOK_FAILURES++)) || true
+        save_health_state 2>/dev/null || true
+        check_degradation_triggers 2>/dev/null || true
+    fi
+}
+
+# Safe execution wrapper - runs command with timeout and error handling
+safe_execute() {
+    local cmd="$1"
+    local timeout_secs="${2:-5}"
+    local description="${3:-command}"
+
+    log_debug "Safe execute: $description (timeout: ${timeout_secs}s)"
+
+    local output
+    local exit_code=0
+
+    # Use timeout if available
+    if command -v timeout &>/dev/null; then
+        output=$(timeout "$timeout_secs" bash -c "$cmd" 2>&1) || exit_code=$?
+    elif command -v gtimeout &>/dev/null; then
+        output=$(gtimeout "$timeout_secs" bash -c "$cmd" 2>&1) || exit_code=$?
+    else
+        # No timeout command - run directly
+        output=$(bash -c "$cmd" 2>&1) || exit_code=$?
+    fi
+
+    if [[ $exit_code -eq 124 ]]; then
+        log_warn "Command timed out after ${timeout_secs}s: $description"
+        report_hook_failure "timeout" "$description"
+        return 1
+    elif [[ $exit_code -ne 0 ]]; then
+        log_warn "Command failed (exit $exit_code): $description"
+        report_hook_failure "execution_failed" "$description: exit $exit_code"
+        return 1
+    fi
+
+    echo "$output"
+    return 0
+}
+
+# Graceful degradation wrapper - skip non-essential work if system under stress
+run_if_healthy() {
+    local cmd="$1"
+    local category="${2:-standard}"
+
+    if should_hook_run "$category"; then
+        eval "$cmd"
+    else
+        log_debug "Skipped due to degradation level: $cmd"
+        return 0
+    fi
+}
+
+# ============================================================================
 # INITIALIZATION
 # ============================================================================
 
 # Initialize hook (call at beginning of each hook script)
 init_hook() {
     local hook_name="$1"
+    local hook_category="${2:-standard}"  # essential, standard, optional
     export HOOK_NAME="$hook_name"
+    export HOOK_CATEGORY="$hook_category"
+
     log_info "Hook started"
+
+    # Initialize error recovery
+    init_error_recovery
+
+    # Check if we should run based on degradation level
+    if ! should_hook_run "$hook_category"; then
+        log_info "Hook skipped due to degradation level"
+        exit 0
+    fi
 }
 
 # Finalize hook (call at end of each hook script)
 finalize_hook() {
     local exit_code="${1:-0}"
     log_info "Hook completed with exit code: $exit_code"
+
+    # Report success to reset failure counters if appropriate
+    if [[ $exit_code -eq 0 ]] && has_error_handler; then
+        # Could implement success tracking here
+        true
+    fi
 }
