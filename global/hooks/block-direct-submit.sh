@@ -14,6 +14,16 @@ source "${SCRIPT_DIR}/lib/common.sh"
 init_hook "block-direct-submit"
 
 # ============================================================================
+# COMMAND DETECTION (early, needed for bypass checks)
+# ============================================================================
+
+# Read input from stdin
+INPUT=$(cat)
+
+# Parse command from Bash tool input
+COMMAND=$(parse_command "$INPUT")
+
+# ============================================================================
 # BYPASS CONDITIONS
 # ============================================================================
 
@@ -31,15 +41,20 @@ if bypass_enabled "CLAUDE_ALLOW_DIRECT_SUBMIT"; then
     exit 0
 fi
 
-# ============================================================================
-# COMMAND DETECTION
-# ============================================================================
+# Check for inline bypass variables in the command string itself
+# This handles cases like: CLAUDE_SUBMIT_PR_SKILL=1 gh pr create ...
+# (inline vars don't set env for the hook process, only for the command)
+if echo "$COMMAND" | grep -qE '^CLAUDE_SUBMIT_PR_SKILL=1\s'; then
+    log_info "Bypass enabled: CLAUDE_SUBMIT_PR_SKILL=1 (inline in command)"
+    finalize_hook 0
+    exit 0
+fi
 
-# Read input from stdin
-INPUT=$(cat)
-
-# Parse command from Bash tool input
-COMMAND=$(parse_command "$INPUT")
+if echo "$COMMAND" | grep -qE '^CLAUDE_ALLOW_DIRECT_SUBMIT=1\s'; then
+    log_info "Bypass enabled: CLAUDE_ALLOW_DIRECT_SUBMIT=1 (inline in command)"
+    finalize_hook 0
+    exit 0
+fi
 
 log_debug "Checking command: $COMMAND"
 
