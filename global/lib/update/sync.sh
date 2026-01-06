@@ -132,13 +132,13 @@ sync_directory() {
     fi
 
     # Find all files in source
+    # Note: read returns non-zero at EOF, so we use || true to prevent set -e from exiting
     while IFS= read -r -d '' source_file; do
         local relative_path="${source_file#$source_dir/}"
         local dest_file="${dest_dir}/${relative_path}"
 
-        local result
-        sync_file "$source_file" "$dest_file" "$force" "$dry_run"
-        result=$?
+        local result=0
+        sync_file "$source_file" "$dest_file" "$force" "$dry_run" || result=$?
 
         case $result in
             0) ((synced++)) ;;
@@ -146,7 +146,7 @@ sync_directory() {
             2) ((unchanged++)) ;;
             *) ((errors++)) ;;
         esac
-    done < <(find "$source_dir" -type f -print0 2>/dev/null)
+    done < <(find "$source_dir" -type f -print0 2>/dev/null) || true
 
     echo ""
     echo "Sync summary: $synced synced, $skipped skipped, $unchanged unchanged, $errors errors"
@@ -248,7 +248,7 @@ create_backup() {
 # CLI INTERFACE
 # ============================================================================
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+if [[ "${BASH_SOURCE[0]:-}" == "${0:-}" ]]; then
     case "${1:-}" in
         sync-file)
             sync_file "${2:-}" "${3:-}" "${4:-false}" "${5:-false}"

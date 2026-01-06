@@ -9,8 +9,10 @@ set -euo pipefail
 # ============================================================================
 
 # Get script directory and repo root
+# Script is at: global/lib/update/update.sh
+# Repo root is 3 levels up: ../../..
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-JARVIS_REPO="${JARVIS_REPO:-$(cd "${SCRIPT_DIR}/../.." && pwd)}"
+JARVIS_REPO="${JARVIS_REPO:-$(cd "${SCRIPT_DIR}/../../.." && pwd)}"
 
 # Paths
 GLOBAL_CLAUDE="${HOME}/.claude"
@@ -132,14 +134,15 @@ update_global() {
     echo ""
     echo "--- Settings ---"
     # Sync Claude Code settings.json (correct schema format)
+    # Note: sync_file returns 2 for unchanged files, so we use || true
     if [[ -f "${JARVIS_REPO}/global/settings.json" ]]; then
-        sync_file "${JARVIS_REPO}/global/settings.json" "${GLOBAL_CLAUDE}/settings.json" "$force" "$dry_run"
+        sync_file "${JARVIS_REPO}/global/settings.json" "${GLOBAL_CLAUDE}/settings.json" "$force" "$dry_run" || true
     fi
 
     # Sync Jarvis-specific config to separate file
     if [[ -f "${JARVIS_REPO}/global/jarvis.json" ]]; then
         mkdir -p "${GLOBAL_CLAUDE}/config"
-        sync_file "${JARVIS_REPO}/global/jarvis.json" "${GLOBAL_CLAUDE}/config/jarvis.json" "$force" "$dry_run"
+        sync_file "${JARVIS_REPO}/global/jarvis.json" "${GLOBAL_CLAUDE}/config/jarvis.json" "$force" "$dry_run" || true
     fi
 
     # Update version file

@@ -4,8 +4,8 @@
 
 set -euo pipefail
 
-# Get script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Get script directory (handle being sourced)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 # Source dependencies
 source "${SCRIPT_DIR}/sync.sh"
@@ -193,7 +193,7 @@ update_project_settings() {
 # CLI INTERFACE
 # ============================================================================
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+if [[ "${BASH_SOURCE[0]:-}" == "${0:-}" ]]; then
     case "${1:-}" in
         update)
             update_project "${2:-.}" "${3:-}" "${4:-false}" "${5:-false}" "${6:-false}"
