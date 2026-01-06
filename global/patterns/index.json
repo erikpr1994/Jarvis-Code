@@ -1,9 +1,13 @@
 {
   "$schema": "../schemas/patterns-index.schema.json",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Pattern library index with summaries for quick lookup",
 
   "categories": {
+    "core": {
+      "name": "Core Patterns",
+      "description": "Foundational patterns applicable across all projects"
+    },
     "typescript": {
       "name": "TypeScript Patterns",
       "description": "TypeScript and React development patterns"
@@ -12,21 +16,25 @@
       "name": "Python Patterns",
       "description": "Python service and architecture patterns"
     },
-    "architecture": {
-      "name": "Architecture Patterns",
-      "description": "High-level system structure patterns"
+    "nextjs": {
+      "name": "Next.js Patterns",
+      "description": "Next.js App Router patterns and best practices"
     },
-    "design": {
-      "name": "Design Patterns",
-      "description": "Object-oriented and functional design patterns"
+    "react": {
+      "name": "React Patterns",
+      "description": "React component and hook patterns"
     },
-    "process": {
-      "name": "Process Patterns",
-      "description": "Development process and workflow patterns"
+    "supabase": {
+      "name": "Supabase Patterns",
+      "description": "Supabase and PostgreSQL patterns"
     },
-    "integration": {
+    "features": {
+      "name": "Feature Patterns",
+      "description": "Common feature implementation patterns"
+    },
+    "integrations": {
       "name": "Integration Patterns",
-      "description": "System integration and API patterns"
+      "description": "External service and system integration patterns"
     }
   },
 
@@ -57,12 +65,192 @@
       "keywords": ["python", "service", "dependency-injection", "repository", "clean-architecture"],
       "language": "python",
       "lastUpdated": "2026-01-04"
+    },
+    {
+      "name": "error-handling",
+      "path": "core/error-handling.md",
+      "category": "core",
+      "summary": "Structured error handling with custom error classes, Result types, and centralized error handlers",
+      "keywords": ["error", "exception", "handling", "try-catch", "result", "graceful-degradation"],
+      "language": "any",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "logging",
+      "path": "core/logging.md",
+      "category": "core",
+      "summary": "Structured logging with consistent levels, context propagation, and machine-readable format",
+      "keywords": ["logging", "debug", "trace", "monitoring", "observability", "structured-logging"],
+      "language": "any",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "validation",
+      "path": "core/validation.md",
+      "category": "core",
+      "summary": "Schema-based validation with Zod at system boundaries for type-safe input handling",
+      "keywords": ["validation", "zod", "schema", "input", "sanitization", "type-safety"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "configuration",
+      "path": "core/configuration.md",
+      "category": "core",
+      "summary": "Centralized configuration with environment validation, type-safe access, and secrets management",
+      "keywords": ["config", "environment", "env", "settings", "secrets", "configuration"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "dependency-injection",
+      "path": "core/dependency-injection.md",
+      "category": "core",
+      "summary": "Loose coupling through constructor injection, interfaces, and composition roots",
+      "keywords": ["dependency-injection", "di", "ioc", "testing", "decoupling", "interfaces"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "nextjs-api-route",
+      "path": "nextjs/api-route.md",
+      "category": "nextjs",
+      "summary": "Consistent Next.js API route structure with validation, auth, and error handling",
+      "keywords": ["nextjs", "api", "route", "handler", "app-router", "rest"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "nextjs-server-action",
+      "path": "nextjs/server-action.md",
+      "category": "nextjs",
+      "summary": "Server Actions for forms and mutations with progressive enhancement and type safety",
+      "keywords": ["nextjs", "server-action", "form", "mutation", "use-server", "app-router"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "react-hooks-pattern",
+      "path": "react/hooks-pattern.md",
+      "category": "react",
+      "summary": "Custom hooks for reusable stateful logic, effects, and browser API wrappers",
+      "keywords": ["react", "hooks", "custom-hooks", "state", "useEffect", "useState"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "react-context-provider",
+      "path": "react/context-provider.md",
+      "category": "react",
+      "summary": "React Context for global state with custom hooks and performance optimization",
+      "keywords": ["react", "context", "provider", "state-management", "global-state"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "supabase-rls-policy",
+      "path": "supabase/rls-policy.md",
+      "category": "supabase",
+      "summary": "PostgreSQL Row Level Security for database-level authorization in Supabase",
+      "keywords": ["supabase", "rls", "row-level-security", "postgres", "authorization", "policy"],
+      "language": "sql",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "authentication",
+      "path": "features/authentication.md",
+      "category": "features",
+      "summary": "Authentication with Supabase Auth, protected routes, middleware, and session handling",
+      "keywords": ["auth", "authentication", "login", "session", "jwt", "supabase", "next-auth"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "pagination",
+      "path": "features/pagination.md",
+      "category": "features",
+      "summary": "Offset and cursor-based pagination with infinite scroll and URL state",
+      "keywords": ["pagination", "infinite-scroll", "cursor", "offset", "list", "data-fetching"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "search",
+      "path": "features/search.md",
+      "category": "features",
+      "summary": "Debounced search with URL state, filters, instant search, and full-text search",
+      "keywords": ["search", "filter", "query", "debounce", "full-text", "instant-search"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "file-upload",
+      "path": "features/file-upload.md",
+      "category": "features",
+      "summary": "Secure file uploads with validation, progress tracking, and storage integration",
+      "keywords": ["upload", "file", "image", "blob", "s3", "multipart", "drag-drop"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "notifications",
+      "path": "features/notifications.md",
+      "category": "features",
+      "summary": "Toast messages for immediate feedback and persistent notifications for updates",
+      "keywords": ["notifications", "toast", "alerts", "real-time", "push", "websocket"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "webhook-handler",
+      "path": "integrations/webhook-handler.md",
+      "category": "integrations",
+      "summary": "Secure webhook handlers with signature verification, idempotency, and error handling",
+      "keywords": ["webhook", "callback", "event", "stripe", "github", "external-api"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "third-party-api",
+      "path": "integrations/third-party-api.md",
+      "category": "integrations",
+      "summary": "Typed API clients with retries, rate limiting, and circuit breakers",
+      "keywords": ["api", "integration", "fetch", "http", "client", "external-service"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "queue-processing",
+      "path": "integrations/queue-processing.md",
+      "category": "integrations",
+      "summary": "Background job processing with BullMQ, retries, and monitoring",
+      "keywords": ["queue", "job", "worker", "background", "async", "bull", "redis"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "caching-strategy",
+      "path": "integrations/caching-strategy.md",
+      "category": "integrations",
+      "summary": "Multi-layer caching with Redis, Next.js cache, and proper invalidation strategies",
+      "keywords": ["cache", "redis", "performance", "invalidation", "ttl", "revalidation"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
+    },
+    {
+      "name": "event-sourcing",
+      "path": "integrations/event-sourcing.md",
+      "category": "integrations",
+      "summary": "Event sourcing for audit trails, state replay, and temporal queries",
+      "keywords": ["events", "sourcing", "audit", "history", "cqrs", "domain-events"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-06"
     }
   ],
 
   "metadata": {
-    "lastUpdated": "2026-01-04",
-    "totalPatterns": 3,
+    "lastUpdated": "2026-01-06",
+    "totalPatterns": 23,
     "autoIndex": true
   },
 

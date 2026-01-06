@@ -6,7 +6,7 @@
       "type": "meta",
       "enforcement": "always",
       "priority": "critical",
-      "path": "meta/using-skills.md",
+      "path": "using-skills/SKILL.md",
       "description": "Core skill usage guide - the 1% rule",
       "promptTriggers": {
         "keywords": [],
@@ -18,396 +18,912 @@
       "type": "meta",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "meta/writing-skills.md",
+      "path": "writing-skills/SKILL.md",
       "description": "TDD-based skill creation guide",
       "promptTriggers": {
-        "keywords": ["create skill", "new skill", "write skill", "skill template", "SKILL.md"],
-        "intentPatterns": ["(create|write|add|build).*?skill", "skill.*?(creation|development)"]
+        "keywords": [
+          "create skill",
+          "new skill",
+          "write skill",
+          "skill template",
+          "SKILL.md"
+        ],
+        "intentPatterns": [
+          "(create|write|add|build).*?skill",
+          "skill.*?(creation|development)"
+        ]
       }
     },
     "writing-rules": {
       "type": "meta",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "meta/writing-rules.md",
+      "path": "writing-rules/SKILL.md",
       "description": "Rule creation with confidence thresholds",
       "promptTriggers": {
-        "keywords": ["create rule", "new rule", "write rule", "add rule"],
-        "intentPatterns": ["(create|write|add).*?rule"]
+        "keywords": [
+          "create rule",
+          "new rule",
+          "write rule",
+          "add rule"
+        ],
+        "intentPatterns": [
+          "(create|write|add).*?rule"
+        ]
       }
     },
     "writing-agents": {
       "type": "meta",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "meta/writing-agents.md",
+      "path": "writing-agents/SKILL.md",
       "description": "Agent creation with roles and handoffs",
       "promptTriggers": {
-        "keywords": ["create agent", "new agent", "write agent", "agent template"],
-        "intentPatterns": ["(create|write|add|build).*?agent"]
+        "keywords": [
+          "create agent",
+          "new agent",
+          "write agent",
+          "agent template"
+        ],
+        "intentPatterns": [
+          "(create|write|add|build).*?agent"
+        ]
       }
     },
     "writing-commands": {
       "type": "meta",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "meta/writing-commands.md",
+      "path": "writing-commands/SKILL.md",
       "description": "Slash command creation guide",
       "promptTriggers": {
-        "keywords": ["create command", "new command", "slash command", "command template"],
-        "intentPatterns": ["(create|write|add).*?command"]
+        "keywords": [
+          "create command",
+          "new command",
+          "slash command",
+          "command template"
+        ],
+        "intentPatterns": [
+          "(create|write|add).*?command"
+        ]
       }
     },
     "writing-hooks": {
       "type": "meta",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "meta/writing-hooks.md",
+      "path": "writing-hooks/SKILL.md",
       "description": "Hook creation for event interception",
       "promptTriggers": {
-        "keywords": ["create hook", "new hook", "write hook", "hook template"],
-        "intentPatterns": ["(create|write|add).*?hook"]
+        "keywords": [
+          "create hook",
+          "new hook",
+          "write hook",
+          "hook template"
+        ],
+        "intentPatterns": [
+          "(create|write|add).*?hook"
+        ]
       }
     },
     "writing-patterns": {
       "type": "meta",
       "enforcement": "suggest",
       "priority": "medium",
-      "path": "meta/writing-patterns.md",
+      "path": "writing-patterns/SKILL.md",
       "description": "Document reusable code patterns",
       "promptTriggers": {
-        "keywords": ["create pattern", "document pattern", "add pattern"],
-        "intentPatterns": ["(create|document|add).*?pattern"]
+        "keywords": [
+          "create pattern",
+          "document pattern",
+          "add pattern"
+        ],
+        "intentPatterns": [
+          "(create|document|add).*?pattern"
+        ]
       }
     },
     "writing-claude-md": {
       "type": "meta",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "meta/writing-claude-md.md",
+      "path": "writing-claude-md/SKILL.md",
       "description": "Hierarchical CLAUDE.md file creation",
       "promptTriggers": {
-        "keywords": ["CLAUDE.md", "create CLAUDE", "project instructions"],
-        "intentPatterns": ["(create|write|update).*?CLAUDE"]
+        "keywords": [
+          "CLAUDE.md",
+          "create CLAUDE",
+          "project instructions"
+        ],
+        "intentPatterns": [
+          "(create|write|update).*?CLAUDE"
+        ]
       }
     },
     "improving-jarvis": {
       "type": "meta",
       "enforcement": "suggest",
       "priority": "medium",
-      "path": "meta/improving-jarvis.md",
+      "path": "improving-jarvis/SKILL.md",
       "description": "System improvement and pattern capture",
       "promptTriggers": {
-        "keywords": ["improve jarvis", "enhance jarvis", "update system", "capture pattern"],
-        "intentPatterns": ["(improve|enhance|update).*?(jarvis|system)", "capture.*?pattern"]
+        "keywords": [
+          "improve jarvis",
+          "enhance jarvis",
+          "update system",
+          "capture pattern"
+        ],
+        "intentPatterns": [
+          "(improve|enhance|update).*?(jarvis|system)",
+          "capture.*?pattern"
+        ]
       }
     },
     "writing-plans": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "process/writing-plans.md",
+      "path": "writing-plans/SKILL.md",
       "description": "Structured implementation plans before coding",
       "promptTriggers": {
-        "keywords": ["plan", "write plan", "create plan", "design", "architect", "implementation plan", "spec", "requirements", "how to build"],
-        "intentPatterns": ["(write|create|make).*?plan", "(implementation|design).*?plan", "(how|plan).*?(build|implement|architect)"]
+        "keywords": [
+          "plan",
+          "write plan",
+          "create plan",
+          "design",
+          "architect",
+          "implementation plan",
+          "spec",
+          "requirements",
+          "how to build"
+        ],
+        "intentPatterns": [
+          "(write|create|make).*?plan",
+          "(implementation|design).*?plan",
+          "(how|plan).*?(build|implement|architect)"
+        ]
       }
     },
     "executing-plans": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "process/executing-plans.md",
+      "path": "executing-plans/SKILL.md",
       "description": "Checkpoint-verified plan execution",
       "promptTriggers": {
-        "keywords": ["execute plan", "follow plan", "implement plan", "next step", "continue", "proceed", "checkpoint"],
-        "intentPatterns": ["(execute|follow|implement).*?plan", "(next|continue).*?step", "proceed.*?(phase|task)"]
+        "keywords": [
+          "execute plan",
+          "follow plan",
+          "implement plan",
+          "next step",
+          "continue",
+          "proceed",
+          "checkpoint"
+        ],
+        "intentPatterns": [
+          "(execute|follow|implement).*?plan",
+          "(next|continue).*?step",
+          "proceed.*?(phase|task)"
+        ]
       }
     },
     "brainstorming": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "process/brainstorming.md",
+      "path": "brainstorming/SKILL.md",
       "description": "Structured ideation with 3+ alternatives",
       "promptTriggers": {
-        "keywords": ["brainstorm", "ideate", "options", "alternatives", "explore", "what if", "approaches", "ideas"],
-        "intentPatterns": ["(brainstorm|ideate).*?(options|ideas)", "(what|how).*?(options|approaches|alternatives)", "(explore|consider).*?(approach|option)"]
-      }
-    },
-    "tdd-workflow": {
-      "type": "process",
-      "enforcement": "suggest",
-      "priority": "critical",
-      "path": "process/tdd-workflow.md",
-      "description": "Red-Green-Refactor discipline",
-      "promptTriggers": {
-        "keywords": ["test", "tdd", "test first", "red green refactor", "unit test", "testing"],
-        "intentPatterns": ["(write|add|create).*?test", "test.*?first", "implement.*?with.*?test"]
+        "keywords": [
+          "brainstorm",
+          "ideate",
+          "options",
+          "alternatives",
+          "explore",
+          "what if",
+          "approaches",
+          "ideas"
+        ],
+        "intentPatterns": [
+          "(brainstorm|ideate).*?(options|ideas)",
+          "(what|how).*?(options|approaches|alternatives)",
+          "(explore|consider).*?(approach|option)"
+        ]
       }
     },
     "systematic-debugging": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "process/systematic-debugging.md",
+      "path": "systematic-debugging/SKILL.md",
       "description": "Hypothesis-driven debugging",
       "promptTriggers": {
-        "keywords": ["debug", "bug", "error", "failing", "broken", "not working", "fix", "investigate"],
-        "intentPatterns": ["(debug|fix|investigate).*?(error|bug|issue)", "why.*?(fail|broken|not working)"]
+        "keywords": [
+          "debug",
+          "bug",
+          "error",
+          "failing",
+          "broken",
+          "not working",
+          "fix",
+          "investigate"
+        ],
+        "intentPatterns": [
+          "(debug|fix|investigate).*?(error|bug|issue)",
+          "why.*?(fail|broken|not working)"
+        ]
       }
     },
     "git-worktrees": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "process/git-worktrees.md",
+      "path": "git-worktrees/SKILL.md",
       "description": "Parallel branch development with isolation",
       "promptTriggers": {
-        "keywords": ["worktree", "parallel branch", "isolate", "workspace", "feature branch"],
-        "intentPatterns": ["(create|setup).*?worktree", "(parallel|isolated).*?(branch|development)"]
+        "keywords": [
+          "worktree",
+          "parallel branch",
+          "isolate",
+          "workspace",
+          "feature branch"
+        ],
+        "intentPatterns": [
+          "(create|setup).*?worktree",
+          "(parallel|isolated).*?(branch|development)"
+        ]
       }
     },
     "code-review": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "process/code-review.md",
+      "path": "code-review/SKILL.md",
       "description": "Systematic code review methodology",
       "promptTriggers": {
-        "keywords": ["review", "code review", "PR review", "check code", "evaluate code"],
-        "intentPatterns": ["(review|check|evaluate).*?(code|changes|PR)"]
+        "keywords": [
+          "review",
+          "code review",
+          "PR review",
+          "check code",
+          "evaluate code"
+        ],
+        "intentPatterns": [
+          "(review|check|evaluate).*?(code|changes|PR)"
+        ]
       }
     },
     "pr-workflow": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "process/pr-workflow.md",
+      "path": "pr-workflow/SKILL.md",
       "description": "PR creation and management",
       "promptTriggers": {
-        "keywords": ["PR", "pull request", "create PR", "submit PR", "stacked PR", "merge"],
-        "intentPatterns": ["(create|submit|open).*?(PR|pull request)", "(stacked|stack).*?PR"]
+        "keywords": [
+          "PR",
+          "pull request",
+          "create PR",
+          "submit PR",
+          "stacked PR",
+          "merge"
+        ],
+        "intentPatterns": [
+          "(create|submit|open).*?(PR|pull request)",
+          "(stacked|stack).*?PR"
+        ]
       }
     },
     "commit-discipline": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "process/commit-discipline.md",
+      "path": "commit-discipline/SKILL.md",
       "description": "Conventional commits and atomic changes",
       "promptTriggers": {
-        "keywords": ["commit", "git commit", "commit message", "conventional commit", "atomic"],
-        "intentPatterns": ["(create|make|write).*?commit", "(commit|atomic).*?(message|change)"]
+        "keywords": [
+          "commit",
+          "git commit",
+          "commit message",
+          "conventional commit",
+          "atomic"
+        ],
+        "intentPatterns": [
+          "(create|make|write).*?commit",
+          "(commit|atomic).*?(message|change)"
+        ]
       }
     },
     "typescript-patterns": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/typescript-patterns.md",
+      "path": "typescript-patterns/SKILL.md",
       "description": "TypeScript idioms and type safety",
       "promptTriggers": {
-        "keywords": ["typescript", "type", "generic", "interface", "type guard", "utility type", "infer"],
-        "intentPatterns": ["(type|typescript).*?(guard|safety|pattern)", "(generic|utility).*?type"]
+        "keywords": [
+          "typescript",
+          "type",
+          "generic",
+          "interface",
+          "type guard",
+          "utility type",
+          "infer"
+        ],
+        "intentPatterns": [
+          "(type|typescript).*?(guard|safety|pattern)",
+          "(generic|utility).*?type"
+        ]
       }
     },
     "react-patterns": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/react-patterns.md",
+      "path": "react-patterns/SKILL.md",
       "description": "React component patterns and hooks",
       "promptTriggers": {
-        "keywords": ["react", "component", "hook", "useState", "useEffect", "server component", "client component"],
-        "intentPatterns": ["(react|component).*?pattern", "(server|client).*?component"]
+        "keywords": [
+          "react",
+          "component",
+          "hook",
+          "useState",
+          "useEffect",
+          "server component",
+          "client component"
+        ],
+        "intentPatterns": [
+          "(react|component).*?pattern",
+          "(server|client).*?component"
+        ]
       }
     },
     "nextjs-patterns": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/nextjs-patterns.md",
+      "path": "nextjs-patterns/SKILL.md",
       "description": "Next.js App Router patterns",
       "promptTriggers": {
-        "keywords": ["nextjs", "next.js", "app router", "server action", "route handler", "middleware"],
-        "intentPatterns": ["(next|nextjs).*?(pattern|router|action)", "(server|route).*?(action|handler)"]
+        "keywords": [
+          "nextjs",
+          "next.js",
+          "app router",
+          "server action",
+          "route handler",
+          "middleware"
+        ],
+        "intentPatterns": [
+          "(next|nextjs).*?(pattern|router|action)",
+          "(server|route).*?(action|handler)"
+        ]
       }
     },
     "mcp-integration": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/mcp-integration.md",
+      "path": "mcp-integration/SKILL.md",
       "description": "MCP server integration patterns (Context7, Supabase, Playwright)",
       "promptTriggers": {
-        "keywords": ["mcp", "context7", "mcp server", "documentation lookup", "docs lookup", "library docs", "framework docs", "official docs"],
-        "intentPatterns": ["(mcp|context7).*?(server|integration)", "(documentation|docs|library).*?(lookup|fetch|search)", "(official|framework).*?docs"]
+        "keywords": [
+          "mcp",
+          "context7",
+          "mcp server",
+          "documentation lookup",
+          "docs lookup",
+          "library docs",
+          "framework docs",
+          "official docs"
+        ],
+        "intentPatterns": [
+          "(mcp|context7).*?(server|integration)",
+          "(documentation|docs|library).*?(lookup|fetch|search)",
+          "(official|framework).*?docs"
+        ]
       }
     },
     "supabase-patterns": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/supabase-patterns.md",
+      "path": "supabase-patterns/SKILL.md",
       "description": "Supabase RLS, auth, and edge functions",
       "promptTriggers": {
-        "keywords": ["supabase", "rls", "row level security", "edge function", "realtime", "postgres policy"],
-        "intentPatterns": ["(supabase|rls).*?(pattern|policy|security)", "(edge|realtime).*?function"]
+        "keywords": [
+          "supabase",
+          "rls",
+          "row level security",
+          "edge function",
+          "realtime",
+          "postgres policy"
+        ],
+        "intentPatterns": [
+          "(supabase|rls).*?(pattern|policy|security)",
+          "(edge|realtime).*?function"
+        ]
       }
     },
     "testing-patterns": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/testing-patterns.md",
+      "path": "testing-patterns/SKILL.md",
       "description": "Vitest and Playwright testing strategies",
       "promptTriggers": {
-        "keywords": ["vitest", "playwright", "mock", "e2e", "integration test", "fixture", "coverage"],
-        "intentPatterns": ["(vitest|playwright).*?(test|pattern)", "(mock|fixture).*?(test|setup)"]
+        "keywords": [
+          "vitest",
+          "playwright",
+          "mock",
+          "e2e",
+          "integration test",
+          "fixture",
+          "coverage"
+        ],
+        "intentPatterns": [
+          "(vitest|playwright).*?(test|pattern)",
+          "(mock|fixture).*?(test|setup)"
+        ]
       }
     },
     "api-design": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/api-design.md",
+      "path": "api-design/SKILL.md",
       "description": "REST API design and error handling",
       "promptTriggers": {
-        "keywords": ["api", "rest", "endpoint", "http", "status code", "error handling", "pagination"],
-        "intentPatterns": ["(api|rest).*?(design|pattern)", "(error|status).*?(handling|code)"]
+        "keywords": [
+          "api",
+          "rest",
+          "endpoint",
+          "http",
+          "status code",
+          "error handling",
+          "pagination"
+        ],
+        "intentPatterns": [
+          "(api|rest).*?(design|pattern)",
+          "(error|status).*?(handling|code)"
+        ]
       }
     },
     "database-patterns": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/database-patterns.md",
+      "path": "database-patterns/SKILL.md",
       "description": "Schema design, migrations, and queries",
       "promptTriggers": {
-        "keywords": ["database", "schema", "migration", "index", "query", "sql", "prisma", "drizzle"],
-        "intentPatterns": ["(database|schema).*?(design|pattern)", "(migration|index).*?(create|add)"]
+        "keywords": [
+          "database",
+          "schema",
+          "migration",
+          "index",
+          "query",
+          "sql",
+          "prisma",
+          "drizzle"
+        ],
+        "intentPatterns": [
+          "(database|schema).*?(design|pattern)",
+          "(migration|index).*?(create|add)"
+        ]
       }
     },
     "git-expert": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/git-expert.md",
+      "path": "git-expert/SKILL.md",
       "description": "Git protocol with intelligent commit format",
       "promptTriggers": {
-        "keywords": ["git", "branch", "merge", "rebase", "version control", "git history"],
-        "intentPatterns": ["(git).*?(branch|merge|rebase|history)"]
+        "keywords": [
+          "git",
+          "branch",
+          "merge",
+          "rebase",
+          "version control",
+          "git history"
+        ],
+        "intentPatterns": [
+          "(git).*?(branch|merge|rebase|history)"
+        ]
       }
     },
     "submit-pr": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/submit-pr.md",
+      "path": "submit-pr/SKILL.md",
       "description": "Full PR submission pipeline with CodeRabbit integration",
       "promptTriggers": {
-        "keywords": ["submit", "PR", "pull request", "review request", "create PR", "open PR", "push for review"],
-        "intentPatterns": ["(submit|create|open).*?(PR|pull request)", "(request|push).*?review", "(ready|prepare).*?(PR|review)"]
+        "keywords": [
+          "submit",
+          "PR",
+          "pull request",
+          "review request",
+          "create PR",
+          "open PR",
+          "push for review"
+        ],
+        "intentPatterns": [
+          "(submit|create|open).*?(PR|pull request)",
+          "(request|push).*?review",
+          "(ready|prepare).*?(PR|review)"
+        ]
       }
     },
     "coderabbit": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "medium",
-      "path": "domain/coderabbit.md",
+      "path": "coderabbit/SKILL.md",
       "description": "CodeRabbit AI review integration and feedback handling",
       "promptTriggers": {
-        "keywords": ["coderabbit", "code rabbit", "AI review", "automated review", "@coderabbitai", "review feedback"],
-        "intentPatterns": ["(coderabbit|code rabbit).*?(review|feedback)", "(AI|automated).*?review", "address.*?(coderabbit|review)"]
+        "keywords": [
+          "coderabbit",
+          "code rabbit",
+          "AI review",
+          "automated review",
+          "@coderabbitai",
+          "review feedback"
+        ],
+        "intentPatterns": [
+          "(coderabbit|code rabbit).*?(review|feedback)",
+          "(AI|automated).*?review",
+          "address.*?(coderabbit|review)"
+        ]
       }
     },
     "frontend-design": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/frontend-design.md",
+      "path": "frontend-design/SKILL.md",
       "description": "UI component design, accessibility, and responsive patterns",
       "promptTriggers": {
-        "keywords": ["UI", "design", "component", "styling", "accessibility", "a11y", "responsive", "design system", "CSS", "tailwind", "layout", "WCAG"],
-        "intentPatterns": ["(UI|design|component).*?(pattern|system)", "(accessibility|a11y).*?(requirement|compliance)", "(responsive|mobile).*?(design|layout)"]
+        "keywords": [
+          "UI",
+          "design",
+          "component",
+          "styling",
+          "accessibility",
+          "a11y",
+          "responsive",
+          "design system",
+          "CSS",
+          "tailwind",
+          "layout",
+          "WCAG"
+        ],
+        "intentPatterns": [
+          "(UI|design|component).*?(pattern|system)",
+          "(accessibility|a11y).*?(requirement|compliance)",
+          "(responsive|mobile).*?(design|layout)"
+        ]
       }
     },
     "payment-processing": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/payment-processing.md",
+      "path": "payment-processing/SKILL.md",
       "description": "Stripe and Polar payment integration patterns",
       "promptTriggers": {
-        "keywords": ["payment", "stripe", "polar", "checkout", "subscription", "webhook", "billing", "invoice", "pricing"],
-        "intentPatterns": ["(payment|checkout).*?(integration|flow)", "(stripe|polar).*?(setup|integration)", "(subscription|billing).*?(management|webhook)"]
+        "keywords": [
+          "payment",
+          "stripe",
+          "polar",
+          "checkout",
+          "subscription",
+          "webhook",
+          "billing",
+          "invoice",
+          "pricing"
+        ],
+        "intentPatterns": [
+          "(payment|checkout).*?(integration|flow)",
+          "(stripe|polar).*?(setup|integration)",
+          "(subscription|billing).*?(management|webhook)"
+        ]
       }
     },
     "seo-content-generation": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "medium",
-      "path": "domain/seo-content-generation.md",
+      "path": "seo-content-generation/SKILL.md",
       "description": "SEO optimization, meta tags, and structured data",
       "promptTriggers": {
-        "keywords": ["SEO", "meta tags", "schema", "structured data", "content", "blog", "article", "sitemap", "robots", "Open Graph"],
-        "intentPatterns": ["(SEO|search).*?(optimization|ranking)", "(meta|schema).*?(tag|markup)", "(content|blog).*?(structure|optimization)"]
+        "keywords": [
+          "SEO",
+          "meta tags",
+          "schema",
+          "structured data",
+          "content",
+          "blog",
+          "article",
+          "sitemap",
+          "robots",
+          "Open Graph"
+        ],
+        "intentPatterns": [
+          "(SEO|search).*?(optimization|ranking)",
+          "(meta|schema).*?(tag|markup)",
+          "(content|blog).*?(structure|optimization)"
+        ]
       }
     },
     "analytics": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "medium",
-      "path": "domain/analytics.md",
+      "path": "analytics/SKILL.md",
       "description": "Analytics integration and event tracking patterns",
       "promptTriggers": {
-        "keywords": ["analytics", "tracking", "metrics", "events", "Google Analytics", "Plausible", "PostHog", "Mixpanel", "dashboard", "conversion"],
-        "intentPatterns": ["(analytics|tracking).*?(setup|integration)", "(event|conversion).*?tracking", "(metrics|dashboard).*?(setup|analysis)"]
+        "keywords": [
+          "analytics",
+          "tracking",
+          "metrics",
+          "events",
+          "Google Analytics",
+          "Plausible",
+          "PostHog",
+          "Mixpanel",
+          "dashboard",
+          "conversion"
+        ],
+        "intentPatterns": [
+          "(analytics|tracking).*?(setup|integration)",
+          "(event|conversion).*?tracking",
+          "(metrics|dashboard).*?(setup|analysis)"
+        ]
       }
     },
     "infra-ops": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "domain/infra-ops.md",
+      "path": "infra-ops/SKILL.md",
       "description": "Docker, CI/CD, and deployment workflows",
       "promptTriggers": {
-        "keywords": ["deploy", "docker", "server", "VPS", "CI/CD", "GitHub Actions", "infrastructure", "container", "kubernetes", "nginx", "deployment"],
-        "intentPatterns": ["(deploy|deployment).*?(workflow|pipeline)", "(docker|container).*?(setup|build)", "(CI|CD|GitHub Actions).*?(workflow|pipeline)", "(server|VPS).*?(setup|management)"]
+        "keywords": [
+          "deploy",
+          "docker",
+          "server",
+          "VPS",
+          "CI/CD",
+          "GitHub Actions",
+          "infrastructure",
+          "container",
+          "kubernetes",
+          "nginx",
+          "deployment"
+        ],
+        "intentPatterns": [
+          "(deploy|deployment).*?(workflow|pipeline)",
+          "(docker|container).*?(setup|build)",
+          "(CI|CD|GitHub Actions).*?(workflow|pipeline)",
+          "(server|VPS).*?(setup|management)"
+        ]
       }
     },
     "browser-debugging": {
       "type": "domain",
       "enforcement": "suggest",
       "priority": "medium",
-      "path": "domain/browser-debugging.md",
+      "path": "browser-debugging/SKILL.md",
       "description": "DevTools, network debugging, and performance profiling",
       "promptTriggers": {
-        "keywords": ["browser", "devtools", "frontend debug", "console", "network tab", "performance", "inspector", "DOM", "Chrome DevTools"],
-        "intentPatterns": ["(browser|devtools).*?(debug|inspect)", "(network|console).*?(debug|inspect)", "(performance|render).*?(profiling|debug)"]
+        "keywords": [
+          "browser",
+          "devtools",
+          "frontend debug",
+          "console",
+          "network tab",
+          "performance",
+          "inspector",
+          "DOM",
+          "Chrome DevTools"
+        ],
+        "intentPatterns": [
+          "(browser|devtools).*?(debug|inspect)",
+          "(network|console).*?(debug|inspect)",
+          "(performance|render).*?(profiling|debug)"
+        ]
       }
     },
     "subagent-driven-development": {
       "type": "execution",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "execution/subagent-driven-development.md",
+      "path": "subagent-driven-development/SKILL.md",
       "description": "Orchestrate complex features requiring multi-stage review and specialized agents",
       "promptTriggers": {
-        "keywords": ["subagent", "orchestrate", "delegate", "coordinate", "multi-stage", "complex feature", "architectural", "multi-file", "specialized agents", "agent coordination"],
-        "intentPatterns": ["(orchestrate|coordinate|delegate).*?(agent|task|work)", "(complex|large|architectural).*?(feature|change|implementation)", "(multi|multiple).*?(file|stage|agent)", "(break|split).*?(task|subtask|work)"]
+        "keywords": [
+          "subagent",
+          "orchestrate",
+          "delegate",
+          "coordinate",
+          "multi-stage",
+          "complex feature",
+          "architectural",
+          "multi-file",
+          "specialized agents",
+          "agent coordination"
+        ],
+        "intentPatterns": [
+          "(orchestrate|coordinate|delegate).*?(agent|task|work)",
+          "(complex|large|architectural).*?(feature|change|implementation)",
+          "(multi|multiple).*?(file|stage|agent)",
+          "(break|split).*?(task|subtask|work)"
+        ]
       }
     },
     "dispatching-parallel-agents": {
       "type": "execution",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "execution/dispatching-parallel-agents.md",
+      "path": "dispatching-parallel-agents/SKILL.md",
       "description": "Run multiple independent tasks simultaneously for maximum throughput",
       "promptTriggers": {
-        "keywords": ["parallel", "concurrent", "simultaneously", "independent tasks", "multiple agents", "exploration", "research multiple", "compare approaches", "parallel execution"],
-        "intentPatterns": ["(parallel|concurrent|simultaneous).*?(task|agent|execution)", "(multiple|several).*?(independent|research|exploration)", "(compare|evaluate).*?(approach|solution|option)", "(run|execute|dispatch).*?(parallel|simultaneously)"]
+        "keywords": [
+          "parallel",
+          "concurrent",
+          "simultaneously",
+          "independent tasks",
+          "multiple agents",
+          "exploration",
+          "research multiple",
+          "compare approaches",
+          "parallel execution"
+        ],
+        "intentPatterns": [
+          "(parallel|concurrent|simultaneous).*?(task|agent|execution)",
+          "(multiple|several).*?(independent|research|exploration)",
+          "(compare|evaluate).*?(approach|solution|option)",
+          "(run|execute|dispatch).*?(parallel|simultaneously)"
+        ]
+      }
+    },
+    "crawl-cli": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "path": "crawl-cli/SKILL.md",
+      "description": "Web scraping, data extraction, and browser automation with Puppeteer/Playwright",
+      "promptTriggers": {
+        "keywords": [
+          "scrape",
+          "crawl",
+          "puppeteer",
+          "playwright",
+          "web scraping",
+          "data extraction",
+          "headless browser",
+          "spider",
+          "bot",
+          "crawler"
+        ],
+        "intentPatterns": [
+          "(scrape|crawl).*?(website|page|data)",
+          "(extract|pull).*?(data|content|information)",
+          "(headless|browser).*?(automation|scraping)",
+          "(puppeteer|playwright).*?(setup|script)"
+        ]
+      }
+    },
+    "idea-to-product": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "idea-to-product/SKILL.md",
+      "description": "MVP scoping, feature prioritization, tech stack selection, and launch planning",
+      "promptTriggers": {
+        "keywords": [
+          "mvp",
+          "prototype",
+          "launch",
+          "product",
+          "idea",
+          "startup",
+          "ship",
+          "build fast",
+          "validate",
+          "market",
+          "feature prioritization",
+          "side project"
+        ],
+        "intentPatterns": [
+          "(build|create|launch).*?(mvp|product|prototype)",
+          "(feature|scope).*?(prioritize|prioritization)",
+          "(tech|technology).*?(stack|selection)",
+          "(ship|launch).*?(fast|quickly)",
+          "(validate|test).*?(idea|market)"
+        ]
+      }
+    },
+    "domain-expert": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "path": "domain-expert/SKILL.md",
+      "description": "Meta-skill for rapidly learning and applying expertise in new domains",
+      "promptTriggers": {
+        "keywords": [
+          "learn domain",
+          "new domain",
+          "domain expert",
+          "research",
+          "understand",
+          "expert in",
+          "become expert",
+          "domain knowledge",
+          "unfamiliar territory",
+          "new industry"
+        ],
+        "intentPatterns": [
+          "(learn|understand|research).*?(domain|field|industry)",
+          "(become|be).*?expert",
+          "(unfamiliar|new).*?(domain|territory|area)",
+          "(domain|field).*?(knowledge|expertise)"
+        ]
+      }
+    },
+    "build-in-public": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "path": "build-in-public/SKILL.md",
+      "description": "Progress sharing, changelog writing, and community engagement",
+      "promptTriggers": {
+        "keywords": [
+          "build in public",
+          "changelog",
+          "devlog",
+          "progress update",
+          "announcement",
+          "milestone",
+          "public development",
+          "ship log",
+          "twitter",
+          "social media",
+          "product hunt"
+        ],
+        "intentPatterns": [
+          "(build|develop).*?public",
+          "(write|create).*?(changelog|devlog|release notes)",
+          "(progress|milestone).*?(update|announcement)",
+          "(share|post).*?(progress|update)"
+        ]
+      }
+    },
+    "session-management": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "session-management/SKILL.md",
+      "description": "Session state tracking, context preservation, and multi-phase work continuity",
+      "promptTriggers": {
+        "keywords": [
+          "session",
+          "multi-phase",
+          "handoff",
+          "continue",
+          "resume",
+          "checkpoint",
+          "long-running",
+          "pick up where",
+          "context",
+          "state tracking"
+        ],
+        "intentPatterns": [
+          "(session|context).*?(management|tracking|preservation)",
+          "(continue|resume).*?(work|session|task)",
+          "(multi|multiple).*?(phase|session)",
+          "(handoff|hand off).*?(context|work)"
+        ]
       }
     }
   },

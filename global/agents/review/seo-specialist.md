@@ -3,6 +3,9 @@ name: seo-specialist
 description: |
   SEO review specialist for web content and technical SEO. Trigger: "SEO review", "check SEO", "audit meta tags", "content optimization", "schema markup review".
 model: sonnet
+confidence_threshold: 0.8
+load_on_demand: true
+keywords: [seo, meta tags, schema, structured data, core web vitals, content optimization]
 tools: ["Read", "Grep", "Glob"]
 ---
 

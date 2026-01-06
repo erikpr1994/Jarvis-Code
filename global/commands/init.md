@@ -26,6 +26,20 @@ Initialize Jarvis AI assistant in your project with intelligent configuration ba
 
 ### Phase 1: Project Analysis
 
+**Use the native Explore subagent** for efficient codebase analysis:
+
+```
+Task(subagent_type='Explore', thoroughness='medium', prompt='
+  Analyze this project to determine:
+  1. Project type (package.json, Cargo.toml, pyproject.toml, go.mod)
+  2. Framework (Next.js, React, FastAPI, etc.)
+  3. Testing framework (Vitest, Jest, pytest, etc.)
+  4. Directory structure and conventions
+  5. Monorepo vs single project
+  6. Existing .claude/ configuration
+')
+```
+
 1. **Detect project type and framework**
    - Scan for package.json, Cargo.toml, pyproject.toml, go.mod, etc.
    - Identify primary language and framework

@@ -1,0 +1,195 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.1)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Is this a pre-release?'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Make scripts executable
+        run: |
+          find . -name "*.sh" -type f -exec chmod +x {} \;
+
+      - name: Run Jarvis test suite
+        run: |
+          if [[ -f "tests/jarvis/test-jarvis.sh" ]]; then
+            ./tests/jarvis/test-jarvis.sh
+          else
+            echo "Test suite not found, skipping..."
+          fi
+
+      - name: Validate hook syntax
+        run: |
+          shopt -s globstar nullglob
+          errors=0
+          for hook in global/hooks/*.sh; do
+            if ! bash -n "$hook" 2>/dev/null; then
+              echo "❌ Syntax error in $hook"
+              ((errors++))
+            fi
+          done
+          if [[ $errors -gt 0 ]]; then
+            echo "Found $errors hook(s) with syntax errors"
+            exit 1
+          fi
+          echo "✅ All hooks have valid syntax"
+
+      - name: Validate JSON files
+        run: |
+          shopt -s globstar nullglob
+          errors=0
+          for json in **/*.json; do
+            if ! jq empty "$json" 2>/dev/null; then
+              echo "❌ Invalid JSON: $json"
+              ((errors++))
+            fi
+          done
+          if [[ $errors -gt 0 ]]; then
+            echo "Found $errors invalid JSON file(s)"
+            exit 1
+          fi
+          echo "✅ All JSON files are valid"
+
+  release:
+    name: Create Release
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        id: version
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Release version: $VERSION"
+
+      - name: Update VERSION file
+        run: |
+          echo "${{ steps.version.outputs.version }}" > VERSION
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Generate changelog content
+          if [[ -f "scripts/generate-changelog.sh" ]]; then
+            chmod +x scripts/generate-changelog.sh
+            ./scripts/generate-changelog.sh > RELEASE_NOTES.md
+          else
+            # Fallback changelog generation
+            cat > RELEASE_NOTES.md << EOF
+          ## Jarvis v${VERSION}
+
+          ### Changes
+
+          $(git log --pretty=format:"- %s" $(git describe --tags --abbrev=0 2>/dev/null || echo "HEAD~10")..HEAD | head -20)
+
+          ### Installation
+
+          \`\`\`bash
+          curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/main/install.sh | bash
+          \`\`\`
+
+          ### Upgrade
+
+          \`\`\`bash
+          cd ~/.jarvis && git pull && ./install.sh --upgrade
+          \`\`\`
+
+          ---
+          *Full changelog: https://github.com/${{ github.repository }}/compare/...v${VERSION}*
+          EOF
+          fi
+
+          echo "Generated release notes"
+
+      - name: Create release archive
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Create a clean archive excluding unnecessary files
+          tar --exclude='.git' \
+              --exclude='.github' \
+              --exclude='*.md' \
+              --exclude='docs' \
+              --exclude='tests' \
+              --exclude='.DS_Store' \
+              -czvf "jarvis-v${VERSION}.tar.gz" \
+              global/ \
+              init/ \
+              templates/ \
+              install.sh \
+              uninstall.sh \
+              VERSION
+
+          echo "Created jarvis-v${VERSION}.tar.gz"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Jarvis v${{ steps.version.outputs.version }}
+          body_path: RELEASE_NOTES.md
+          prerelease: ${{ github.event.inputs.prerelease || false }}
+          files: |
+            jarvis-v${{ steps.version.outputs.version }}.tar.gz
+            install.sh
+            VERSION
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update latest tag
+        if: ${{ !github.event.inputs.prerelease }}
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag -f latest
+          git push origin latest --force
+
+  notify:
+    name: Post-Release
+    needs: release
+    runs-on: ubuntu-latest
+    if: ${{ !failure() }}
+    steps:
+      - name: Release summary
+        run: |
+          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Successfully released Jarvis v${{ needs.release.outputs.version || github.event.inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Links" >> $GITHUB_STEP_SUMMARY
+          echo "- [Release Page](https://github.com/${{ github.repository }}/releases/latest)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Installation Guide](https://github.com/${{ github.repository }}#installation)" >> $GITHUB_STEP_SUMMARY

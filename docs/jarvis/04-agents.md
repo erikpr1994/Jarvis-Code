@@ -53,7 +53,6 @@ Based on analysis of all three systems, agents should be organized into:
 | **ios-expert** | CodeFast | iOS projects |
 | **supabase-specialist** | CodeFast | Supabase projects |
 | **debugger-detective** | CodeFast | Complex debugging scenarios |
-| **n8n-builder** | CodeFast | Automation workflows |
 | **content-writer** | CodeFast | Content-heavy projects |
 | **domain-expert** | Peak-Health | Domain-specific knowledge (fitness, etc.) |
 
@@ -117,7 +116,6 @@ Based on analysis of all three systems, agents should be organized into:
 | **supabase-specialist** | CodeFast | **KEEP (ADAPT)** | Supabase projects |
 | **flutter-expert** | CodeFast | **KEEP (ADAPT)** | Flutter projects |
 | **ios-expert** | CodeFast | **KEEP (ADAPT)** | iOS projects |
-| **n8n-builder** | CodeFast | **KEEP (ADAPT)** | Automation workflows |
 | **content-writer** | CodeFast | **KEEP (ADAPT)** | Content-heavy projects |
 | **debugger-detective** | CodeFast | **MERGE with systematic-debugging** | Complex debugging |
 
@@ -145,8 +143,8 @@ Based on analysis of all three systems, agents should be organized into:
 |----------|-------|--------|
 | **Core (Always)** | 5 | master-orchestrator, implementer, code-reviewer, spec-reviewer, deep-researcher |
 | **Review (On-Demand)** | 10 | security, performance, accessibility, test-coverage, i18n, type-design, silent-failure, structure, dependency, seo |
-| **Domain (Project)** | 8 | backend, frontend, supabase, flutter, ios, n8n, content, debugger |
-| **TOTAL** | 23 | Down from 35 (34% reduction) |
+| **Domain (Project)** | 7 | backend, frontend, supabase, flutter, ios, content, debugger |
+| **TOTAL** | 22 | Down from 35 (37% reduction) |
 
 ---
 

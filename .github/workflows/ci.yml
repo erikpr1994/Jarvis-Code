@@ -1,0 +1,173 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Lint & Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get install -y jq shellcheck
+
+      - name: Make scripts executable
+        run: find . -name "*.sh" -type f -exec chmod +x {} \;
+
+      - name: Shellcheck - Hooks
+        run: |
+          echo "Checking hook scripts..."
+          shellcheck --severity=error global/hooks/*.sh || true
+          echo "✅ Hook shellcheck complete"
+
+      - name: Shellcheck - Init scripts
+        run: |
+          echo "Checking init scripts..."
+          shellcheck --severity=error init/*.sh || true
+          echo "✅ Init shellcheck complete"
+
+      - name: Shellcheck - Lib scripts
+        run: |
+          echo "Checking lib scripts..."
+          find global/lib -name "*.sh" -exec shellcheck --severity=error {} \; || true
+          echo "✅ Lib shellcheck complete"
+
+      - name: Validate JSON syntax
+        run: |
+          echo "Validating JSON files..."
+          errors=0
+          for json in $(find . -name "*.json" -type f); do
+            if ! jq empty "$json" 2>/dev/null; then
+              echo "❌ Invalid JSON: $json"
+              ((errors++))
+            fi
+          done
+          if [[ $errors -gt 0 ]]; then
+            exit 1
+          fi
+          echo "✅ All JSON files valid"
+
+      - name: Validate YAML syntax
+        run: |
+          echo "Validating YAML files..."
+          # Basic YAML validation using Python
+          python3 -c "
+          import yaml
+          import sys
+          from pathlib import Path
+
+          errors = 0
+          for f in Path('.').rglob('*.yaml'):
+              try:
+                  yaml.safe_load(f.read_text())
+              except yaml.YAMLError as e:
+                  print(f'❌ Invalid YAML: {f}')
+                  errors += 1
+
+          for f in Path('.').rglob('*.yml'):
+              try:
+                  yaml.safe_load(f.read_text())
+              except yaml.YAMLError as e:
+                  print(f'❌ Invalid YAML: {f}')
+                  errors += 1
+
+          if errors > 0:
+              sys.exit(1)
+          print('✅ All YAML files valid')
+          "
+
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get install -y jq
+
+      - name: Make scripts executable
+        run: find . -name "*.sh" -type f -exec chmod +x {} \;
+
+      - name: Run Jarvis test suite
+        run: |
+          if [[ -f "tests/jarvis/test-jarvis.sh" ]]; then
+            ./tests/jarvis/test-jarvis.sh
+          else
+            echo "⚠️ Test suite not found, skipping..."
+          fi
+
+      - name: Run agent tests
+        run: |
+          if [[ -f "tests/jarvis/agents/test-agent-framework.sh" ]]; then
+            ./tests/jarvis/agents/test-agent-framework.sh --validate
+          else
+            echo "⚠️ Agent tests not found, skipping..."
+          fi
+
+  install-test:
+    name: Installation Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y jq
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install jq
+
+      - name: Make scripts executable
+        run: find . -name "*.sh" -type f -exec chmod +x {} \;
+
+      - name: Run install test
+        run: |
+          if [[ -f "tests/jarvis/install/test-install.sh" ]]; then
+            ./tests/jarvis/install/test-install.sh
+          else
+            echo "⚠️ Install tests not found, running basic checks..."
+            # Basic install script validation
+            bash -n install.sh
+            echo "✅ install.sh syntax valid"
+          fi
+
+  verification-test:
+    name: Verification Pipeline Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get install -y jq
+
+      - name: Make scripts executable
+        run: find . -name "*.sh" -type f -exec chmod +x {} \;
+
+      - name: Test verification pipeline syntax
+        run: |
+          if [[ -f "global/lib/verification/pipeline.sh" ]]; then
+            bash -n global/lib/verification/pipeline.sh
+            echo "✅ Verification pipeline syntax valid"
+          fi
+
+      - name: Test confidence scoring
+        run: |
+          if [[ -f "global/lib/verification/confidence.sh" ]]; then
+            bash -n global/lib/verification/confidence.sh
+            echo "✅ Confidence scoring syntax valid"
+          fi

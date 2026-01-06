@@ -9,7 +9,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/session-start.sh\"",
+            "command": "bash \"~/.claude/hooks/session-start.sh\"",
             "description": "Initialize session with skills, detect continuation, set context"
           }
         ]
@@ -21,7 +21,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/skill-activation.sh\"",
+            "command": "bash \"~/.claude/hooks/skill-activation.sh\"",
             "description": "Recommend skills based on keywords and patterns"
           }
         ]
@@ -33,13 +33,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/metrics-capture.sh\"",
+            "command": "bash \"~/.claude/hooks/metrics-capture.sh\"",
             "description": "Capture metrics from tool usage for productivity tracking",
             "background": true
           },
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/learning-capture.sh\"",
+            "command": "bash \"~/.claude/hooks/learning-capture.sh\"",
             "description": "Capture patterns from successful operations for learning",
             "background": true
           }
@@ -52,7 +52,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/pre-compact-preserve.sh\"",
+            "command": "bash \"~/.claude/hooks/pre-compact-preserve.sh\"",
             "description": "Preserve session state before context compaction"
           }
         ]
@@ -64,7 +64,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/require-isolation.sh\"",
+            "command": "bash \"~/.claude/hooks/require-isolation.sh\"",
             "description": "Enforce worktree/Conductor isolation for file edits"
           }
         ]
@@ -74,7 +74,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/require-isolation.sh\"",
+            "command": "bash \"~/.claude/hooks/require-isolation.sh\"",
             "description": "Enforce worktree/Conductor isolation for file writes"
           }
         ]
@@ -84,7 +84,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/require-isolation.sh\"",
+            "command": "bash \"~/.claude/hooks/require-isolation.sh\"",
             "description": "Enforce worktree/Conductor isolation for notebook edits"
           }
         ]
@@ -94,18 +94,23 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/block-direct-submit.sh\"",
+            "command": "bash \"~/.claude/hooks/block-direct-submit.sh\"",
             "description": "Block direct gt submit or gh pr create commands"
           },
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/compress-output.sh\"",
+            "command": "bash \"~/.claude/hooks/compress-output.sh\"",
             "description": "Add context for summarizing verbose test/lint/build output"
           },
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/pre-commit.sh\"",
+            "command": "bash \"~/.claude/hooks/pre-commit.sh\"",
             "description": "Verification before git commits"
+          },
+          {
+            "type": "command",
+            "command": "bash \"~/.claude/hooks/coderabbit-review.sh\"",
+            "description": "Add CodeRabbit review context when creating PRs"
           }
         ]
       }
@@ -119,6 +124,7 @@
       "block-direct-submit": false,
       "compress-output": false,
       "pre-commit": false,
+      "coderabbit-review": false,
       "metrics-capture": true,
       "learning-capture": true,
       "pre-compact-preserve": false
@@ -130,6 +136,7 @@
       "block-direct-submit": 2000,
       "compress-output": 2000,
       "pre-commit": 10000,
+      "coderabbit-review": 2000,
       "metrics-capture": 5000,
       "learning-capture": 5000,
       "pre-compact-preserve": 5000
@@ -144,7 +151,8 @@
       "JARVIS_ALLOW_MAIN_COMMITS": "Allow direct commits to main/master branch",
       "JARVIS_SKIP_SKILL_ACTIVATION": "Skip skill recommendation hook",
       "JARVIS_SKIP_METRICS": "Skip metrics capture hook",
-      "JARVIS_SKIP_LEARNING": "Skip learning capture hook"
+      "JARVIS_SKIP_LEARNING": "Skip learning capture hook",
+      "SKIP_CODERABBIT": "Skip CodeRabbit review context (coderabbit-review bypass)"
     }
   }
 }

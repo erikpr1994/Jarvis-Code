@@ -1,7 +1,7 @@
 ---
 name: code-quality
 category: quality
-confidence: 80
+confidence: 0.8
 description: Code quality standards for maintainable, readable, and correct code
 ---
 

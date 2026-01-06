@@ -2,6 +2,26 @@
 
 Reusable agent configurations that can be invoked across projects. Agents run in separate context windows with specialized expertise.
 
+## Native vs Custom Agents
+
+**Use native Claude Code subagents first** when they fit your needs:
+
+| Task | Native Subagent | Custom Agent |
+|------|-----------------|--------------|
+| Codebase exploration | `Task(subagent_type='Explore')` | - |
+| Implementation planning | `Task(subagent_type='Plan')` | - |
+| General research | `Task(subagent_type='general-purpose')` | - |
+| External web research | - | `deep-researcher` |
+| Code review with project rules | - | `code-reviewer` |
+| TDD implementation | - | `implementer` |
+| Security audit | - | `security-reviewer` |
+
+**When to use custom agents:**
+- Need project-specific rules/context
+- Specialized domain knowledge (security, a11y, SEO)
+- Multi-step workflows with specific output formats
+- Integration with Jarvis skills and patterns
+
 ## Agent Categories
 
 | Category | Purpose | Model | Examples |

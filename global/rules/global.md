@@ -1,7 +1,7 @@
 ---
 name: global-rules
 category: critical
-confidence: 90
+confidence: 0.9
 description: Core rules that apply to ALL development work, regardless of project or technology
 ---
 

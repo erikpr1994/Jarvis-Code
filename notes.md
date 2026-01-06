@@ -2,7 +2,6 @@
 
 ## General
 
-We didn't use a plan for each docs so there's missing stuff? 1 doc one plan with small steps? Use sub-agents to build stuff.
 Compatibility with other libraries? Some stuff in our tools are opinionated, should alert the user and delete the rest?
 
 Antigravity vs zed vs Cursor? Gemini CLI?
@@ -32,6 +31,5 @@ Rules = user preferences? Should they be configurable instead of fixed ones?
 ## Skills
 
 Why testing pyramid? Configurable between testing pyramid or testing trophy?
-Shouldn't skills go into it's folder and be named SKILLS.md? Can we move templates and not needed data from the beginning into it's own file and be referenced in the skill? Does type and priority works with Claude Code? Or does it work with our system?
-TDD vs tdd-workflow. What's the difference?
-Missing the plan skill?
+Shouldn't skills go into it's folder and be named SKILLS.md? Can we move templates and not needed data from the beginning into it's own file and be referenced in the skill? Does type and priority works with Claude Code? Or does it work with our system? (✅)
+TDD vs tdd-workflow. What's the difference? (✅)

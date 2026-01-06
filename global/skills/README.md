@@ -1,50 +1,123 @@
-# Skills
+# Jarvis Skills
 
-Knowledge and process skills that enhance Claude's capabilities.
+Skills are Claude Code's native way to provide contextual guidance. Each skill lives in its own folder with a `SKILL.md` file.
 
 ## Structure
 
 ```
 skills/
-├── meta/               # Meta-skills (skills about skills)
-│   ├── using-skills.md # How to discover and use skills
-│   └── writing-*.md    # How to write various components
-├── process/            # Development process skills
-│   ├── tdd.md          # Test-driven development
-│   ├── verification.md # Verification checkpoints
-│   └── debugging.md    # Debugging methodology
-└── domain/             # Domain-specific skills
-    ├── git.md          # Git workflow patterns
-    └── patterns.md     # Design patterns library
+├── skill-name/
+│   ├── SKILL.md           # Required - main skill file
+│   ├── examples.md        # Optional - detailed examples
+│   ├── reference.md       # Optional - reference material
+│   └── scripts/           # Optional - utility scripts
+│       └── helper.sh
 ```
+
+## SKILL.md Format
+
+Only `name` and `description` are required in frontmatter:
+
+```yaml
+---
+name: skill-name
+description: When to use this skill. Keywords help Claude match it to user requests.
+---
+
+# Skill Title
+
+Instructions and guidance...
+```
+
+## How Skills Work
+
+1. **Discovery**: Claude loads skill names and descriptions at session start
+2. **Matching**: Claude matches your request against skill descriptions
+3. **Activation**: Claude asks permission to use a matching skill
+4. **Execution**: Claude follows the SKILL.md instructions
 
 ## Skill Categories
 
-### Meta Skills (`meta/`)
-Skills about skills - how to use, discover, and write skills and other components.
+| Category | Skills | Purpose |
+|----------|--------|---------|
+| Process | tdd-workflow, verification, code-review | How to approach work |
+| Domain | typescript-patterns, react-patterns | Technology expertise |
+| Meta | writing-skills, using-skills | About the skill system |
+| Execution | dispatching-parallel-agents | Multi-agent orchestration |
 
-### Process Skills (`process/`)
-Development methodology skills - TDD, verification, debugging, refactoring.
+## Adding a Skill
 
-### Domain Skills (`domain/`)
-Domain-specific knowledge - git, patterns, frameworks, languages.
+```bash
+# Create skill folder
+mkdir skills/my-skill
 
-## Skill Format
+# Create SKILL.md
+cat > skills/my-skill/SKILL.md << 'EOF'
+---
+name: my-skill
+description: Use when doing X. Keywords: x, y, z.
+---
 
-Each skill is defined in a markdown file with:
+# My Skill
 
-1. **Frontmatter** - Skill metadata
-2. **Description** - What the skill provides
-3. **When to Use** - Trigger conditions
-4. **Instructions** - How to apply the skill
-5. **Examples** - Usage examples
-6. **Checklist** - Verification steps
+Instructions here...
+EOF
+```
 
-## Skill Activation
+## skill-rules.json
 
-Skills are activated via `skill-rules.json` which maps:
-- Keywords to skills
-- Intents to skills
-- Priority levels (critical, high, medium, low)
+The `skill-rules.json` file provides enhanced activation rules beyond the native system:
 
-See `meta/using-skills` for the complete activation system.
+- `enforcement`: suggest | always | block
+- `priority`: critical | high | medium | low
+- `promptTriggers`: keyword and intent pattern matching
+
+This is a Jarvis extension - the native system only uses `name` and `description`.
+
+## Current Skills (45)
+
+### Process Skills
+- `brainstorming` - Structured ideation
+- `code-review` - Code review process
+- `commit-discipline` - Git commit practices
+- `executing-plans` - Plan execution
+- `git-worktrees` - Git worktree workflow
+- `pr-workflow` - Pull request workflow
+- `session-management` - Session tracking
+- `systematic-debugging` - Debug methodology
+- `tdd` / `tdd-workflow` - Test-driven development
+- `verification` - Quality verification
+- `writing-plans` - Plan creation
+
+### Domain Skills
+- `analytics` - Analytics implementation
+- `api-design` - API design patterns
+- `browser-debugging` - Browser debugging
+- `coderabbit` - CodeRabbit integration
+- `database-patterns` - Database patterns
+- `frontend-design` - Frontend design
+- `git-expert` - Git expertise
+- `mcp-integration` - MCP server integration
+- `nextjs-patterns` - Next.js patterns
+- `payment-processing` - Payment integration
+- `react-patterns` - React patterns
+- `seo-content-generation` - SEO content
+- `supabase-patterns` - Supabase patterns
+- `submit-pr` - PR submission
+- `testing-patterns` - Testing patterns
+- `typescript-patterns` - TypeScript patterns
+
+### Meta Skills
+- `improving-jarvis` - Improving Jarvis
+- `using-skills` - How to use skills
+- `writing-agents` - Creating agents
+- `writing-claude-md` - Writing CLAUDE.md
+- `writing-commands` - Creating commands
+- `writing-hooks` - Creating hooks
+- `writing-patterns` - Creating patterns
+- `writing-rules` - Creating rules
+- `writing-skills` - Creating skills
+
+### Execution Skills
+- `dispatching-parallel-agents` - Parallel agent dispatch
+- `subagent-driven-development` - Subagent development

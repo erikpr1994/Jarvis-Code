@@ -1,7 +1,7 @@
 ---
 name: testing
 category: critical
-confidence: 90
+confidence: 0.9
 description: Testing rules based on Iron Law TDD - no production code without failing tests first
 ---
 

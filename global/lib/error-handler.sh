@@ -29,6 +29,10 @@ DEFAULT_BACKOFF_MULTIPLIER=2
 DEFAULT_HOOK_TIMEOUT=5
 DEFAULT_AGENT_TIMEOUT=60
 
+# Notification configuration
+JARVIS_NOTIFICATIONS_ENABLED="${JARVIS_NOTIFICATIONS_ENABLED:-true}"
+JARVIS_NOTIFICATION_SOUND="${JARVIS_NOTIFICATION_SOUND:-true}"
+
 # Degradation thresholds (from spec)
 THRESHOLD_HOOK_FAILURES_L1=3
 THRESHOLD_HOOK_FAILURES_L2=5
@@ -268,6 +272,10 @@ trigger_degradation() {
 notify_degradation() {
   local level="$1"
 
+  # Send desktop notification
+  notify_degradation_desktop "$level"
+
+  # Console output
   case $level in
     1)
       echo "[!] Switched to reduced verification mode due to multiple failures."
@@ -327,6 +335,133 @@ reset_degradation() {
 }
 
 # -----------------------------------------------------------------------------
+# Desktop Notifications (Cross-Platform)
+# -----------------------------------------------------------------------------
+
+# Send desktop notification (macOS, Linux, fallback to console)
+send_notification() {
+  local title="$1"
+  local message="$2"
+  local urgency="${3:-normal}"  # low, normal, critical
+  local sound="${4:-}"
+
+  # Skip if notifications disabled
+  if [[ "$JARVIS_NOTIFICATIONS_ENABLED" != "true" ]]; then
+    return 0
+  fi
+
+  # macOS
+  if [[ "$(uname)" == "Darwin" ]]; then
+    local script="display notification \"$message\" with title \"$title\""
+
+    # Add sound for critical notifications
+    if [[ "$urgency" == "critical" ]] && [[ "$JARVIS_NOTIFICATION_SOUND" == "true" ]]; then
+      script="$script sound name \"Basso\""
+    elif [[ -n "$sound" ]] && [[ "$JARVIS_NOTIFICATION_SOUND" == "true" ]]; then
+      script="$script sound name \"$sound\""
+    fi
+
+    osascript -e "$script" 2>/dev/null || true
+    return 0
+  fi
+
+  # Linux (notify-send)
+  if command -v notify-send &>/dev/null; then
+    local notify_urgency
+    case "$urgency" in
+      critical) notify_urgency="critical" ;;
+      low) notify_urgency="low" ;;
+      *) notify_urgency="normal" ;;
+    esac
+
+    notify-send -u "$notify_urgency" "$title" "$message" 2>/dev/null || true
+    return 0
+  fi
+
+  # WSL/Windows (powershell toast notification)
+  if [[ -f /proc/version ]] && grep -qi "microsoft" /proc/version 2>/dev/null; then
+    powershell.exe -Command "[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null; \$template = [Windows.UI.Notifications.ToastTemplateType]::ToastText02; \$xml = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent(\$template); \$text = \$xml.GetElementsByTagName('text'); \$text[0].AppendChild(\$xml.CreateTextNode('$title')); \$text[1].AppendChild(\$xml.CreateTextNode('$message')); \$toast = [Windows.UI.Notifications.ToastNotification]::new(\$xml); [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('Jarvis').Show(\$toast)" 2>/dev/null || true
+    return 0
+  fi
+
+  # Fallback: console only (already handled by caller)
+  return 1
+}
+
+# Notify on degradation with desktop notification
+notify_degradation_desktop() {
+  local level="$1"
+
+  case $level in
+    1)
+      send_notification "Jarvis: Reduced Mode" \
+        "Switched to reduced verification mode due to multiple failures." \
+        "normal" "Submarine"
+      ;;
+    2)
+      send_notification "Jarvis: Minimal Mode" \
+        "Single-agent mode active. Run '/jarvis doctor' to diagnose." \
+        "critical" "Sosumi"
+      ;;
+    3)
+      send_notification "Jarvis: Emergency Mode" \
+        "All enhancements disabled! Please check system health." \
+        "critical" "Basso"
+      ;;
+  esac
+}
+
+# Notify on user escalation with desktop notification
+notify_escalation_desktop() {
+  local issue_type="$1"
+  local context="$2"
+
+  send_notification "Jarvis: Attention Required" \
+    "$issue_type - $context" \
+    "critical" "Basso"
+}
+
+# Notify on task completion (optional positive notification)
+notify_completion() {
+  local message="$1"
+  local sound="${2:-Glass}"
+
+  send_notification "Jarvis: Complete" "$message" "low" "$sound"
+}
+
+# Notify on warning (non-critical)
+notify_warning() {
+  local message="$1"
+
+  send_notification "Jarvis: Warning" "$message" "normal" "Tink"
+}
+
+# Test notification system
+test_notifications() {
+  echo "Testing notification system..."
+  echo ""
+
+  echo "1. Testing low urgency notification..."
+  send_notification "Jarvis Test" "Low urgency notification" "low"
+  sleep 1
+
+  echo "2. Testing normal urgency notification..."
+  send_notification "Jarvis Test" "Normal urgency notification" "normal" "Submarine"
+  sleep 1
+
+  echo "3. Testing critical urgency notification..."
+  send_notification "Jarvis Test" "Critical urgency notification" "critical" "Basso"
+  sleep 1
+
+  echo ""
+  echo "Notification test complete!"
+  echo "If you didn't see notifications, check:"
+  echo "  - JARVIS_NOTIFICATIONS_ENABLED is set to 'true'"
+  echo "  - Your system supports notifications"
+  echo "  - Notification permissions are granted"
+}
+
+# -----------------------------------------------------------------------------
 # L4: User Escalation
 # -----------------------------------------------------------------------------
 
@@ -336,6 +471,9 @@ escalate_to_user() {
   local suggestions="${3:-}"
 
   log_error "user_escalation" "$issue_type" "$context" "escalated"
+
+  # Send desktop notification for critical escalation
+  notify_escalation_desktop "$issue_type" "$context"
 
   echo ""
   echo "============================================================"

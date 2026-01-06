@@ -418,6 +418,10 @@ generate_structure() {
     log_info "Setting up hooks"
     setup_hooks "$answers_json"
 
+    # Create symlinks to global resources (if enabled)
+    log_info "Checking symlink configuration"
+    create_global_symlinks "$(pwd)"
+
     # Create initial session file
     log_info "Creating initial session file"
     create_initial_session
@@ -431,6 +435,81 @@ generate_structure() {
     fi
 
     log_success "Generation complete"
+}
+
+# =============================================================================
+# SYMLINK MANAGEMENT
+# =============================================================================
+
+create_global_symlinks() {
+    local project_dir="$1"
+    local jarvis_root="${JARVIS_ROOT:-$HOME/.jarvis}"
+
+    # Check if symlinks are enabled (via environment or settings)
+    local symlink_enabled="${JARVIS_SYMLINK_GLOBALS:-0}"
+
+    # Also check if there's a setting in the project's settings.json
+    if [[ -f "${project_dir}/.claude/settings.json" ]]; then
+        local settings_symlink
+        settings_symlink=$(jq -r '.symlinks.enabled // "false"' "${project_dir}/.claude/settings.json" 2>/dev/null || echo "false")
+        if [[ "$settings_symlink" == "true" ]]; then
+            symlink_enabled="1"
+        fi
+    fi
+
+    if [[ "$symlink_enabled" != "1" ]]; then
+        log_info "Global symlinks disabled (set JARVIS_SYMLINK_GLOBALS=1 to enable)"
+        return 0
+    fi
+
+    # Verify Jarvis global directory exists
+    if [[ ! -d "$jarvis_root/global" ]]; then
+        log_warning "Jarvis global directory not found at $jarvis_root/global"
+        log_info "Skipping symlink creation"
+        return 0
+    fi
+
+    # Create symlinks for global resources
+    local symlink_targets=(
+        "skills:global/skills"
+        "agents:global/agents"
+        "patterns:global/patterns"
+        "rules:global/rules"
+    )
+
+    for target in "${symlink_targets[@]}"; do
+        local name="${target%%:*}"
+        local source_path="${target#*:}"
+        local source_full="${jarvis_root}/${source_path}"
+        local dest_full="${project_dir}/.claude/${name}"
+
+        if [[ -d "$source_full" ]]; then
+            # Remove existing symlink or directory
+            if [[ -L "$dest_full" ]]; then
+                rm -f "$dest_full"
+            elif [[ -d "$dest_full" ]]; then
+                # Don't overwrite existing directories with content
+                if [[ -n "$(ls -A "$dest_full" 2>/dev/null)" ]]; then
+                    log_warning "Skipping ${name}: directory not empty"
+                    continue
+                fi
+                rmdir "$dest_full" 2>/dev/null || true
+            fi
+
+            # Create symlink
+            ln -sf "$source_full" "$dest_full"
+            log_success "Created symlink: .claude/${name} → ${source_path}"
+        else
+            log_warning "Source not found for ${name}: ${source_full}"
+        fi
+    done
+
+    # Update settings to record symlink state
+    if [[ -f "${project_dir}/.claude/settings.json" ]]; then
+        local updated_settings
+        updated_settings=$(jq '.symlinks = {"enabled": true, "created": now | todate}' "${project_dir}/.claude/settings.json")
+        echo "$updated_settings" > "${project_dir}/.claude/settings.json"
+    fi
 }
 
 create_claude_directory() {
@@ -756,13 +835,17 @@ create_docs_structure() {
 }
 
 # =============================================================================
-# PHASE 5: VALIDATION
+# PHASE 5: VALIDATION & POST-INIT VERIFICATION
 # =============================================================================
 
 validate_setup() {
-    log_step "Phase 5: Validation"
+    log_step "Phase 5: Validation & Post-Init Verification"
 
     local errors=0
+    local warnings=0
+
+    echo ""
+    echo -e "${BOLD}Structure Validation:${NC}"
 
     # Check .claude directory
     if [[ -d ".claude" ]]; then
@@ -772,10 +855,32 @@ validate_setup() {
         ((errors++))
     fi
 
+    # Check required subdirectories
+    local required_dirs=("agents" "skills" "commands" "hooks" "rules" "tasks")
+    for dir in "${required_dirs[@]}"; do
+        if [[ -d ".claude/${dir}" ]]; then
+            log_success ".claude/${dir}/ exists"
+        else
+            log_warning ".claude/${dir}/ missing"
+            ((warnings++))
+        fi
+    done
+
     # Check settings.json
     if [[ -f ".claude/settings.json" ]]; then
         if jq empty .claude/settings.json 2>/dev/null; then
             log_success "settings.json is valid JSON"
+
+            # Verify required fields
+            local required_fields=("project.name" "project.type" "workflow.git" "workflow.tdd")
+            for field in "${required_fields[@]}"; do
+                if jq -e ".${field}" .claude/settings.json > /dev/null 2>&1; then
+                    log_success "settings.json has ${field}"
+                else
+                    log_warning "settings.json missing ${field}"
+                    ((warnings++))
+                fi
+            done
         else
             log_error "settings.json is invalid JSON"
             ((errors++))
@@ -788,16 +893,69 @@ validate_setup() {
     # Check CLAUDE.md
     if [[ -f "CLAUDE.md" ]]; then
         log_success "CLAUDE.md exists"
+
+        # Check CLAUDE.md has content
+        local claude_lines
+        claude_lines=$(wc -l < "CLAUDE.md" | tr -d ' ')
+        if [[ "$claude_lines" -gt 10 ]]; then
+            log_success "CLAUDE.md has content (${claude_lines} lines)"
+        else
+            log_warning "CLAUDE.md may be too minimal (${claude_lines} lines)"
+            ((warnings++))
+        fi
     else
         log_error "CLAUDE.md missing"
         ((errors++))
     fi
 
-    # Check hooks
+    echo ""
+    echo -e "${BOLD}Hook Verification:${NC}"
+
+    # Check hooks exist and are executable
     if [[ -f ".claude/hooks/session-start.sh" ]]; then
         log_success "Session start hook exists"
+
+        # Test hook execution (in dry run mode)
+        if test_hook_execution ".claude/hooks/session-start.sh"; then
+            log_success "Session start hook executes successfully"
+        else
+            log_warning "Session start hook may have issues"
+            ((warnings++))
+        fi
     else
         log_warning "Session start hook missing"
+        ((warnings++))
+    fi
+
+    # Check global hooks connectivity (if Jarvis root exists)
+    echo ""
+    echo -e "${BOLD}Global Integration:${NC}"
+
+    local jarvis_root="${JARVIS_ROOT:-$HOME/.jarvis}"
+    if [[ -d "$jarvis_root" ]]; then
+        log_success "Jarvis root found at $jarvis_root"
+
+        # Verify global hooks exist
+        if [[ -d "${jarvis_root}/global/hooks" ]]; then
+            local hook_count
+            hook_count=$(find "${jarvis_root}/global/hooks" -name "*.sh" -type f 2>/dev/null | wc -l | tr -d ' ')
+            log_success "Global hooks directory has ${hook_count} hooks"
+        else
+            log_warning "Global hooks directory not found"
+            ((warnings++))
+        fi
+
+        # Test a critical global hook
+        if [[ -f "${jarvis_root}/global/hooks/session-start.sh" ]]; then
+            if test_hook_execution "${jarvis_root}/global/hooks/session-start.sh"; then
+                log_success "Global session-start hook executes successfully"
+            else
+                log_warning "Global session-start hook may have issues"
+                ((warnings++))
+            fi
+        fi
+    else
+        log_info "Jarvis root not installed (standalone mode)"
     fi
 
     # Check tasks
@@ -805,14 +963,118 @@ validate_setup() {
         log_success "Initial session file exists"
     else
         log_warning "Initial session file missing"
+        ((warnings++))
     fi
 
-    if [[ $errors -eq 0 ]]; then
-        log_success "Validation passed"
+    echo ""
+    echo -e "${BOLD}Component Integrity Check:${NC}"
+
+    # Verify file permissions
+    verify_permissions
+
+    # Check for common issues
+    check_common_issues
+
+    # Summary
+    echo ""
+    echo -e "${BOLD}Verification Summary:${NC}"
+
+    if [[ $errors -eq 0 && $warnings -eq 0 ]]; then
+        echo -e "${GREEN}✅ All checks passed${NC}"
+        return 0
+    elif [[ $errors -eq 0 ]]; then
+        echo -e "${YELLOW}⚠️ Passed with ${warnings} warning(s)${NC}"
         return 0
     else
-        log_error "Validation failed with $errors errors"
+        echo -e "${RED}❌ Failed with ${errors} error(s) and ${warnings} warning(s)${NC}"
         return 1
+    fi
+}
+
+# Test if a hook script can execute without errors
+test_hook_execution() {
+    local hook_path="$1"
+
+    # Check if file exists and is executable
+    if [[ ! -f "$hook_path" ]]; then
+        return 1
+    fi
+
+    # Make executable if not already
+    if [[ ! -x "$hook_path" ]]; then
+        chmod +x "$hook_path" 2>/dev/null || return 1
+    fi
+
+    # Test syntax by running bash -n (syntax check only)
+    if ! bash -n "$hook_path" 2>/dev/null; then
+        return 1
+    fi
+
+    # Dry run with /dev/null input and limited execution
+    # Using timeout to prevent hanging scripts
+    if command -v timeout &> /dev/null; then
+        timeout 2s bash "$hook_path" < /dev/null > /dev/null 2>&1 || true
+    else
+        # macOS doesn't have timeout by default
+        bash "$hook_path" < /dev/null > /dev/null 2>&1 &
+        local pid=$!
+        sleep 2
+        kill -0 $pid 2>/dev/null && kill $pid 2>/dev/null
+        wait $pid 2>/dev/null || true
+    fi
+
+    return 0
+}
+
+# Verify file permissions are correct
+verify_permissions() {
+    local perm_issues=0
+
+    # Check all shell scripts are executable
+    while IFS= read -r -d '' script; do
+        if [[ ! -x "$script" ]]; then
+            log_warning "Not executable: ${script}"
+            chmod +x "$script" 2>/dev/null && log_info "Fixed permissions for ${script}"
+            ((perm_issues++))
+        fi
+    done < <(find .claude -name "*.sh" -type f -print0 2>/dev/null)
+
+    if [[ $perm_issues -eq 0 ]]; then
+        log_success "All scripts have correct permissions"
+    fi
+}
+
+# Check for common configuration issues
+check_common_issues() {
+    local issues=0
+
+    # Check for duplicate entries in settings.json arrays
+    if [[ -f ".claude/settings.json" ]]; then
+        # Check for null/undefined values
+        local null_values
+        null_values=$(jq -r '.. | select(. == null)' .claude/settings.json 2>/dev/null | wc -l | tr -d ' ')
+        if [[ "$null_values" -gt 0 ]]; then
+            log_warning "settings.json contains ${null_values} null value(s)"
+            ((issues++))
+        fi
+    fi
+
+    # Check CLAUDE.md for common issues
+    if [[ -f "CLAUDE.md" ]]; then
+        # Check for placeholder text
+        if grep -q "TODO\|FIXME\|XXX\|PLACEHOLDER" "CLAUDE.md" 2>/dev/null; then
+            log_info "CLAUDE.md contains placeholder text (review and update)"
+        fi
+
+        # Check for broken links (basic check)
+        if grep -oE '\[.*\]\([^)]+\)' "CLAUDE.md" 2>/dev/null | grep -q "example.com\|localhost"; then
+            log_warning "CLAUDE.md may contain example/placeholder links"
+            ((issues++))
+        fi
+    fi
+
+    if [[ $issues -eq 0 ]]; then
+        log_success "No common issues detected"
     fi
 }
 

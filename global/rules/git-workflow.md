@@ -1,7 +1,7 @@
 ---
 name: git-workflow
 category: quality
-confidence: 80
+confidence: 0.8
 description: Git workflow rules for clean version control with Graphite and worktrees
 ---
 

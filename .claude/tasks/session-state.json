@@ -1,13 +1,13 @@
 {
-    "session_id": "session-20260105231400",
-    "timestamp": "2026-01-05T23:14:00Z",
+    "session_id": "session-20260106134846",
+    "timestamp": "2026-01-06T13:48:46Z",
     "compact_reason": "context_limit",
     "tokens_used": 0,
     "task": {"current_task": null, "progress": [], "decisions": []},
     "context": {
         "git_branch": "main",
-        "uncommitted_changes": " M README.md;?? .DS_Store;?? .claude/;?? .gitignore;?? CLAUDE.md;?? archive/;?? docs/;?? global/;?? init/;?? install.sh;",
-        "recent_files": "./archive/compactions/compact-20260105-231049.json,./archive/compactions/compact-20260105-231313.json,./tests/jarvis/install/test-install.sh,./tests/jarvis/install/README.md,./tests/jarvis/integration/test-full-flow.sh,./tests/jarvis/integration/README.md,./tests/jarvis/test-jarvis.sh,./tests/jarvis/hooks/test-learning-capture.sh,./tests/jarvis/hooks/test-metrics-capture.sh,./tests/jarvis/hooks/test-pre-commit.sh,",
+        "uncommitted_changes": " M .claude/tasks/session-state.json; M docs/jarvis/04-agents.md; M docs/jarvis/IMPLEMENTATION-STATUS.md; M global/agents/review/seo-specialist.md; M global/hooks/hooks.json; M global/lib/error-handler.sh; M global/patterns/index.json; M global/rules/code-quality.md; M global/rules/git-workflow.md; M global/rules/global.md;",
+        "recent_files": "./init/init.sh,./tests/jarvis/agents/test-agent-framework.sh,./tests/jarvis/agents/lib/agent-test-helpers.sh,./docs/jarvis/IMPLEMENTATION-STATUS.md,./docs/jarvis/04-agents.md,./docs/jarvis/ACTION-PLAN.md,./learnings/.hot-memory.json,./.github/workflows/release.yml,./.github/workflows/ci.yml,./global/lib/error-handler.sh,",
         "working_directory": "/Users/erikpr94/Documents/claude-code-tools"
     },
     "hot_memory": {
