@@ -129,6 +129,19 @@ update_global() {
         sync_directory "${JARVIS_REPO}/global/rules" "${GLOBAL_CLAUDE}/rules" "$force" "$dry_run"
     fi
 
+    echo ""
+    echo "--- Settings ---"
+    # Sync Claude Code settings.json (correct schema format)
+    if [[ -f "${JARVIS_REPO}/global/settings.json" ]]; then
+        sync_file "${JARVIS_REPO}/global/settings.json" "${GLOBAL_CLAUDE}/settings.json" "$force" "$dry_run"
+    fi
+
+    # Sync Jarvis-specific config to separate file
+    if [[ -f "${JARVIS_REPO}/global/jarvis.json" ]]; then
+        mkdir -p "${GLOBAL_CLAUDE}/config"
+        sync_file "${JARVIS_REPO}/global/jarvis.json" "${GLOBAL_CLAUDE}/config/jarvis.json" "$force" "$dry_run"
+    fi
+
     # Update version file
     if [[ "$dry_run" != "true" ]]; then
         echo "$repo_version" > "$VERSION_FILE"

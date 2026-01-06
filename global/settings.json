@@ -1,85 +1,61 @@
 {
-  "$schema": "./schemas/settings.schema.json",
-  "version": "1.0.0",
-  "name": "Jarvis Global Settings",
-
-  "features": {
-    "skillActivation": true,
-    "sessionTracking": true,
-    "learningCapture": true,
-    "patternMatching": true
-  },
-
-  "skills": {
-    "autoActivate": true,
-    "rulesFile": "./skill-rules.json",
-    "directories": [
-      "./skills/meta",
-      "./skills/process",
-      "./skills/domain"
-    ]
-  },
-
-  "agents": {
-    "coreDirectory": "./agents/core",
-    "autoLoad": ["orchestrator", "reviewer"]
-  },
-
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
-    "enabled": true,
-    "directory": "./hooks",
-    "libDirectory": "./hooks/lib"
-  },
-
-  "patterns": {
-    "indexFile": "./patterns/index.json",
-    "fullDirectory": "./patterns/full"
-  },
-
-  "session": {
-    "trackingEnabled": true,
-    "historyRetention": 30,
-    "autoResume": true
-  },
-
-  "verification": {
-    "requireTests": true,
-    "requireBuild": true,
-    "requireReview": true,
-    "parallelReviewers": 5
-  },
-
-  "learning": {
-    "capturePatterns": true,
-    "updateSkillRules": true,
-    "archiveSessions": true
-  },
-
-  "testing": {
-    "defaultStrategy": "auto",
-    "strategyByProjectType": {
-      "library": "pyramid",
-      "rust-package": "pyramid",
-      "go-module": "pyramid",
-      "python-package": "pyramid",
-      "next-app": "trophy",
-      "react-app": "trophy",
-      "flutter-app": "trophy",
-      "node-api": "trophy",
-      "monorepo": "balanced",
-      "standalone": "auto"
-    },
-    "strategyByDirectory": {
-      "lib/**": "pyramid",
-      "packages/**": "pyramid",
-      "utils/**": "pyramid",
-      "src/components/**": "trophy",
-      "src/app/**": "trophy",
-      "app/**": "trophy",
-      "api/**": "trophy",
-      "server/**": "trophy",
-      "algorithms/**": "pyramid",
-      "core/**": "pyramid"
-    }
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/skill-activation.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/pre-commit.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/learning-capture.sh",
+            "runInBackground": true
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/pre-compact-preserve.sh"
+          }
+        ]
+      }
+    ]
   }
 }
