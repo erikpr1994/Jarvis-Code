@@ -1,0 +1,46 @@
+# Expected Output Patterns for: Implement discount calculator
+
+The response WITH the test-driven-development skill should include:
+
+## Required Elements
+
+1. **Requirements Clarification**
+   - What membership tiers exist?
+   - What discount percentages apply?
+   - How are edge cases handled (no membership, expired, etc.)?
+
+2. **Test Cases First**
+   - Test for each membership tier
+   - Test for edge cases (no tier, invalid tier)
+   - Test for boundary values (min/max discounts)
+
+3. **TDD Process**
+   - Explicit RED phase (tests fail)
+   - GREEN phase (minimal implementation)
+   - REFACTOR phase (improve code quality)
+
+## Example Test Structure Expected
+
+```
+- Test: Standard member gets X% discount
+- Test: Premium member gets Y% discount
+- Test: No membership returns 0% discount
+- Test: Invalid tier throws error or returns default
+- Test: Discount doesn't exceed maximum
+- Test: Discount calculation is correct for various purchase amounts
+```
+
+## Keywords That Should Appear
+
+- "tier" or "membership"
+- "test" or "tests"
+- "discount" with specific percentages
+- "edge case" or boundary handling
+
+## Quality Indicators
+
+- [ ] Membership tiers are enumerated
+- [ ] Discount rules are explicit
+- [ ] Tests cover happy path + edge cases
+- [ ] Implementation follows tests
+- [ ] Code is refactorable with test safety

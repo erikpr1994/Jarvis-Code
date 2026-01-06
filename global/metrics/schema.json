@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Jarvis Daily Metrics",
+  "description": "Schema for daily metrics tracking in Jarvis",
+  "type": "object",
+  "required": ["date", "productivity", "quality", "learning", "context"],
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "The date for these metrics (YYYY-MM-DD)",
+      "examples": ["2026-01-05"]
+    },
+    "productivity": {
+      "type": "object",
+      "description": "Productivity-related metrics",
+      "required": ["features_completed", "commits", "prs_merged"],
+      "properties": {
+        "features_completed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of features or tasks completed"
+        },
+        "commits": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of commits made"
+        },
+        "prs_merged": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of pull requests merged"
+        },
+        "time_to_first_commit_minutes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minutes from session start to first commit"
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "description": "Code quality metrics",
+      "required": ["test_coverage", "review_score_avg", "bugs_found"],
+      "properties": {
+        "test_coverage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Test coverage percentage"
+        },
+        "review_score_avg": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Average code review score (0-10)"
+        },
+        "bugs_found": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of bugs found during development"
+        },
+        "bugs_found_in_prod": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of bugs that reached production"
+        },
+        "test_coverage_delta": {
+          "type": "string",
+          "description": "Change in test coverage (e.g., '+5%')"
+        }
+      }
+    },
+    "learning": {
+      "type": "object",
+      "description": "Learning and skill development metrics",
+      "required": ["skills_invoked", "patterns_matched"],
+      "properties": {
+        "skills_invoked": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of skills used during the session",
+          "examples": [["git-expert", "tdd", "debugging"]]
+        },
+        "patterns_matched": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of times patterns were applied"
+        },
+        "auto_updates": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of automatic system updates triggered"
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "description": "Context and token usage metrics",
+      "required": ["tokens_used", "compactions"],
+      "properties": {
+        "tokens_used": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total tokens consumed"
+        },
+        "compactions": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of context compactions performed"
+        },
+        "memory_retrievals": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of times memory/context was retrieved"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "date": "2026-01-05",
+      "productivity": {
+        "features_completed": 2,
+        "commits": 15,
+        "prs_merged": 3,
+        "time_to_first_commit_minutes": 12
+      },
+      "quality": {
+        "test_coverage": 85,
+        "review_score_avg": 8.5,
+        "bugs_found": 2,
+        "bugs_found_in_prod": 0,
+        "test_coverage_delta": "+5%"
+      },
+      "learning": {
+        "skills_invoked": ["git-expert", "tdd", "debugging"],
+        "patterns_matched": 8,
+        "auto_updates": 1
+      },
+      "context": {
+        "tokens_used": 45000,
+        "compactions": 0,
+        "memory_retrievals": 12
+      }
+    }
+  ]
+}

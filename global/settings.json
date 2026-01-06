@@ -1,0 +1,57 @@
+{
+  "$schema": "./schemas/settings.schema.json",
+  "version": "1.0.0",
+  "name": "Jarvis Global Settings",
+
+  "features": {
+    "skillActivation": true,
+    "sessionTracking": true,
+    "learningCapture": true,
+    "patternMatching": true
+  },
+
+  "skills": {
+    "autoActivate": true,
+    "rulesFile": "./skill-rules.json",
+    "directories": [
+      "./skills/meta",
+      "./skills/process",
+      "./skills/domain"
+    ]
+  },
+
+  "agents": {
+    "coreDirectory": "./agents/core",
+    "autoLoad": ["orchestrator", "reviewer"]
+  },
+
+  "hooks": {
+    "enabled": true,
+    "directory": "./hooks",
+    "libDirectory": "./hooks/lib"
+  },
+
+  "patterns": {
+    "indexFile": "./patterns/index.json",
+    "fullDirectory": "./patterns/full"
+  },
+
+  "session": {
+    "trackingEnabled": true,
+    "historyRetention": 30,
+    "autoResume": true
+  },
+
+  "verification": {
+    "requireTests": true,
+    "requireBuild": true,
+    "requireReview": true,
+    "parallelReviewers": 5
+  },
+
+  "learning": {
+    "capturePatterns": true,
+    "updateSkillRules": true,
+    "archiveSessions": true
+  }
+}

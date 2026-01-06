@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Claude Code settings.json template for Jarvis hooks integration",
+  "version": "1.0.0",
+  "_instructions": [
+    "Copy relevant sections to ~/.claude/settings.json or project .claude/settings.local.json",
+    "Adjust paths if JARVIS_ROOT is in a different location",
+    "Hooks can be enabled/disabled individually"
+  ],
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.jarvis/global/hooks/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.jarvis/global/hooks/skill-activation.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.jarvis/global/hooks/pre-commit.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.jarvis/global/hooks/learning-capture.sh",
+            "runInBackground": true
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.jarvis/global/hooks/pre-compact-preserve.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

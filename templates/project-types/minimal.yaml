@@ -1,0 +1,22 @@
+name: minimal
+description: Minimal setup for any project type
+
+detection:
+  default: true  # Fallback if no other template matches
+
+agents:
+  core:
+    - implementer
+    - code-reviewer
+
+skills:
+  always:
+    - test-driven-development
+    - verification-before-completion
+    - git-expert
+
+hooks:
+  - session-start
+  - skill-activation-prompt
+
+rules: []  # No default rules

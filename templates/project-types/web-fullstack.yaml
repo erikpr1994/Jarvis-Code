@@ -1,0 +1,61 @@
+name: web-fullstack
+description: Full-stack web application with Next.js, Supabase, Tailwind
+
+detection:
+  requires_all:
+    - next.config.*
+    - supabase/config.toml
+  requires_any:
+    - tailwind.config.*
+    - app/layout.tsx
+
+agents:
+  core:
+    - master-orchestrator
+    - implementer
+    - code-reviewer
+    - spec-reviewer
+    - deep-researcher
+  domain:
+    - frontend-specialist
+    - backend-engineer
+    - supabase-specialist
+  review:
+    - security-reviewer
+    - accessibility-auditor
+    - performance-reviewer
+    - seo-specialist
+
+skills:
+  always:
+    - test-driven-development
+    - verification-before-completion
+    - systematic-debugging
+    - git-expert
+  domain:
+    - frontend-design
+    - payment-processing  # If Polar/Stripe detected
+    - analytics           # If Umami detected
+    - seo-content-generation
+
+hooks:
+  - session-start
+  - skill-activation-prompt
+  - require-isolation
+  - block-direct-submit
+  - coderabbit-review    # If CodeRabbit detected
+
+rules:
+  - typescript-strict
+  - react-patterns
+  - supabase-patterns
+  - tailwind-conventions
+
+claude_md:
+  generate:
+    - root: full-stack-template
+    - apps/web: next-app-template
+    - packages/ui: component-library-template
+    - packages/database: supabase-template
+    - supabase/migrations: migrations-template
+    - docs: documentation-template

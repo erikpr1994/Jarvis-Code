@@ -1,0 +1,21 @@
+{
+    "session_id": "session-20260105231400",
+    "timestamp": "2026-01-05T23:14:00Z",
+    "compact_reason": "context_limit",
+    "tokens_used": 0,
+    "task": {"current_task": null, "progress": [], "decisions": []},
+    "context": {
+        "git_branch": "main",
+        "uncommitted_changes": " M README.md;?? .DS_Store;?? .claude/;?? .gitignore;?? CLAUDE.md;?? archive/;?? docs/;?? global/;?? init/;?? install.sh;",
+        "recent_files": "./archive/compactions/compact-20260105-231049.json,./archive/compactions/compact-20260105-231313.json,./tests/jarvis/install/test-install.sh,./tests/jarvis/install/README.md,./tests/jarvis/integration/test-full-flow.sh,./tests/jarvis/integration/README.md,./tests/jarvis/test-jarvis.sh,./tests/jarvis/hooks/test-learning-capture.sh,./tests/jarvis/hooks/test-metrics-capture.sh,./tests/jarvis/hooks/test-pre-commit.sh,",
+        "working_directory": "/Users/erikpr94/Documents/claude-code-tools"
+    },
+    "hot_memory": {
+        "preserved": true,
+        "file": "/Users/erikpr94/Documents/claude-code-tools/tests/jarvis/hooks/../../..//learnings/.hot-memory.json"
+    },
+    "recovery_hints": {
+        "task_file": ".claude/tasks",
+        "continue_from": "Check session-state.json for context"
+    }
+}

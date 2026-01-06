@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Jarvis Unified Hook Configuration for Claude Code",
+  "version": "1.1.0",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/session-start.sh\"",
+            "description": "Initialize session with skills, detect continuation, set context"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/skill-activation.sh\"",
+            "description": "Recommend skills based on keywords and patterns"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/metrics-capture.sh\"",
+            "description": "Capture metrics from tool usage for productivity tracking",
+            "background": true
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/learning-capture.sh\"",
+            "description": "Capture patterns from successful operations for learning",
+            "background": true
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/pre-compact-preserve.sh\"",
+            "description": "Preserve session state before context compaction"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/require-isolation.sh\"",
+            "description": "Enforce worktree/Conductor isolation for file edits"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/require-isolation.sh\"",
+            "description": "Enforce worktree/Conductor isolation for file writes"
+          }
+        ]
+      },
+      {
+        "matcher": "NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/require-isolation.sh\"",
+            "description": "Enforce worktree/Conductor isolation for notebook edits"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/block-direct-submit.sh\"",
+            "description": "Block direct gt submit or gh pr create commands"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/compress-output.sh\"",
+            "description": "Add context for summarizing verbose test/lint/build output"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT:-~/.jarvis}/global/hooks/pre-commit.sh\"",
+            "description": "Verification before git commits"
+          }
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "runInBackground": {
+      "session-start": false,
+      "skill-activation": false,
+      "require-isolation": false,
+      "block-direct-submit": false,
+      "compress-output": false,
+      "pre-commit": false,
+      "metrics-capture": true,
+      "learning-capture": true,
+      "pre-compact-preserve": false
+    },
+    "timeouts": {
+      "session-start": 5000,
+      "skill-activation": 2000,
+      "require-isolation": 2000,
+      "block-direct-submit": 2000,
+      "compress-output": 2000,
+      "pre-commit": 10000,
+      "metrics-capture": 5000,
+      "learning-capture": 5000,
+      "pre-compact-preserve": 5000
+    },
+    "bypass": {
+      "JARVIS_SKIP_HOOKS": "Skip all Jarvis hooks",
+      "CLAUDE_ALLOW_MAIN_MODIFICATIONS": "Allow modifications on main/master branch (require-isolation bypass)",
+      "CONDUCTOR_ROOT_PATH": "Indicates Conductor session (require-isolation bypass)",
+      "CLAUDE_SUBMIT_PR_SKILL": "Set by submit-pr skill (block-direct-submit bypass)",
+      "CLAUDE_ALLOW_DIRECT_SUBMIT": "Allow direct gt submit/gh pr create commands",
+      "VERBOSE_OUTPUT": "Disable output compression (compress-output bypass)",
+      "JARVIS_ALLOW_MAIN_COMMITS": "Allow direct commits to main/master branch",
+      "JARVIS_SKIP_SKILL_ACTIVATION": "Skip skill recommendation hook",
+      "JARVIS_SKIP_METRICS": "Skip metrics capture hook",
+      "JARVIS_SKIP_LEARNING": "Skip learning capture hook"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+# Learning Inbox
+# This directory stores captured learnings awaiting validation and processing
+# Files are JSON format with learning patterns, corrections, and workflows
+# Processed by: capture.sh process

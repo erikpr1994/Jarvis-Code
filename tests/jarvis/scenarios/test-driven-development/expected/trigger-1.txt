@@ -1,0 +1,43 @@
+# Expected Output Patterns for: Implement email validation
+
+The response WITH the test-driven-development skill should include:
+
+## Required Elements
+
+1. **Clarifying Questions or Edge Case Discussion**
+   - Must mention at least 2-3 edge cases
+   - Examples: empty string, null, special characters, format variations
+
+2. **Test Code Written FIRST**
+   - Test code must appear BEFORE implementation code
+   - Tests should include both valid and invalid cases
+   - Minimum 3-4 test cases expected
+
+3. **RED Phase Acknowledgment**
+   - Mention that tests will/should fail initially
+   - Show awareness of TDD cycle
+
+4. **Implementation After Tests**
+   - Implementation code comes after test code
+   - Implementation is minimal to pass tests
+
+## Keywords That Should Appear
+
+- "test" or "tests" or "test case"
+- "edge case" or "boundary" or "special case"
+- "valid" and "invalid"
+- "fail" (in context of RED phase)
+- "pass" (in context of GREEN phase)
+
+## Keywords That Should NOT Appear First
+
+- Implementation regex/code should NOT come before tests
+- "Here's the implementation" without tests first
+
+## Quality Indicators
+
+- [ ] Tests cover at least 3 scenarios
+- [ ] Edge cases are explicitly handled
+- [ ] TDD terminology used (RED/GREEN/REFACTOR)
+- [ ] Tests are runnable (proper syntax)
+- [ ] Requirements are clarified before coding

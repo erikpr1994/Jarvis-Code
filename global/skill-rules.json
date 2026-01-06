@@ -1,0 +1,99 @@
+{
+  "$schema": "./schemas/skill-rules.schema.json",
+  "version": "1.0.0",
+  "description": "Skill activation rules - maps triggers to skills",
+
+  "rules": [
+    {
+      "id": "using-skills",
+      "name": "Using Skills Meta-Skill",
+      "skill": "meta/using-skills",
+      "priority": "critical",
+      "triggers": {
+        "keywords": ["how to use skills", "available skills", "skill help"],
+        "intents": ["skill-discovery", "skill-usage"]
+      },
+      "autoActivate": true
+    },
+    {
+      "id": "tdd-process",
+      "name": "TDD Development Process",
+      "skill": "process/tdd",
+      "priority": "high",
+      "triggers": {
+        "keywords": ["test first", "TDD", "test-driven", "write tests"],
+        "intents": ["new-feature", "bug-fix", "refactor"]
+      },
+      "autoActivate": true
+    },
+    {
+      "id": "verification",
+      "name": "Verification Process",
+      "skill": "process/verification",
+      "priority": "high",
+      "triggers": {
+        "keywords": ["verify", "check", "validate", "ensure"],
+        "intents": ["pre-commit", "pre-submit", "quality-check"]
+      },
+      "autoActivate": true
+    },
+    {
+      "id": "debugging",
+      "name": "Debugging Process",
+      "skill": "process/debugging",
+      "priority": "high",
+      "triggers": {
+        "keywords": ["debug", "fix bug", "error", "not working", "broken"],
+        "intents": ["troubleshoot", "investigate", "diagnose"]
+      },
+      "autoActivate": true
+    },
+    {
+      "id": "git-workflow",
+      "name": "Git Workflow",
+      "skill": "domain/git",
+      "priority": "medium",
+      "triggers": {
+        "keywords": ["commit", "branch", "merge", "PR", "pull request", "git"],
+        "intents": ["version-control", "code-submit"]
+      },
+      "autoActivate": false
+    },
+    {
+      "id": "patterns",
+      "name": "Design Patterns",
+      "skill": "domain/patterns",
+      "priority": "medium",
+      "triggers": {
+        "keywords": ["pattern", "architecture", "design", "structure"],
+        "intents": ["architecture-decision", "code-organization"]
+      },
+      "autoActivate": false
+    }
+  ],
+
+  "priorityLevels": {
+    "critical": {
+      "order": 1,
+      "description": "Always recommended when triggered"
+    },
+    "high": {
+      "order": 2,
+      "description": "Strongly recommended when triggered"
+    },
+    "medium": {
+      "order": 3,
+      "description": "Suggested when triggered"
+    },
+    "low": {
+      "order": 4,
+      "description": "Optional enhancement"
+    }
+  },
+
+  "learning": {
+    "captureNewPatterns": true,
+    "autoAddRules": false,
+    "reviewBeforeAdd": true
+  }
+}

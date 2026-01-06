@@ -1,0 +1,74 @@
+{
+  "$schema": "../schemas/patterns-index.schema.json",
+  "version": "1.0.0",
+  "description": "Pattern library index with summaries for quick lookup",
+
+  "categories": {
+    "typescript": {
+      "name": "TypeScript Patterns",
+      "description": "TypeScript and React development patterns"
+    },
+    "python": {
+      "name": "Python Patterns",
+      "description": "Python service and architecture patterns"
+    },
+    "architecture": {
+      "name": "Architecture Patterns",
+      "description": "High-level system structure patterns"
+    },
+    "design": {
+      "name": "Design Patterns",
+      "description": "Object-oriented and functional design patterns"
+    },
+    "process": {
+      "name": "Process Patterns",
+      "description": "Development process and workflow patterns"
+    },
+    "integration": {
+      "name": "Integration Patterns",
+      "description": "System integration and API patterns"
+    }
+  },
+
+  "patterns": [
+    {
+      "name": "api-error-handling",
+      "path": "typescript/api-error-handling.md",
+      "category": "typescript",
+      "summary": "Comprehensive API error handling with structured errors, type safety, and graceful degradation",
+      "keywords": ["api", "error", "handling", "exception", "http", "response", "typescript"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-04"
+    },
+    {
+      "name": "react-component",
+      "path": "typescript/react-component.md",
+      "category": "typescript",
+      "summary": "Modern React component patterns with TypeScript, composition, and best practices",
+      "keywords": ["react", "component", "typescript", "hooks", "composition", "patterns"],
+      "language": "typescript",
+      "lastUpdated": "2026-01-04"
+    },
+    {
+      "name": "service-pattern",
+      "path": "python/service-pattern.md",
+      "category": "python",
+      "summary": "Python service layer pattern with dependency injection, error handling, and testing",
+      "keywords": ["python", "service", "dependency-injection", "repository", "clean-architecture"],
+      "language": "python",
+      "lastUpdated": "2026-01-04"
+    }
+  ],
+
+  "metadata": {
+    "lastUpdated": "2026-01-04",
+    "totalPatterns": 3,
+    "autoIndex": true
+  },
+
+  "loadingStrategy": {
+    "always": ["index.json"],
+    "onDemand": "Fetch full pattern when skill triggers, user requests, or keyword match",
+    "cache": "Keep recently-used patterns in context"
+  }
+}
