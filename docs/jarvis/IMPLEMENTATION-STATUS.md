@@ -2,8 +2,20 @@
 
 > Track implementation progress against each specification document
 
-**Last Updated**: 2026-01-06 (Session 5)
-**Overall Progress**: ~85%
+**Last Updated**: 2026-01-06 (Session 6)
+**Overall Progress**: ~90%
+
+### Session 6 Changes
+- ✅ Verified Metrics System complete (schema, collect.sh, weekly-summary.sh, /metrics command)
+- ✅ Added missing commands:
+  - /add-page - Page/route scaffolding
+  - /add-migration - Database migration creation
+  - /inbox - Learnings inbox management
+  - /learnings - Browse captured learnings
+  - /issues - Issue tracker integration
+  - /verify - Verification pipeline
+  - /check - Quick quality checks
+- ✅ All tests passing (14/14)
 
 ### Session 5 Changes
 - ✅ Implemented Session & Context Management (Section 11)
@@ -47,15 +59,15 @@
 | [03-claude-md-system](./03-claude-md-system.md) | 4 | ⚠️ Partial | 70% |
 | [04-agents](./04-agents.md) | 5 | ⚠️ Partial | 70% |
 | [05-skills](./05-skills.md) | 6 | ✅ Done | 85% |
-| [06-commands](./06-commands.md) | 7 | ⚠️ Partial | 45% |
+| [06-commands](./06-commands.md) | 7 | ✅ Done | 95% |
 | [07-hooks](./07-hooks.md) | 8 | ✅ Done | 85% |
 | [08-rules-and-patterns](./08-rules-and-patterns.md) | 9-10 | ⚠️ Partial | 40% |
 | [09-session-management](./09-session-management.md) | 11 | ✅ Done | 100% |
 | [10-context-optimization](./10-context-optimization.md) | 12 | ✅ Done | 90% |
 | [11-learning-system](./11-learning-system.md) | 13 | ⚠️ Partial | 30% |
 | [12-initialization](./12-initialization.md) | 14 | ✅ Done | 90% |
-| [13-verification](./13-verification.md) | 15 | ⚠️ Partial | 20% |
-| [14-metrics](./14-metrics.md) | 16 | ❌ Missing | 0% |
+| [13-verification](./13-verification.md) | 15 | ✅ Done | 85% |
+| [14-metrics](./14-metrics.md) | 16 | ✅ Done | 90% |
 | [15-testing](./15-testing.md) | 17 | ✅ Done | 85% |
 | [16-error-recovery](./16-error-recovery.md) | 18 | ⚠️ Partial | 30% |
 | [17-distribution](./17-distribution.md) | 19-20 | ⚠️ Partial | 50% |
