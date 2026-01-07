@@ -34,36 +34,42 @@ mkdir -p "$(dirname "$STATE_FILE")" 2>/dev/null || true
 # ============================================================================
 
 # Default skill triggers (used if skill-rules.json not found)
-declare -A SKILL_KEYWORDS
-declare -A SKILL_PRIORITY
+# Bash 3.2 compatible: using indexed arrays instead of associative arrays
+SKILL_NAMES=(
+    "session-management"
+    "sub-agent-invocation"
+    "test-driven-development"
+    "git-expert"
+    "systematic-debugging"
+    "codebase-navigation"
+    "documentation-research"
+    "frontend-design"
+    "infra-ops"
+)
 
-# Core skills
-SKILL_KEYWORDS["session-management"]="feature implement build create refactor bug fix multi-step complex implementation"
-SKILL_PRIORITY["session-management"]="critical"
+SKILL_KEYWORDS_LIST=(
+    "feature implement build create refactor bug fix multi-step complex implementation"
+    "agent agents delegate sub-agent specialist coordination parallel Task"
+    "test tdd tests testing implement feature function method class"
+    "commit push branch PR merge git version control"
+    "debug error failing broken not working investigate issue bug trace"
+    "find locate where search codebase structure architecture explore"
+    "documentation docs API reference library latest current how to use"
+    "design UI interface visual aesthetic creative polished beautiful modern"
+    "VPS server SSH deploy Docker Nginx SSL infrastructure DevOps container"
+)
 
-SKILL_KEYWORDS["sub-agent-invocation"]="agent agents delegate sub-agent specialist coordination parallel Task"
-SKILL_PRIORITY["sub-agent-invocation"]="critical"
-
-SKILL_KEYWORDS["test-driven-development"]="test tdd tests testing implement feature function method class"
-SKILL_PRIORITY["test-driven-development"]="critical"
-
-SKILL_KEYWORDS["git-expert"]="commit push branch PR merge git version control"
-SKILL_PRIORITY["git-expert"]="high"
-
-SKILL_KEYWORDS["systematic-debugging"]="debug error failing broken not working investigate issue bug trace"
-SKILL_PRIORITY["systematic-debugging"]="high"
-
-SKILL_KEYWORDS["codebase-navigation"]="find locate where search codebase structure architecture explore"
-SKILL_PRIORITY["codebase-navigation"]="high"
-
-SKILL_KEYWORDS["documentation-research"]="documentation docs API reference library latest current how to use"
-SKILL_PRIORITY["documentation-research"]="critical"
-
-SKILL_KEYWORDS["frontend-design"]="design UI interface visual aesthetic creative polished beautiful modern"
-SKILL_PRIORITY["frontend-design"]="high"
-
-SKILL_KEYWORDS["infra-ops"]="VPS server SSH deploy Docker Nginx SSL infrastructure DevOps container"
-SKILL_PRIORITY["infra-ops"]="high"
+SKILL_PRIORITY_LIST=(
+    "critical"
+    "critical"
+    "critical"
+    "high"
+    "high"
+    "high"
+    "critical"
+    "high"
+    "high"
+)
 
 # ============================================================================
 # FUNCTIONS
@@ -126,11 +132,25 @@ add_recommendation() {
     fi
 }
 
+# Get skill index by name
+get_skill_index() {
+    local skill_name="$1"
+    local i
+    for i in "${!SKILL_NAMES[@]}"; do
+        if [[ "${SKILL_NAMES[$i]}" == "$skill_name" ]]; then
+            echo "$i"
+            return 0
+        fi
+    done
+    echo "-1"
+    return 1
+}
+
 # Match keywords in prompt
 match_keywords() {
     local prompt="$1"
-    local skill_name="$2"
-    local keywords="${SKILL_KEYWORDS[$skill_name]:-}"
+    local skill_index="$2"
+    local keywords="${SKILL_KEYWORDS_LIST[$skill_index]:-}"
 
     if [[ -z "$keywords" ]]; then
         return 1
@@ -150,8 +170,8 @@ match_keywords() {
 
 # Get skill priority
 get_priority() {
-    local skill_name="$1"
-    echo "${SKILL_PRIORITY[$skill_name]:-medium}"
+    local skill_index="$1"
+    echo "${SKILL_PRIORITY_LIST[$skill_index]:-medium}"
 }
 
 # Clean old sessions (older than 7 days)
@@ -190,23 +210,26 @@ main() {
 
     log_info "Analyzing prompt for skill matches"
 
-    # Collect matched skills by priority
-    declare -a critical_skills=()
-    declare -a high_skills=()
-    declare -a medium_skills=()
-    declare -a low_skills=()
+    # Collect matched skills by priority (Bash 3.2 compatible)
+    critical_skills=()
+    high_skills=()
+    medium_skills=()
+    low_skills=()
 
     # Check each skill for matches
-    for skill_name in "${!SKILL_KEYWORDS[@]}"; do
+    local i
+    for i in "${!SKILL_NAMES[@]}"; do
+        local skill_name="${SKILL_NAMES[$i]}"
+
         # Skip if already recommended in this session
         if [[ -n "$session_id" ]] && skill_already_recommended "$session_id" "$skill_name"; then
             log_debug "Skipping already recommended: $skill_name"
             continue
         fi
 
-        if match_keywords "$prompt" "$skill_name"; then
+        if match_keywords "$prompt" "$i"; then
             local priority
-            priority=$(get_priority "$skill_name")
+            priority=$(get_priority "$i")
 
             case "$priority" in
                 critical) critical_skills+=("$skill_name") ;;
