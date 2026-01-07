@@ -219,14 +219,8 @@ check_prerequisites() {
     if [[ "$bash_version" -lt 4 ]]; then
         log_warning "Bash version $BASH_VERSION detected (macOS default)"
         log_info "Jarvis is compatible, but Bash 5+ is recommended for best experience"
-        echo ""
         if command_exists brew; then
             log_info "Install newer Bash with: brew install bash"
-            read -p "Install Bash 5+ now? (y/N): " install_bash
-            if [[ "$install_bash" =~ ^[Yy]$ ]]; then
-                brew install bash
-                log_success "Bash installed! Add /opt/homebrew/bin/bash to /etc/shells and run 'chsh -s /opt/homebrew/bin/bash' to make it default"
-            fi
         else
             log_info "Install Homebrew (https://brew.sh) then run: brew install bash"
         fi

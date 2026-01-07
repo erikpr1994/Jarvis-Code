@@ -34,7 +34,7 @@ test_fresh_install() {
     rm -rf "$TEST_CLAUDE_DIR"
 
     local exit_code
-    (cd "$JARVIS_ROOT" && bash install.sh --force >/dev/null 2>&1) && exit_code=0 || exit_code=$?
+    (cd "$JARVIS_ROOT" && bash install.sh --force --skip-config >/dev/null 2>&1) && exit_code=0 || exit_code=$?
 
     # Installation succeeds if:
     # 1. Exit code is 0 and directory created, OR
@@ -150,7 +150,7 @@ test_safe_reinstall() {
     original_content=$(cat "${TEST_CLAUDE_DIR}/skills/custom.md")
 
     # Re-install
-    (cd "$JARVIS_ROOT" && bash install.sh --force >/dev/null 2>&1) || true
+    (cd "$JARVIS_ROOT" && bash install.sh --force --skip-config >/dev/null 2>&1) || true
 
     # Check custom file preserved
     if [[ -f "${TEST_CLAUDE_DIR}/skills/custom.md" ]]; then

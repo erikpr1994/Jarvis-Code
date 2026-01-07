@@ -67,7 +67,8 @@ test_install_creates_directories() {
     rm -rf "$TEST_CLAUDE_DIR"
 
     # Run install (capture output but ignore for now)
-    (cd "$JARVIS_ROOT" && bash "$INSTALL_SCRIPT" --force >/dev/null 2>&1) || true
+    # Use --skip-config to avoid interactive prompts in test
+    (cd "$JARVIS_ROOT" && bash "$INSTALL_SCRIPT" --force --skip-config >/dev/null 2>&1) || true
 
     # Check directories were created
     assert_dir_exists "$TEST_CLAUDE_DIR" "~/.claude created"
@@ -151,7 +152,7 @@ EOF
     original_content=$(cat "${TEST_CLAUDE_DIR}/skills/custom-skill.md")
 
     # Re-run install
-    (cd "$JARVIS_ROOT" && bash "$INSTALL_SCRIPT" --force >/dev/null 2>&1) || true
+    (cd "$JARVIS_ROOT" && bash "$INSTALL_SCRIPT" --force --skip-config >/dev/null 2>&1) || true
 
     # Check file wasn't overwritten
     if [[ -f "${TEST_CLAUDE_DIR}/skills/custom-skill.md" ]]; then
@@ -172,7 +173,7 @@ EOF
 # Test 7: Install creates backup when existing files present
 test_creates_backup() {
     # Run install to ensure .claude exists
-    (cd "$JARVIS_ROOT" && bash "$INSTALL_SCRIPT" --force >/dev/null 2>&1) || true
+    (cd "$JARVIS_ROOT" && bash "$INSTALL_SCRIPT" --force --skip-config >/dev/null 2>&1) || true
 
     # Check if backup directory exists
     local backup_dir="${TEST_CLAUDE_DIR}/backups"
@@ -189,13 +190,13 @@ test_creates_backup() {
 # Test 8: Install is idempotent
 test_idempotent_install() {
     # Run install twice
-    (cd "$JARVIS_ROOT" && bash "$INSTALL_SCRIPT" --force >/dev/null 2>&1) || true
+    (cd "$JARVIS_ROOT" && bash "$INSTALL_SCRIPT" --force --skip-config >/dev/null 2>&1) || true
     local first_version=""
     if [[ -f "${TEST_CLAUDE_DIR}/.jarvis-version" ]]; then
         first_version=$(cat "${TEST_CLAUDE_DIR}/.jarvis-version")
     fi
 
-    (cd "$JARVIS_ROOT" && bash "$INSTALL_SCRIPT" --force >/dev/null 2>&1) || true
+    (cd "$JARVIS_ROOT" && bash "$INSTALL_SCRIPT" --force --skip-config >/dev/null 2>&1) || true
     local second_version=""
     if [[ -f "${TEST_CLAUDE_DIR}/.jarvis-version" ]]; then
         second_version=$(cat "${TEST_CLAUDE_DIR}/.jarvis-version")
