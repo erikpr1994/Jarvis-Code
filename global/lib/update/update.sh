@@ -139,10 +139,28 @@ update_global() {
         sync_file "${JARVIS_REPO}/global/settings.json" "${GLOBAL_CLAUDE}/settings.json" "$force" "$dry_run" || true
     fi
 
-    # Sync Jarvis-specific config to separate file
+    # Sync Jarvis-specific config - PRESERVE user rules section
     if [[ -f "${JARVIS_REPO}/global/jarvis.json" ]]; then
         mkdir -p "${GLOBAL_CLAUDE}/config"
-        sync_file "${JARVIS_REPO}/global/jarvis.json" "${GLOBAL_CLAUDE}/config/jarvis.json" "$force" "$dry_run" || true
+        local dest_config="${GLOBAL_CLAUDE}/config/jarvis.json"
+
+        if [[ -f "$dest_config" && "$dry_run" != "true" ]]; then
+            # Preserve user's rules section during update
+            local user_rules
+            user_rules=$(jq '.rules // empty' "$dest_config" 2>/dev/null || echo "")
+
+            if [[ -n "$user_rules" && "$user_rules" != "null" ]]; then
+                # Merge: take new config but preserve user's rules
+                jq --argjson rules "$user_rules" '.rules = $rules' \
+                    "${JARVIS_REPO}/global/jarvis.json" > "${dest_config}.tmp" && \
+                    mv "${dest_config}.tmp" "$dest_config"
+                echo "updated (rules preserved): $dest_config"
+            else
+                sync_file "${JARVIS_REPO}/global/jarvis.json" "$dest_config" "$force" "$dry_run" || true
+            fi
+        else
+            sync_file "${JARVIS_REPO}/global/jarvis.json" "$dest_config" "$force" "$dry_run" || true
+        fi
     fi
 
     # Update version file

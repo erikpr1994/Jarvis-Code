@@ -42,6 +42,14 @@
     "autoResume": true
   },
 
+  "rules": {
+    "requireTDD": false,
+    "requireWorktreeIsolation": false,
+    "requireTestsBeforeCommit": true,
+    "requireConventionalCommits": true,
+    "strictTypeScript": true
+  },
+
   "verification": {
     "requireTests": true,
     "requireBuild": true,

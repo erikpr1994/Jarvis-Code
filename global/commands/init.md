@@ -83,29 +83,64 @@ Task(subagent_type='Explore', thoroughness='medium', prompt='
    - Configure skill activation triggers
    - Set up skill-rules.json
 
-### Phase 3: Integration Setup
+### Phase 3: User Preferences
 
-7. **Configure Git integration**
+7. **Ask for rule preferences using AskUserQuestion tool**
+
+   Present configuration options to the user:
+
+   **Question 1: TDD Requirement**
+   - Header: "TDD"
+   - Question: "Should Claude follow strict Test-Driven Development?"
+   - Options:
+     - "No - TDD optional (Recommended)" - Testing encouraged but not enforced
+     - "Yes - Require TDD" - Must write failing tests before implementation
+
+   **Question 2: Worktree Isolation**
+   - Header: "Isolation"
+   - Question: "Require branch isolation before editing on main?"
+   - Options:
+     - "No - Allow main edits (Recommended)" - Edit files on any branch
+     - "Yes - Block main edits" - Must create branch/worktree first
+
+   **Question 3: Pre-commit Tests**
+   - Header: "Pre-commit"
+   - Question: "Require tests to pass before commits?"
+   - Options:
+     - "Yes - Tests required (Recommended)" - Block commits if tests fail
+     - "No - Allow commits" - Commits allowed regardless
+
+8. **Save preferences to jarvis.json**
+
+   Create `~/.claude/config/jarvis.json` with user's choices:
+   ```bash
+   mkdir -p ~/.claude/config
+   # Write config based on answers
+   ```
+
+### Phase 4: Integration Setup
+
+9. **Configure Git integration**
    - Add .claude to .gitignore (if sensitive)
    - Set up commit message templates
    - Configure pre-commit awareness
 
-8. **Set up project-specific commands**
-   - Add build, test, lint commands based on detection
-   - Configure deployment commands if applicable
+10. **Set up project-specific commands**
+    - Add build, test, lint commands based on detection
+    - Configure deployment commands if applicable
 
-9. **Initialize learning system**
+11. **Initialize learning system**
    - Create learnings.md with initial observations
    - Set up pattern documentation
 
-### Phase 4: Verification
+### Phase 5: Verification
 
-10. **Validate configuration**
+12. **Validate configuration**
     - Test detected commands work
     - Verify CLAUDE.md is accurate
     - Confirm all paths are correct
 
-11. **Present summary to user**
+13. **Present summary to user**
     - Show detected configuration
     - Highlight any manual steps needed
     - Offer to customize further
