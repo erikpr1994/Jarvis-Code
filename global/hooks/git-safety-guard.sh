@@ -18,6 +18,13 @@ init_hook "git-safety-guard"
 # BYPASS CONDITIONS
 # ============================================================================
 
+# Check if this hook is enabled in preferences (default: enabled)
+if ! is_hook_enabled "gitSafetyGuard" "true"; then
+    log_info "Hook disabled in preferences"
+    finalize_hook 0
+    exit 0
+fi
+
 # Check for explicit bypass
 if bypass_enabled "CLAUDE_ALLOW_DESTRUCTIVE"; then
     log_info "Bypass enabled: CLAUDE_ALLOW_DESTRUCTIVE=1"

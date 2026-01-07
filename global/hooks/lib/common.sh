@@ -163,6 +163,71 @@ get_skills_dir() {
 }
 
 # ============================================================================
+# PREFERENCES
+# ============================================================================
+
+PREFERENCES_FILE="${HOME}/.claude/config/preferences.json"
+
+# Check if a hook is enabled in preferences
+is_hook_enabled() {
+    local hook_name="$1"
+    local default="${2:-true}"
+
+    if [[ ! -f "$PREFERENCES_FILE" ]]; then
+        # No preferences file, use default
+        [[ "$default" == "true" ]]
+        return
+    fi
+
+    local enabled
+    enabled=$(jq -r ".hooks.${hook_name}.enabled // ${default}" "$PREFERENCES_FILE" 2>/dev/null || echo "$default")
+    [[ "$enabled" == "true" ]]
+}
+
+# Check if a hook is bypassable
+is_hook_bypassable() {
+    local hook_name="$1"
+    local default="${2:-true}"
+
+    if [[ ! -f "$PREFERENCES_FILE" ]]; then
+        [[ "$default" == "true" ]]
+        return
+    fi
+
+    local bypassable
+    bypassable=$(jq -r ".hooks.${hook_name}.bypassable // ${default}" "$PREFERENCES_FILE" 2>/dev/null || echo "$default")
+    [[ "$bypassable" == "true" ]]
+}
+
+# Check if a rule is enabled
+is_rule_enabled() {
+    local rule_name="$1"
+    local default="${2:-false}"
+
+    if [[ ! -f "$PREFERENCES_FILE" ]]; then
+        [[ "$default" == "true" ]]
+        return
+    fi
+
+    local enabled
+    enabled=$(jq -r ".rules.${rule_name}.enabled // ${default}" "$PREFERENCES_FILE" 2>/dev/null || echo "$default")
+    [[ "$enabled" == "true" ]]
+}
+
+# Get rule severity (error, warning, info)
+get_rule_severity() {
+    local rule_name="$1"
+    local default="${2:-warning}"
+
+    if [[ ! -f "$PREFERENCES_FILE" ]]; then
+        echo "$default"
+        return
+    fi
+
+    jq -r ".rules.${rule_name}.severity // \"${default}\"" "$PREFERENCES_FILE" 2>/dev/null || echo "$default"
+}
+
+# ============================================================================
 # GIT UTILITIES
 # ============================================================================
 

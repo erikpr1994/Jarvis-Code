@@ -13,6 +13,17 @@ source "${SCRIPT_DIR}/lib/common.sh"
 init_hook "pre-commit"
 
 # ============================================================================
+# BYPASS CONDITIONS
+# ============================================================================
+
+# Check if this hook is enabled in preferences (default: disabled)
+if ! is_hook_enabled "preCommitTests" "false"; then
+    log_info "Hook disabled in preferences"
+    finalize_hook 0
+    exit 0
+fi
+
+# ============================================================================
 # CONFIGURATION
 # ============================================================================
 
