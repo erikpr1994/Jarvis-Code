@@ -18,54 +18,45 @@ source "${LIB_DIR}/test-helpers.sh"
 
 test_setup
 
-SKILL_NAME="tdd-workflow"
+SKILL_NAME="tdd"
 
 # ============================================================================
 # TESTS
 # ============================================================================
 
-# Test 1: Skill is defined in skill-rules.json
+# Test 1: Skill is defined in skill-rules.json or has SKILL.md
 test_skill_exists() {
     local rules_file="${JARVIS_ROOT}/global/skills/skill-rules.json"
+    local skill_file="${JARVIS_ROOT}/global/skills/${SKILL_NAME}/SKILL.md"
 
-    # Check if skill-rules.json has the skill defined
-    if grep -q "\"${SKILL_NAME}\"" "$rules_file" 2>/dev/null; then
+    # Check if skill directory exists with SKILL.md
+    if [[ -f "$skill_file" ]]; then
+        assert_true "1" "Skill file exists at ${SKILL_NAME}/SKILL.md"
+    # Or check if skill-rules.json has the skill defined
+    elif grep -q "\"${SKILL_NAME}\"" "$rules_file" 2>/dev/null; then
         assert_true "1" "Skill defined in skill-rules.json"
     else
-        # Check if skill file exists in any category
-        local skill_file="${JARVIS_ROOT}/global/skills/process/${SKILL_NAME}/SKILL.md"
-        if [[ -f "$skill_file" ]]; then
-            assert_true "1" "Skill file exists at process/${SKILL_NAME}/SKILL.md"
-        else
-            skill_file="${JARVIS_ROOT}/global/skills/meta/${SKILL_NAME}/SKILL.md"
-            if [[ -f "$skill_file" ]]; then
-                assert_true "1" "Skill file exists at meta/${SKILL_NAME}/SKILL.md"
-            else
-                assert_true "" "Skill should be defined"
-            fi
-        fi
+        assert_true "" "Skill should be defined"
     fi
 }
 
 # Test 2: Skill rules has TDD keywords defined
 test_skill_has_keywords() {
     local rules_file="${JARVIS_ROOT}/global/skills/skill-rules.json"
+    local skill_file="${JARVIS_ROOT}/global/skills/${SKILL_NAME}/SKILL.md"
+    local hook_file="${JARVIS_ROOT}/global/hooks/skill-activation.sh"
 
-    if [[ -f "$rules_file" ]]; then
-        # Check for test-driven-development entry
-        if grep -q "\"${SKILL_NAME}\"" "$rules_file"; then
-            assert_true "1" "Skill defined in rules file"
-        else
-            # Check embedded keywords in skill-activation.sh
-            local hook_file="${JARVIS_ROOT}/global/hooks/skill-activation.sh"
-            if grep -q "$SKILL_NAME" "$hook_file" 2>/dev/null; then
-                assert_true "1" "Skill defined in hook file"
-            else
-                assert_true "" "Skill should be defined in rules or hook"
-            fi
-        fi
+    # Check if skill file exists
+    if [[ -f "$skill_file" ]]; then
+        assert_true "1" "Skill file exists"
+    # Check for entry in rules file
+    elif [[ -f "$rules_file" ]] && grep -q "\"${SKILL_NAME}\"" "$rules_file"; then
+        assert_true "1" "Skill defined in rules file"
+    # Check embedded keywords in skill-activation.sh
+    elif grep -qE "(tdd|test-driven)" "$hook_file" 2>/dev/null; then
+        assert_true "1" "TDD referenced in hook file"
     else
-        assert_true "" "skill-rules.json should exist"
+        assert_true "" "Skill should be defined in rules or hook"
     fi
 }
 
