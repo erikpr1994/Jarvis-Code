@@ -71,7 +71,7 @@ if echo "$COMMAND" | grep -qE '\bgt\s+submit\b'; then
     cat << EOF
 {
   "decision": "block",
-  "reason": "DIRECT SUBMIT BLOCKED: Use the 'submit-pr' skill instead of running 'gt submit' directly.\n\nThe submit-pr skill provides:\n- Automated code review with CodeRabbit\n- Pre-submission validation checks\n- Consistent PR formatting and templates\n- Integration with your team's workflow\n\nTo submit your PR properly:\n1. Invoke the submit-pr skill\n2. Follow the guided submission process\n\nOr set CLAUDE_ALLOW_DIRECT_SUBMIT=1 to bypass this check."
+  "reason": "DIRECT SUBMIT BLOCKED: Use the 'submit-pr' skill instead.\n\nTO FIX: Use the Skill tool with skill: \"submit-pr\" to load the PR submission workflow.\n\nThe submit-pr skill provides:\n- Pre-submission checklist (tests, lint, typecheck)\n- PR description template\n- CodeRabbit integration\n- Review request process\n\nDO NOT just add the bypass variable - actually invoke the skill to follow the proper process."
 }
 EOF
     finalize_hook 1
@@ -84,7 +84,7 @@ if echo "$COMMAND" | grep -qE '\bgh\s+pr\s+create\b'; then
     cat << EOF
 {
   "decision": "block",
-  "reason": "DIRECT PR CREATION BLOCKED: Use the 'submit-pr' skill instead of running 'gh pr create' directly.\n\nThe submit-pr skill provides:\n- Automated code review with CodeRabbit\n- Pre-submission validation checks\n- Consistent PR formatting and templates\n- Integration with your team's workflow\n\nTo submit your PR properly:\n1. Invoke the submit-pr skill\n2. Follow the guided submission process\n\nOr set CLAUDE_ALLOW_DIRECT_SUBMIT=1 to bypass this check."
+  "reason": "DIRECT PR CREATION BLOCKED: Use the 'submit-pr' skill instead.\n\nTO FIX: Use the Skill tool with skill: \"submit-pr\" to load the PR submission workflow.\n\nThe submit-pr skill provides:\n- Pre-submission checklist (tests, lint, typecheck)\n- PR description template\n- CodeRabbit integration\n- Review request process\n\nDO NOT just add the bypass variable - actually invoke the skill to follow the proper process."
 }
 EOF
     finalize_hook 1
@@ -97,7 +97,7 @@ if echo "$COMMAND" | grep -qE '\bhub\s+pull-request\b'; then
     cat << EOF
 {
   "decision": "block",
-  "reason": "DIRECT PR CREATION BLOCKED: Use the 'submit-pr' skill instead of running 'hub pull-request' directly.\n\nThe submit-pr skill provides:\n- Automated code review with CodeRabbit\n- Pre-submission validation checks\n- Consistent PR formatting and templates\n- Integration with your team's workflow\n\nTo submit your PR properly:\n1. Invoke the submit-pr skill\n2. Follow the guided submission process\n\nOr set CLAUDE_ALLOW_DIRECT_SUBMIT=1 to bypass this check."
+  "reason": "DIRECT PR CREATION BLOCKED: Use the 'submit-pr' skill instead.\n\nTO FIX: Use the Skill tool with skill: \"submit-pr\" to load the PR submission workflow.\n\nThe submit-pr skill provides:\n- Pre-submission checklist (tests, lint, typecheck)\n- PR description template\n- CodeRabbit integration\n- Review request process\n\nDO NOT just add the bypass variable - actually invoke the skill to follow the proper process."
 }
 EOF
     finalize_hook 1
