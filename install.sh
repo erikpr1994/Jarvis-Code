@@ -333,22 +333,22 @@ copy_files() {
             # File exists - check if it's different
             if cmp -s "$src" "$dest"; then
                 log_info "Unchanged: $relative_path"
-                ((files_skipped++))
+                files_skipped=$((files_skipped + 1))
             else
                 # Check for user modifications marker
                 if grep -q "# JARVIS-USER-MODIFIED" "$dest" 2>/dev/null; then
                     log_warning "Preserving user-modified: $relative_path"
-                    ((files_skipped++))
+                    files_skipped=$((files_skipped + 1))
                 else
                     cp "$src" "$dest"
                     log_info "Updated: $relative_path"
-                    ((files_updated++))
+                    files_updated=$((files_updated + 1))
                 fi
             fi
         else
             cp "$src" "$dest"
             log_info "Installed: $relative_path"
-            ((files_copied++))
+            files_copied=$((files_copied + 1))
         fi
     }
 
