@@ -1,291 +1,270 @@
-# Jarvis - AI Assistant for Claude Code
+# Jarvis - AI Assistant Enhancement System for Claude Code
 
-Jarvis is an advanced AI assistant system that enhances Claude Code CLI with intelligent skills, agents, commands, and automation hooks.
+Jarvis is an advanced system that enhances [Claude Code CLI](https://claude.ai/code) with intelligent skills, safety hooks, automated workflows, and productivity features.
 
 ## Features
 
-- **Smart Skill Activation** - Automatically suggests and activates relevant skills based on context
-- **Specialized Agents** - Pre-configured agents for code review, test generation, and more
+### Safety & Protection
+- **Git Safety Guard** - Blocks destructive commands (`git reset --hard`, `git push --force`, `rm -rf`)
+- **PR Workflow Enforcement** - Ensures proper PR submission process with code review
+- **Worktree Isolation** - Optional protection against editing files on main branch
+
+### Productivity
+- **Smart Skill Activation** - Automatically suggests relevant skills based on context
+- **Custom Status Line** - Shows git info, context usage, cost tracking in terminal
+- **Session Tracking** - Maintains context across conversations
+- **Learning Capture** - Learns from successful patterns
+
+### Customization
+- **Configurable Rules** - Toggle TDD, worktree isolation, pre-commit tests
+- **Specialized Agents** - Code reviewer, test generator, and more
 - **Custom Commands** - Slash commands for common workflows
-- **Pattern Library** - Indexed library of reusable patterns and solutions
-- **Session Tracking** - Track progress across sessions with learning capture
-- **Hooks System** - Event-driven automations for various Claude actions
+- **Pattern Library** - Reusable solutions indexed by context
 
 ## Requirements
 
-### Required
+- **Claude Code CLI** - https://claude.ai/code
+- **Git** - Version control
+- **Bash 4+** - Shell scripting
+- **jq** - JSON processing (for config management)
 
-- **Git** - Version control (for project analysis)
-- **Bash 4+** - Shell scripting support
+## Quick Start
 
-### Recommended
+```bash
+# Clone the repository
+git clone https://github.com/erikpr1994/claude-code-tools.git
+cd claude-code-tools
 
-- **Claude CLI** - Claude Code command line interface (https://claude.ai/code)
-- **Node.js 18+** - Required for some hooks and utilities
+# Install globally
+./install.sh
+
+# Start Claude Code in any project
+cd your-project
+claude
+
+# Initialize Jarvis for this project
+/init
+```
 
 ## Installation
 
-### Quick Install
+### Standard Install
 
 ```bash
-cd jarvis
 ./install.sh
 ```
 
 ### Installation Options
 
 ```bash
-# Standard installation
-./install.sh
-
-# Force installation without prompts
-./install.sh --force
-
-# Show help
-./install.sh --help
+./install.sh           # Interactive installation
+./install.sh --force   # Skip prompts
+./install.sh --help    # Show help
 ```
 
 ### What Gets Installed
 
-The installer creates the following structure at `~/.claude/`:
-
 ```
 ~/.claude/
-├── settings.json           # Global settings
-├── skill-rules.json        # Skill activation rules
-├── hooks.json              # Hooks configuration
-├── agents/                 # Shared agents
-│   ├── core/              # Core agents (always available)
-│   ├── code-reviewer.md   # Code review agent
-│   └── test-generator.md  # TDD/test generation agent
-├── skills/                 # Skill definitions
-│   ├── meta/              # Meta-skills (skill usage)
-│   ├── process/           # Process skills (TDD, debugging)
-│   └── domain/            # Domain skills (git, patterns)
-├── commands/              # Custom slash commands
-│   └── init.md           # Project initialization command
+├── settings.json          # Claude Code settings (hooks, statusline)
+├── config/
+│   └── jarvis.json        # Jarvis preferences (rules, features)
+├── statusline.sh          # Custom status bar script
 ├── hooks/                 # Event-driven automations
-│   └── lib/              # Hook utilities
-├── patterns/             # Pattern library
-│   ├── index.json        # Pattern index
-│   └── full/             # Full pattern files
-├── rules/                # Global behavior rules
-└── lib/                  # Shared utilities
-    └── skills-core.js    # Skill discovery library
+│   ├── git-safety-guard.sh    # Blocks destructive git commands
+│   ├── block-direct-submit.sh # Enforces PR workflow
+│   ├── require-isolation.sh   # Worktree/branch protection
+│   ├── skill-activation.sh    # Smart skill suggestions
+│   ├── pre-commit.sh          # Pre-commit verification
+│   └── lib/common.sh          # Shared hook utilities
+├── skills/                # Skill definitions
+├── commands/              # Slash commands
+├── agents/                # Specialized agents
+├── rules/                 # Coding standards
+├── patterns/              # Pattern library
+└── lib/                   # Utilities
 ```
 
-## Usage
-
-### Getting Started
-
-1. **Install Jarvis** (see Installation above)
-
-2. **Navigate to a project**
-   ```bash
-   cd your-project
-   ```
-
-3. **Start Claude CLI**
-   ```bash
-   claude
-   ```
-
-4. **Initialize Jarvis in the project**
-   ```
-   /init
-   ```
-
-### Available Commands
+## Commands
 
 | Command | Description |
 |---------|-------------|
-| `/init` | Initialize Jarvis in the current project |
-| `/init nextjs` | Initialize with framework hint |
-
-### Available Agents
-
-| Agent | Description | Trigger Examples |
-|-------|-------------|------------------|
-| `code-reviewer` | Comprehensive multi-file code review | "review my changes", "check this PR" |
-| `test-generator` | TDD and test generation | "write tests", "add test coverage" |
-
-### Using Skills
-
-Skills are automatically suggested based on your conversation context. The skill system detects keywords and intents to recommend relevant skills.
-
-**Skill Categories:**
-
-- **Meta Skills** - How to use and write skills
-- **Process Skills** - TDD, debugging, verification workflows
-- **Domain Skills** - Git workflows, design patterns
+| `/init` | Initialize Jarvis in current project |
+| `/update` | Update Jarvis from repo |
+| `/config` | Configure preferences interactively |
+| `/plan` | Create implementation plan |
+| `/review` | Run code review |
+| `/test` | Run tests with TDD guidance |
+| `/commit` | Smart commit with verification |
+| `/skills` | List available skills |
 
 ## Configuration
 
-### Global Settings
+### Configurable Rules
 
-Edit `~/.claude/settings.json` to customize global behavior:
+Edit `~/.claude/config/jarvis.json` or use `/config`:
 
 ```json
 {
-  "features": {
-    "skillActivation": true,
-    "sessionTracking": true,
-    "learningCapture": true,
-    "patternMatching": true
-  },
-  "skills": {
-    "autoActivate": true
+  "rules": {
+    "requireTDD": false,              // Strict test-driven development
+    "requireWorktreeIsolation": false, // Block edits on main branch
+    "requireTestsBeforeCommit": true,  // Tests must pass before commit
+    "requireConventionalCommits": true, // feat:, fix:, etc.
+    "strictTypeScript": true           // Strict TS mode
   }
 }
 ```
 
-### Skill Rules
+### Safety Hooks
 
-Edit `~/.claude/skill-rules.json` to customize skill triggers:
+The git-safety-guard blocks dangerous commands:
 
+| Blocked | Safe Alternative |
+|---------|------------------|
+| `git reset --hard` | `git stash` first |
+| `git push --force` | `--force-with-lease` |
+| `git checkout -- files` | `git stash` first |
+| `git clean -f` | `git clean -n` first |
+| `git branch -D` | `git branch -d` |
+| `rm -rf` | Ask user to run manually |
+
+**Bypass:** Set `CLAUDE_ALLOW_DESTRUCTIVE=1` for legitimate use.
+
+### Status Line
+
+Custom terminal status showing:
+- Project name and git branch
+- File changes (+added/-removed)
+- Context window usage (%)
+- Session cost ($)
+
+Configured in `settings.json`:
 ```json
 {
-  "rules": [
-    {
-      "id": "tdd-process",
-      "skill": "process/tdd",
-      "triggers": {
-        "keywords": ["test first", "TDD"],
-        "intents": ["new-feature"]
-      }
-    }
-  ]
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  }
 }
-```
-
-### Preserving Customizations
-
-Add the following comment to any file you've customized to prevent it from being overwritten during updates:
-
-```
-# JARVIS-USER-MODIFIED
 ```
 
 ## Updating
 
-To update Jarvis to the latest version:
-
-1. Pull the latest changes from the repository
-2. Re-run the installer:
-   ```bash
-   ./install.sh
-   ```
-
-The installer is idempotent and will:
-- Create a backup of existing configuration
-- Preserve files marked with `# JARVIS-USER-MODIFIED`
-- Update changed files
-- Skip unchanged files
-
-## Uninstallation
-
-### Standard Uninstall
-
 ```bash
-./uninstall.sh
+# Pull latest changes
+cd claude-code-tools
+git pull
+
+# Update installation
+/update              # Or run from Claude Code
+./install.sh         # Or run installer directly
 ```
 
-This will:
-- Create a backup of your configuration
-- Remove all Jarvis files
-- Preserve user files and backups
+Updates preserve your customizations:
+- Files with `# JARVIS-USER-MODIFIED` header are never overwritten
+- `rules` section in `jarvis.json` is preserved
+- `<!-- USER CUSTOMIZATIONS -->` sections in CLAUDE.md are kept
 
-### Uninstall Options
+## Skills System
 
-```bash
-# Standard uninstall with prompts
-./uninstall.sh
+Skills are automatically suggested based on conversation context.
 
-# Skip confirmation prompts
-./uninstall.sh --force
+### Skill Categories
 
-# Remove everything including backups (dangerous)
-./uninstall.sh --purge
+| Category | Examples |
+|----------|----------|
+| **Process** | TDD, debugging, verification |
+| **Domain** | Git workflow, API design, database |
+| **Meta** | Writing skills, patterns |
 
-# Show help
-./uninstall.sh --help
+### Skill Activation
+
+When you see `SKILL ACTIVATION CHECK`, invoke the recommended skills:
+
+```
+SKILL ACTIVATION CHECK
+
+CRITICAL SKILLS (REQUIRED):
+  -> test-driven-development
+  -> session-management
 ```
 
-### Restoring from Backup
+Use the Skill tool: `skill: "tdd"`
 
-After uninstalling, you can restore from the backup:
+## Hooks System
 
-```bash
-cp -R ~/.claude/uninstall-backup-YYYYMMDD_HHMMSS/* ~/.claude/
-```
+Hooks run automatically on Claude Code events:
+
+| Event | Hook | Purpose |
+|-------|------|---------|
+| `PreToolUse:Bash` | git-safety-guard | Block destructive commands |
+| `PreToolUse:Bash` | block-direct-submit | Enforce PR workflow |
+| `PreToolUse:Edit` | require-isolation | Worktree protection |
+| `UserPromptSubmit` | skill-activation | Suggest relevant skills |
+| `SessionStart` | session-start | Initialize session |
+| `PostToolUse` | learning-capture | Capture patterns |
 
 ## Project Structure
 
 ```
-/
-├── install.sh              # Main installer script
-├── uninstall.sh            # Uninstaller script
+claude-code-tools/
+├── install.sh              # Installer
+├── uninstall.sh            # Uninstaller
 ├── README.md               # This file
-├── global/                 # Files to install to ~/.claude/
-│   ├── settings.json       # Global settings
-│   ├── skill-rules.json    # Skill activation rules
-│   ├── agents/             # Agent definitions
-│   ├── skills/             # Skill definitions
-│   ├── commands/           # Command definitions
+├── VERSION                 # Current version
+├── global/                 # Files installed to ~/.claude/
+│   ├── settings.json       # Claude Code settings
+│   ├── jarvis.json         # Jarvis config
+│   ├── statusline.sh       # Status bar script
 │   ├── hooks/              # Hook scripts
+│   ├── skills/             # Skill definitions
+│   ├── commands/           # Slash commands
+│   ├── agents/             # Agent definitions
+│   ├── rules/              # Coding standards
 │   ├── patterns/           # Pattern library
-│   ├── rules/              # Behavior rules
-│   └── lib/                # Utility libraries
-├── init/                   # First-run initialization
+│   └── lib/                # Utilities
+├── init/                   # First-run setup
 └── templates/              # Project templates
-    └── project-types/      # Framework-specific templates
 ```
 
 ## Troubleshooting
 
-### Claude CLI not found
-
-The installer will continue without Claude CLI, but you'll need to install it before using Jarvis:
-
-1. Visit https://claude.ai/code
-2. Follow the installation instructions
-3. Verify with `claude --version`
+### Hook not working
+Restart Claude Code after changing `settings.json`.
 
 ### Permission denied
-
-Make the scripts executable:
-
 ```bash
-chmod +x install.sh uninstall.sh
+chmod +x install.sh ~/.claude/hooks/*.sh
 ```
 
-### Backup location
+### jq not found
+```bash
+# macOS
+brew install jq
 
-Backups are stored in:
-- Installation backups: `~/.claude/backups/`
-- Uninstall backups: `~/.claude/uninstall-backup-YYYYMMDD_HHMMSS/`
+# Ubuntu/Debian
+sudo apt install jq
+```
 
-### Conflicts with existing configuration
-
-If you have an existing `~/.claude/` directory:
-
-1. The installer automatically creates a backup
-2. Jarvis files are merged with existing files
-3. Files marked `# JARVIS-USER-MODIFIED` are preserved
+### Restore from backup
+Backups are in `~/.claude/backups/`:
+```bash
+cp -R ~/.claude/backups/YYYYMMDD_HHMMSS/* ~/.claude/
+```
 
 ## Contributing
 
-To add new features to Jarvis:
-
-1. **New Skill**: Add to `global/skills/[category]/skill-name.md`
-2. **New Agent**: Add to `global/agents/agent-name.md`
-3. **New Command**: Add to `global/commands/command-name.md`
+1. **New Hook**: Add to `global/hooks/` and update `settings.json`
+2. **New Skill**: Add to `global/skills/[category]/`
+3. **New Command**: Add to `global/commands/`
 4. **New Pattern**: Add to `global/patterns/full/` and update `index.json`
 
 ## License
 
 MIT License - See LICENSE file for details.
 
-## Support
+## Acknowledgments
 
-For issues and feature requests, please open an issue on the repository.
+- Git safety guard inspired by [Dicklesworthstone's hooks](https://github.com/Dicklesworthstone/misc_coding_agent_tips_and_scripts)
+- Built for [Claude Code](https://claude.ai/code) by Anthropic
