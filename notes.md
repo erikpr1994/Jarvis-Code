@@ -33,3 +33,11 @@ Rules = user preferences? Should they be configurable instead of fixed ones?
 Why testing pyramid? Configurable between testing pyramid or testing trophy?
 Shouldn't skills go into it's folder and be named SKILLS.md? Can we move templates and not needed data from the beginning into it's own file and be referenced in the skill? Does type and priority works with Claude Code? Or does it work with our system? (✅)
 TDD vs tdd-workflow. What's the difference? (✅)
+
+## Agent Guidelines / Architecture
+
+Analyze the current CLAUDE.md and any agent instruction files. For every "soft rule" or behavioral instruction you find (e.g., "use conventional commits", "validate inputs", "use ripgrep over grep"), propose a technical enforcement mechanism—a linter rule, git hook, CLI wrapper, or automated script—that makes the rule impossible to break.
+
+The goal: remove text-based instructions from the agent's context window entirely. If something can be enforced by a tool, it shouldn't be in the prompt. This saves context, increases reliability, and turns "please do X" into "X is the only option."
+
+Reference: https://x.com/i/status/2008596745622589922
