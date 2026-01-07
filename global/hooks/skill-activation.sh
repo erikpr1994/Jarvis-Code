@@ -13,6 +13,17 @@ source "${SCRIPT_DIR}/lib/common.sh"
 init_hook "skill-activation" "optional"
 
 # ============================================================================
+# BYPASS CONDITIONS
+# ============================================================================
+
+# Check if this hook is enabled in preferences (default: enabled)
+if ! is_hook_enabled "skillActivation" "true"; then
+    log_info "Hook disabled in preferences"
+    finalize_hook 0
+    exit 0
+fi
+
+# ============================================================================
 # CONFIGURATION
 # ============================================================================
 

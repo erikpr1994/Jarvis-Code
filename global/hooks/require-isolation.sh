@@ -28,15 +28,11 @@ FILE_PATH=$(parse_file_path "$INPUT")
 # BYPASS CONDITIONS
 # ============================================================================
 
-# Check if worktree isolation is disabled in config
-JARVIS_CONFIG="${HOME}/.claude/config/jarvis.json"
-if [[ -f "$JARVIS_CONFIG" ]]; then
-    REQUIRE_ISOLATION=$(jq -r '.rules.requireWorktreeIsolation // true' "$JARVIS_CONFIG" 2>/dev/null || echo "true")
-    if [[ "$REQUIRE_ISOLATION" == "false" ]]; then
-        log_info "Bypass enabled: requireWorktreeIsolation=false in config"
-        finalize_hook 0
-        exit 0
-    fi
+# Check if this hook is enabled in preferences (default: disabled)
+if ! is_hook_enabled "requireIsolation" "false"; then
+    log_info "Hook disabled in preferences"
+    finalize_hook 0
+    exit 0
 fi
 
 # Check for explicit bypass via environment variable
