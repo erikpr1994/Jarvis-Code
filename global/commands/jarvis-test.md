@@ -105,7 +105,7 @@ Use this command during skill/hook development:
 
 - `/jarvis skills` - List available skills
 - `/jarvis status` - Show current session status
-- `/init` - Initialize Jarvis in a project
+- `/jarvis-init` - Initialize Jarvis in a project
 
 ## File Location
 

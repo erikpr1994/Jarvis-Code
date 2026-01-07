@@ -1,20 +1,22 @@
 ---
-name: config
+name: jarvis-config
 description: Configure Jarvis preferences - rules, features, and behavior settings
 disable-model-invocation: false
 ---
 
-# /config - Jarvis Configuration
+# /jarvis-config - Jarvis Configuration
+
+> **Note:** Use `/config` for Claude Code's built-in settings UI.
 
 Manage your Jarvis preferences interactively.
 
 ## Usage
 
 ```
-/config              # Show all config and offer to change
-/config rules        # Configure rule preferences
-/config features     # Configure feature toggles
-/config reset        # Reset to defaults
+/jarvis-config              # Show all config and offer to change
+/jarvis-config rules        # Configure rule preferences
+/jarvis-config features     # Configure feature toggles
+/jarvis-config reset        # Reset to defaults
 ```
 
 ## Process
@@ -121,15 +123,15 @@ For `/config reset`:
 
 **Configure everything interactively:**
 ```
-/config
+/jarvis-config
 ```
 
 **Just configure rules:**
 ```
-/config rules
+/jarvis-config rules
 ```
 
 **Reset to defaults:**
 ```
-/config reset
+/jarvis-config reset
 ```

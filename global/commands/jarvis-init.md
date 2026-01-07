@@ -1,10 +1,12 @@
 ---
-name: init
+name: jarvis-init
 description: Initialize Jarvis in a new project - sets up CLAUDE.md, skills, agents, and project configuration
 disable-model-invocation: false
 ---
 
-# /init - Project Initialization
+# /jarvis-init - Project Initialization
+
+> **Note:** Use `/init` for Claude Code's built-in CLAUDE.md generator.
 
 Initialize Jarvis AI assistant in your project with intelligent configuration based on your codebase.
 
@@ -176,17 +178,17 @@ After initialization, present:
 
 **Basic initialization:**
 ```
-/init
+/jarvis-init
 ```
 
 **With framework hint:**
 ```
-/init nextjs
+/jarvis-init nextjs
 ```
 
 **For a Python project:**
 ```
-/init python-fastapi
+/jarvis-init python-fastapi
 ```
 
 ## Notes

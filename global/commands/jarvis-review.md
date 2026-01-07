@@ -1,10 +1,12 @@
 ---
-name: review
+name: jarvis-review
 description: Comprehensive code review with quality checks, security analysis, and PR preparation
 disable-model-invocation: false
 ---
 
-# /review - Code Review Command
+# /jarvis-review - Code Review Command
+
+> **Note:** Use `/jarvis-review` for Claude Code's built-in code review.
 
 Perform thorough code review with automated quality checks, security analysis, and optional PR creation.
 
@@ -168,25 +170,25 @@ Perform thorough code review with automated quality checks, security analysis, a
 
 **Standard review:**
 ```
-/review
+/jarvis-review
 ```
 Returns full review report with all findings.
 
 **Quick review:**
 ```
-/review quick
+/jarvis-review quick
 ```
 Returns only critical issues and blockers.
 
 **Security focused:**
 ```
-/review security
+/jarvis-review security
 ```
 Deep security analysis only.
 
 **Create PR:**
 ```
-/review pr
+/jarvis-review pr
 ```
 Creates PR with auto-generated summary.
 
@@ -217,27 +219,27 @@ When creating a PR, use this structure:
 
 **Review current branch against main:**
 ```
-/review
+/jarvis-review
 ```
 
 **Review and create PR:**
 ```
-/review pr
+/jarvis-review pr
 ```
 
 **Review against specific branch:**
 ```
-/review branch:develop
+/jarvis-review branch:develop
 ```
 
 **Security-focused review:**
 ```
-/review security
+/jarvis-review security
 ```
 
 **Quick blocking issues only:**
 ```
-/review quick
+/jarvis-review quick
 ```
 
 ## Review Checklist

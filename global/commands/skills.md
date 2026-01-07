@@ -142,7 +142,7 @@ Expert-level git operations including complex workflows, rebasing, cherry-pickin
 
 ### Activation Triggers
 - Keywords: `git`, `commit`, `branch`, `merge`, `rebase`, `PR`, `pull request`
-- Commands: `/commit`, `/review`
+- Commands: `/commit`, `/jarvis-review`
 - Patterns: Git-related error messages
 
 ### Sub-Skills

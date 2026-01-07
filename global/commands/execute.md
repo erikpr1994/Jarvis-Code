@@ -165,7 +165,7 @@ This command delegates to the **executing-plans** skill for systematic execution
     - Build: Passed
 
     ### Next Steps
-    - Create PR: `/review pr`
+    - Create PR: `/jarvis-review pr`
     - Commit changes: `/commit`
     ```
 

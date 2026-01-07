@@ -6,7 +6,9 @@ Custom slash commands available in all projects.
 
 ```
 commands/
-├── init.md             # Initialize a new project with Jarvis
+├── jarvis-init.md      # Initialize a new project with Jarvis
+├── jarvis-config.md    # Configure Jarvis preferences
+├── jarvis-review.md    # Comprehensive code review
 ├── status.md           # Show current session status
 ├── skills.md           # List and manage skills
 └── ...
@@ -44,7 +46,7 @@ These are the core commands that should be available:
 
 | Command | Description |
 |---------|-------------|
-| `/init` | Initialize Jarvis in current project |
+| `/jarvis-init` | Initialize Jarvis in current project |
 | `/status` | Show session and task status |
 | `/skills` | List available skills |
 | `/resume` | Resume previous session |

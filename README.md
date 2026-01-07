@@ -43,7 +43,7 @@ cd your-project
 claude
 
 # Initialize Jarvis for this project
-/init
+/jarvis-init
 ```
 
 ## Installation
@@ -93,11 +93,11 @@ The installer will prompt you to configure which hooks and rules you want enable
 
 | Command | Description |
 |---------|-------------|
-| `/init` | Initialize Jarvis in current project |
+| `/jarvis-init` | Initialize Jarvis in current project |
 | `/update` | Update Jarvis from repo |
-| `/config` | Configure preferences interactively |
+| `/jarvis-config` | Configure preferences interactively |
 | `/plan` | Create implementation plan |
-| `/review` | Run code review |
+| `/jarvis-review` | Run code review |
 | `/test` | Run tests with TDD guidance |
 | `/commit` | Smart commit with verification |
 | `/skills` | List available skills |
@@ -106,11 +106,11 @@ The installer will prompt you to configure which hooks and rules you want enable
 
 ### Interactive Setup
 
-During installation, you'll be prompted to configure your preferences. You can reconfigure anytime with `/config`.
+During installation, you'll be prompted to configure your preferences. You can reconfigure anytime with `/jarvis-config`.
 
 ### Preferences File
 
-Edit `~/.claude/config/preferences.json` or use `/config`:
+Edit `~/.claude/config/preferences.json` or use `/jarvis-config`:
 
 ```json
 {
