@@ -214,10 +214,22 @@ check_prerequisites() {
         log_info "Claude CLI: found at $(which claude)"
     fi
 
-    # Check for bash version (need 4+ for associative arrays)
+    # Check for bash version (recommend 4+ for better performance)
     local bash_version="${BASH_VERSION%%.*}"
     if [[ "$bash_version" -lt 4 ]]; then
-        log_warning "Bash version $BASH_VERSION detected. Some features require Bash 4+"
+        log_warning "Bash version $BASH_VERSION detected (macOS default)"
+        log_info "Jarvis is compatible, but Bash 5+ is recommended for best experience"
+        echo ""
+        if command_exists brew; then
+            log_info "Install newer Bash with: brew install bash"
+            read -p "Install Bash 5+ now? (y/N): " install_bash
+            if [[ "$install_bash" =~ ^[Yy]$ ]]; then
+                brew install bash
+                log_success "Bash installed! Add /opt/homebrew/bin/bash to /etc/shells and run 'chsh -s /opt/homebrew/bin/bash' to make it default"
+            fi
+        else
+            log_info "Install Homebrew (https://brew.sh) then run: brew install bash"
+        fi
     else
         log_info "Bash: version $BASH_VERSION"
     fi
@@ -441,6 +453,95 @@ create_version_file() {
     log_success "Version marker created"
 }
 
+# Configure user preferences interactively
+configure_preferences() {
+    log_step "Configuring preferences..."
+
+    local config_dir="${CLAUDE_DIR}/config"
+    local config_file="${config_dir}/preferences.json"
+    local defaults_file="${GLOBAL_SOURCE}/config/defaults.json"
+
+    mkdir -p "$config_dir"
+
+    # If config already exists, ask if they want to reconfigure
+    if [[ -f "$config_file" ]]; then
+        log_info "Existing preferences found"
+        read -p "Reconfigure preferences? (y/N): " reconfigure
+        if [[ ! "$reconfigure" =~ ^[Yy]$ ]]; then
+            log_info "Keeping existing preferences"
+            return 0
+        fi
+    fi
+
+    # Start with defaults
+    if [[ -f "$defaults_file" ]]; then
+        cp "$defaults_file" "$config_file"
+    else
+        cat > "$config_file" << 'DEFAULTS'
+{
+  "version": "1.0.0",
+  "rules": {
+    "tdd": { "enabled": false, "severity": "warning" },
+    "conventionalCommits": { "enabled": true, "severity": "warning" }
+  },
+  "hooks": {
+    "gitSafetyGuard": { "enabled": true, "bypassable": true },
+    "requireIsolation": { "enabled": false, "bypassable": true },
+    "preCommitTests": { "enabled": false, "bypassable": true },
+    "skillActivation": { "enabled": true, "bypassable": false }
+  }
+}
+DEFAULTS
+    fi
+
+    echo ""
+    echo -e "${CYAN}Configure your preferences:${NC}"
+    echo ""
+
+    # Hook: Git Safety Guard
+    echo -e "${YELLOW}Git Safety Guard${NC} - Blocks dangerous git commands (reset --hard, push --force)"
+    read -p "Enable? (Y/n): " git_safety
+    if [[ "$git_safety" =~ ^[Nn]$ ]]; then
+        jq '.hooks.gitSafetyGuard.enabled = false' "$config_file" > "${config_file}.tmp" && mv "${config_file}.tmp" "$config_file"
+    fi
+
+    # Hook: Require Isolation
+    echo ""
+    echo -e "${YELLOW}Branch Isolation${NC} - Block file edits on main/master branch"
+    read -p "Enable? (y/N): " isolation
+    if [[ "$isolation" =~ ^[Yy]$ ]]; then
+        jq '.hooks.requireIsolation.enabled = true' "$config_file" > "${config_file}.tmp" && mv "${config_file}.tmp" "$config_file"
+    fi
+
+    # Hook: Pre-commit Tests
+    echo ""
+    echo -e "${YELLOW}Pre-commit Tests${NC} - Require tests to pass before commits"
+    read -p "Enable? (y/N): " precommit
+    if [[ "$precommit" =~ ^[Yy]$ ]]; then
+        jq '.hooks.preCommitTests.enabled = true' "$config_file" > "${config_file}.tmp" && mv "${config_file}.tmp" "$config_file"
+    fi
+
+    # Rule: TDD
+    echo ""
+    echo -e "${YELLOW}Test-Driven Development${NC} - Encourage writing tests before implementation"
+    read -p "Enable? (y/N): " tdd
+    if [[ "$tdd" =~ ^[Yy]$ ]]; then
+        jq '.rules.tdd.enabled = true' "$config_file" > "${config_file}.tmp" && mv "${config_file}.tmp" "$config_file"
+    fi
+
+    # Rule: Conventional Commits
+    echo ""
+    echo -e "${YELLOW}Conventional Commits${NC} - Use feat:, fix:, chore: prefixes"
+    read -p "Enable? (Y/n): " conventional
+    if [[ "$conventional" =~ ^[Nn]$ ]]; then
+        jq '.rules.conventionalCommits.enabled = false' "$config_file" > "${config_file}.tmp" && mv "${config_file}.tmp" "$config_file"
+    fi
+
+    echo ""
+    log_success "Preferences saved to $config_file"
+    log_info "Run '/config' in Claude Code to change these later"
+}
+
 # Print usage instructions
 print_usage() {
     log_step "Installation complete!"
@@ -481,10 +582,15 @@ print_usage() {
 main() {
     # Parse arguments first (some don't need banner)
     local force=false
+    local skip_config=false
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -f|--force)
                 force=true
+                shift
+                ;;
+            -s|--skip-config)
+                skip_config=true
                 shift
                 ;;
             -v|--version)
@@ -500,12 +606,14 @@ main() {
                 echo ""
                 echo "Options:"
                 echo "  -f, --force        Force installation without prompts"
+                echo "  -s, --skip-config  Skip interactive configuration"
                 echo "  -v, --version      Show version information"
                 echo "  -c, --check-update Check for updates"
                 echo "  -h, --help         Show this help message"
                 echo ""
                 echo "Examples:"
-                echo "  $0              Install/update Jarvis"
+                echo "  $0              Install/update Jarvis (interactive)"
+                echo "  $0 --skip-config  Install with default preferences"
                 echo "  $0 --version    Show current version"
                 echo "  $0 --force      Force reinstall"
                 echo ""
@@ -536,6 +644,14 @@ main() {
     setup_hooks
     make_executable
     create_version_file
+
+    # Configure preferences (unless skipped)
+    if [[ "$skip_config" != true ]]; then
+        configure_preferences
+    else
+        log_info "Skipping configuration (use '/config' in Claude Code to configure later)"
+    fi
+
     print_usage
 }
 

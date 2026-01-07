@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "rules": {
+    "tdd": {
+      "enabled": false,
+      "severity": "warning"
+    },
+    "conventionalCommits": {
+      "enabled": true,
+      "severity": "warning"
+    },
+    "codeQuality": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "documentation": {
+      "enabled": true,
+      "severity": "info"
+    }
+  },
+  "hooks": {
+    "gitSafetyGuard": {
+      "enabled": true,
+      "bypassable": true
+    },
+    "requireIsolation": {
+      "enabled": false,
+      "bypassable": true
+    },
+    "preCommitTests": {
+      "enabled": false,
+      "bypassable": true
+    },
+    "skillActivation": {
+      "enabled": true,
+      "bypassable": false
+    },
+    "learningCapture": {
+      "enabled": true,
+      "bypassable": false
+    },
+    "blockDirectSubmit": {
+      "enabled": false,
+      "bypassable": true
+    }
+  }
+}

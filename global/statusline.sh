@@ -8,24 +8,28 @@ model_name=$(echo "$input" | jq -r '.model.display_name')
 current_dir=$(echo "$input" | jq -r '.workspace.current_dir')
 
 # Extract context window information
-context_size=$(echo "$input" | jq -r '.context_window.context_window_size // 200000')
+context_size=$(echo "$input" | jq -r '.context_window.context_window_size // 200000' | cut -d'.' -f1)
 current_usage=$(echo "$input" | jq '.context_window.current_usage')
 
-# Calculate context percentage
-if [ "$current_usage" != "null" ]; then
-  current_tokens=$(echo "$current_usage" | jq '.input_tokens + .cache_creation_input_tokens + .cache_read_input_tokens')
-  context_percent=$((current_tokens * 100 / context_size))
-else
-  context_percent=0
+# Calculate context percentage (with safe defaults)
+context_percent=0
+if [ "$current_usage" != "null" ] && [ -n "$current_usage" ]; then
+  current_tokens=$(echo "$current_usage" | jq '(.input_tokens // 0) + (.cache_creation_input_tokens // 0) + (.cache_read_input_tokens // 0)' 2>/dev/null | cut -d'.' -f1)
+  # Ensure we have valid numbers
+  current_tokens=${current_tokens:-0}
+  context_size=${context_size:-200000}
+  if [ "$context_size" -gt 0 ] 2>/dev/null && [ "$current_tokens" -ge 0 ] 2>/dev/null; then
+    context_percent=$((current_tokens * 100 / context_size))
+  fi
 fi
 
-# Build context progress bar (20 chars wide)
+# Build context progress bar (15 chars wide)
 bar_width=15
 filled=$((context_percent * bar_width / 100))
 empty=$((bar_width - filled))
 bar=""
-for ((i=0; i<filled; i++)); do bar+="█"; done
-for ((i=0; i<empty; i++)); do bar+="░"; done
+i=0; while [ $i -lt $filled ]; do bar="${bar}█"; i=$((i + 1)); done
+i=0; while [ $i -lt $empty ]; do bar="${bar}░"; i=$((i + 1)); done
 
 # Extract cost information
 session_cost=$(echo "$input" | jq -r '.cost.total_cost_usd // empty')

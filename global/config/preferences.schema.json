@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Jarvis Preferences",
+  "description": "User preferences for rules and hooks",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version",
+      "default": "1.0.0"
+    },
+    "rules": {
+      "type": "object",
+      "description": "Behavioral preferences (soft guidelines for Claude)",
+      "properties": {
+        "tdd": {
+          "$ref": "#/definitions/rule",
+          "description": "Test-Driven Development: write tests before implementation"
+        },
+        "conventionalCommits": {
+          "$ref": "#/definitions/rule",
+          "description": "Use conventional commit format (feat:, fix:, etc.)"
+        },
+        "codeQuality": {
+          "$ref": "#/definitions/rule",
+          "description": "Follow code quality best practices"
+        },
+        "documentation": {
+          "$ref": "#/definitions/rule",
+          "description": "Document code and changes appropriately"
+        }
+      }
+    },
+    "hooks": {
+      "type": "object",
+      "description": "Automated enforcement mechanisms (hard blocks/actions)",
+      "properties": {
+        "gitSafetyGuard": {
+          "$ref": "#/definitions/hook",
+          "description": "Block dangerous git commands (reset --hard, push --force, etc.)"
+        },
+        "requireIsolation": {
+          "$ref": "#/definitions/hook",
+          "description": "Block file edits on main/master branch"
+        },
+        "preCommitTests": {
+          "$ref": "#/definitions/hook",
+          "description": "Require tests to pass before commits"
+        },
+        "skillActivation": {
+          "$ref": "#/definitions/hook",
+          "description": "Suggest relevant skills based on prompts"
+        },
+        "learningCapture": {
+          "$ref": "#/definitions/hook",
+          "description": "Capture learnings from sessions"
+        },
+        "blockDirectSubmit": {
+          "$ref": "#/definitions/hook",
+          "description": "Require using /commit skill for PR submissions"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "rule": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this rule is active"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["error", "warning", "info"],
+          "default": "warning",
+          "description": "How strictly to enforce: error=block, warning=caution, info=suggest"
+        }
+      },
+      "required": ["enabled"]
+    },
+    "hook": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this hook is active"
+        },
+        "bypassable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this hook can be bypassed with environment variables"
+        }
+      },
+      "required": ["enabled"]
+    }
+  }
+}
