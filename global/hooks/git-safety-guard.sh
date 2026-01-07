@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+# Hook: git-safety-guard
+# Event: PreToolUse
+# Tools: Bash
+# Purpose: Block destructive git and filesystem commands
+# Based on: https://github.com/Dicklesworthstone/misc_coding_agent_tips_and_scripts
+
+set -euo pipefail
+
+# Get script directory and source common library
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+source "${SCRIPT_DIR}/lib/common.sh"
+
+# Initialize hook
+init_hook "git-safety-guard"
+
+# ============================================================================
+# BYPASS CONDITIONS
+# ============================================================================
+
+# Check for explicit bypass
+if bypass_enabled "CLAUDE_ALLOW_DESTRUCTIVE"; then
+    log_info "Bypass enabled: CLAUDE_ALLOW_DESTRUCTIVE=1"
+    finalize_hook 0
+    exit 0
+fi
+
+# ============================================================================
+# COMMAND DETECTION
+# ============================================================================
+
+# Read input from stdin
+INPUT=$(cat)
+
+# Parse command from Bash tool input
+COMMAND=$(parse_command "$INPUT")
+
+if [[ -z "$COMMAND" ]]; then
+    log_debug "No command found in input"
+    finalize_hook 0
+    exit 0
+fi
+
+log_debug "Checking command: $COMMAND"
+
+# Normalize absolute paths (e.g., /usr/bin/git -> git)
+# Handle both git and rm separately for macOS compatibility
+NORMALIZED_CMD="$COMMAND"
+NORMALIZED_CMD=$(echo "$NORMALIZED_CMD" | sed -E 's|^/[^ ]*/s?bin/git|git|')
+NORMALIZED_CMD=$(echo "$NORMALIZED_CMD" | sed -E 's|^/[^ ]*/s?bin/rm|rm|')
+
+# ============================================================================
+# SAFE PATTERNS (checked first - these are allowed)
+# ============================================================================
+
+# git checkout -b (creating new branch)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+checkout\s+-b\s+'; then
+    log_debug "Allowed: git checkout -b (creating branch)"
+    finalize_hook 0
+    exit 0
+fi
+
+# git checkout --orphan (creating orphan branch)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+checkout\s+--orphan\s+'; then
+    log_debug "Allowed: git checkout --orphan"
+    finalize_hook 0
+    exit 0
+fi
+
+# git restore --staged (unstaging only - safe)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+restore\s+(--staged|-S)\s+' && \
+   ! echo "$NORMALIZED_CMD" | grep -qE '(--worktree|-W)'; then
+    log_debug "Allowed: git restore --staged (unstaging only)"
+    finalize_hook 0
+    exit 0
+fi
+
+# git clean -n/--dry-run (preview mode)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+clean\s+.*(-n|--dry-run)'; then
+    log_debug "Allowed: git clean dry-run"
+    finalize_hook 0
+    exit 0
+fi
+
+# rm -rf on temp directories
+if echo "$NORMALIZED_CMD" | grep -qE 'rm\s+.*-[rRfF]+.*\s+(/tmp/|/var/tmp/|\$TMPDIR|\${TMPDIR)'; then
+    log_debug "Allowed: rm -rf on temp directory"
+    finalize_hook 0
+    exit 0
+fi
+
+# git push --force-with-lease (safer alternative)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+push\s+.*--force-with-lease'; then
+    log_debug "Allowed: git push --force-with-lease"
+    finalize_hook 0
+    exit 0
+fi
+
+# ============================================================================
+# DESTRUCTIVE PATTERNS (block these)
+# ============================================================================
+
+block_command() {
+    local reason="$1"
+    log_warn "Blocked destructive command: $reason"
+    cat << EOF
+{
+  "decision": "block",
+  "reason": "DESTRUCTIVE COMMAND BLOCKED\n\nReason: $reason\n\nCommand: $COMMAND\n\nIf this operation is truly needed, ask the user to run it manually or set CLAUDE_ALLOW_DESTRUCTIVE=1"
+}
+EOF
+    finalize_hook 1
+    exit 0
+}
+
+# git checkout -- <files> (discards uncommitted changes)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+checkout\s+--\s+'; then
+    block_command "git checkout -- discards uncommitted changes permanently. Use 'git stash' first."
+fi
+
+# git checkout <ref> -- <path> (overwrites working tree)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+checkout\s+[^\s]+\s+--\s+'; then
+    block_command "git checkout <ref> -- <path> overwrites working tree. Use 'git stash' first."
+fi
+
+# git restore <files> (discards uncommitted changes)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+restore\s+' && \
+   ! echo "$NORMALIZED_CMD" | grep -qE 'git\s+restore\s+(--staged|-S)'; then
+    block_command "git restore discards uncommitted changes. Use 'git stash' or 'git diff' first."
+fi
+
+# git restore --worktree (discards changes)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+restore\s+.*(--worktree|-W)'; then
+    block_command "git restore --worktree discards uncommitted changes permanently."
+fi
+
+# git reset --hard (destroys uncommitted work)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+reset\s+--hard'; then
+    block_command "git reset --hard destroys uncommitted changes. Use 'git stash' first."
+fi
+
+# git reset --merge (can lose changes)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+reset\s+--merge'; then
+    block_command "git reset --merge can lose uncommitted changes."
+fi
+
+# git clean -f (removes untracked files)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+clean\s+-[a-z]*f' && \
+   ! echo "$NORMALIZED_CMD" | grep -qE 'git\s+clean\s+.*-n'; then
+    block_command "git clean -f removes untracked files permanently. Review with 'git clean -n' first."
+fi
+
+# git push --force/-f (destroys remote history)
+# Note: Allow --force-with-lease which is safer
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+push\s+.*--force($|\s)' || \
+   echo "$NORMALIZED_CMD" | grep -qE 'git\s+push\s+.*\s-f(\s|$)'; then
+    if ! echo "$NORMALIZED_CMD" | grep -qE 'git\s+push\s+.*--force-with-lease'; then
+        block_command "Force push can destroy remote history. Use --force-with-lease if necessary."
+    fi
+fi
+
+# git branch -D (force delete without merge check)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+branch\s+-D\b'; then
+    block_command "git branch -D force-deletes without merge check. Use -d for safety."
+fi
+
+# git stash drop/clear (permanently deletes stashed changes)
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+stash\s+drop'; then
+    block_command "git stash drop permanently deletes stashed changes. List stashes with 'git stash list' first."
+fi
+
+if echo "$NORMALIZED_CMD" | grep -qE 'git\s+stash\s+clear'; then
+    block_command "git stash clear permanently deletes ALL stashed changes."
+fi
+
+# rm -rf on root or home paths (EXTREMELY DANGEROUS)
+if echo "$NORMALIZED_CMD" | grep -qE 'rm\s+.*-[rRfF]+.*\s+[/~]' && \
+   ! echo "$NORMALIZED_CMD" | grep -qE 'rm\s+.*-[rRfF]+.*\s+(/tmp/|/var/tmp/)'; then
+    block_command "rm -rf on root/home paths is EXTREMELY DANGEROUS. Ask the user to run it manually."
+fi
+
+# rm -rf generic (requires approval)
+if echo "$NORMALIZED_CMD" | grep -qE 'rm\s+.*-[rRfF]+'; then
+    block_command "rm -rf is destructive and requires human approval. Explain what you want to delete."
+fi
+
+# ============================================================================
+# ALLOW COMMAND
+# ============================================================================
+
+log_debug "Command allowed - no destructive patterns detected"
+finalize_hook 0

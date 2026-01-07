@@ -29,6 +29,14 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash ~/.claude/hooks/git-safety-guard.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/block-direct-submit.sh"
+          },
+          {
+            "type": "command",
             "command": "bash ~/.claude/hooks/pre-commit.sh"
           }
         ]
