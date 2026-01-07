@@ -523,21 +523,21 @@ rollback_learning() {
         if [[ -f "${backup_dir}/pattern.md" ]]; then
             cp "${backup_dir}/pattern.md" "${PATTERNS_DIR}/${learning_id}.md"
             echo -e "  ${GREEN}[RESTORED]${NC} Pattern file"
-            ((restored_count++))
+            $1=$(($1 + 1))
         fi
 
         # Restore preferences
         if [[ -f "${backup_dir}/preferences.json" ]]; then
             cp "${backup_dir}/preferences.json" "${RULES_DIR}/preferences.json"
             echo -e "  ${GREEN}[RESTORED]${NC} Preferences"
-            ((restored_count++))
+            $1=$(($1 + 1))
         fi
 
         # Restore skill-rules
         if [[ -f "${backup_dir}/skill-rules.json" ]]; then
             cp "${backup_dir}/skill-rules.json" "${JARVIS_ROOT}/skill-rules.json"
             echo -e "  ${GREEN}[RESTORED]${NC} Skill rules"
-            ((restored_count++))
+            $1=$(($1 + 1))
         fi
 
         log "OK" "Rolled back $restored_count files from: $backup_dir"
@@ -786,7 +786,7 @@ gc_backups() {
         while IFS= read -r backup; do
             if [[ -n "$backup" && ! " ${to_delete[*]} " =~ " ${backup} " ]]; then
                 to_delete+=("$backup")
-                ((excess--))
+                $1=$(($1 - 1))
                 if [[ "$excess" -le 0 ]]; then
                     break
                 fi

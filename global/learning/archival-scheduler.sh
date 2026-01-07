@@ -204,10 +204,10 @@ process_hot_to_warm() {
                 echo "$file_updated" > "$file"
 
                 log "OK" "Promoted to warm: $learning_id"
-                ((promoted++))
+                $1=$(($1 + 1))
             fi
         else
-            ((skipped++))
+            $1=$(($1 + 1))
         fi
     done
 
@@ -233,7 +233,7 @@ enforce_hot_capacity() {
             tier=$(jq -r '.tier // "hot"' "$file" 2>/dev/null || echo "hot")
             if [[ "$tier" == "hot" ]]; then
                 files+=("$file")
-                ((hot_count++))
+                $1=$(($1 + 1))
             fi
         fi
     done
@@ -350,7 +350,7 @@ process_warm_to_cold() {
                 fi
 
                 log "OK" "Demoted to cold: $learning_id → $archive_dir"
-                ((demoted++))
+                $1=$(($1 + 1))
             fi
         done <<< "$items_to_demote"
     done
@@ -435,7 +435,7 @@ compress_cold_archives() {
                 # Remove original directory
                 rm -rf "$archive_dir"
                 log "OK" "Compressed archive: $quarter_name ($file_count files)"
-                ((compressed++))
+                $1=$(($1 + 1))
             fi
         fi
     done
@@ -568,13 +568,13 @@ show_status() {
 
     for file in "$LEARNING_INBOX"/*.json; do
         if [[ -f "$file" ]]; then
-            ((hot_count++))
+            $1=$(($1 + 1))
             local status
             status=$(jq -r '.status // "pending"' "$file" 2>/dev/null || echo "pending")
             case "$status" in
-                pending) ((hot_pending++)) ;;
-                validated) ((hot_validated++)) ;;
-                confirmed) ((hot_confirmed++)) ;;
+                pending) $1=$(($1 + 1)) ;;
+                validated) $1=$(($1 + 1)) ;;
+                confirmed) $1=$(($1 + 1)) ;;
             esac
         fi
     done
@@ -605,12 +605,12 @@ show_status() {
 
     for item in "$ARCHIVE_ROOT"/*; do
         if [[ -d "$item" ]]; then
-            ((cold_dirs++))
+            $1=$(($1 + 1))
             local count
             count=$(find "$item" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
             cold_total_files=$((cold_total_files + count))
         elif [[ -f "$item" && "$item" == *.tar.gz ]]; then
-            ((cold_compressed++))
+            $1=$(($1 + 1))
         fi
     done
 

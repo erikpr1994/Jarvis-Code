@@ -164,7 +164,7 @@ retry_with_backoff() {
   local exit_code
 
   while (( attempt < max_retries )); do
-    ((attempt++))
+    $1=$(($1 + 1))
     log_diagnostic "INFO" "Attempt $attempt/$max_retries: $cmd"
 
     output=$(eval "$cmd" 2>&1)
@@ -203,7 +203,7 @@ try_alternatives() {
   local attempt=0
 
   for alt in "${alternatives[@]}"; do
-    ((attempt++))
+    $1=$(($1 + 1))
     log_diagnostic "INFO" "Trying alternative $attempt/${#alternatives[@]}: $alt"
 
     output=$(eval "$alt" 2>&1)
@@ -559,7 +559,7 @@ run_hook_safely() {
       ;;
     124)
       # Timeout
-      ((SESSION_HOOK_FAILURES++))
+      $1=$(($1 + 1))
       save_health_state
       log_error "hook_timeout" "$hook" "Timed out after ${timeout_secs}s" "bypassed"
       echo "[!] Hook timed out: $(basename "$hook") (bypassing)"
@@ -568,7 +568,7 @@ run_hook_safely() {
       ;;
     *)
       # Hook crashed
-      ((SESSION_HOOK_FAILURES++))
+      $1=$(($1 + 1))
       save_health_state
       log_error "hook_failure" "$hook" "Exit code $exit_code: $output" "bypassed"
       echo "[!] Hook failed: $(basename "$hook") (bypassing)"
@@ -607,7 +607,7 @@ run_agent_safely() {
       ;;
     124)
       # Timeout
-      ((SESSION_AGENT_TIMEOUTS++))
+      $1=$(($1 + 1))
       save_health_state
       log_error "agent_timeout" "$agent_cmd" "Timed out after ${timeout_secs}s" "killed"
       check_degradation_triggers > /dev/null
@@ -668,13 +668,13 @@ handle_error() {
   local context="${3:-}"
   local alternatives="${4:-}"  # Comma-separated list of alternative commands
 
-  ((SESSION_REPEATED_FAILURES++))
+  $1=$(($1 + 1))
 
   # L1: Retry with backoff (for transient errors)
   if [[ "$error_type" == "transient" ]] || [[ "$error_type" == "network" ]]; then
     log_diagnostic "INFO" "L1: Attempting retry with backoff for $component"
     if retry_with_backoff "$component" 3; then
-      ((SESSION_REPEATED_FAILURES--))
+      $1=$(($1 - 1))
       return 0
     fi
   fi
@@ -684,7 +684,7 @@ handle_error() {
     log_diagnostic "INFO" "L2: Trying alternative approaches"
     IFS=',' read -ra alt_array <<< "$alternatives"
     if try_alternatives "${alt_array[@]}"; then
-      ((SESSION_REPEATED_FAILURES--))
+      $1=$(($1 - 1))
       return 0
     fi
   fi

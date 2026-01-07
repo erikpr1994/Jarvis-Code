@@ -16,32 +16,54 @@ set -euo pipefail
 # Default settings path
 SETTINGS_FILE="${JARVIS_SETTINGS:-${HOME}/.claude/settings.json}"
 
-# Strategy definitions
-declare -A PROJECT_TYPE_STRATEGIES=(
-    ["library"]="pyramid"
-    ["rust-package"]="pyramid"
-    ["go-module"]="pyramid"
-    ["python-package"]="pyramid"
-    ["next-app"]="trophy"
-    ["react-app"]="trophy"
-    ["flutter-app"]="trophy"
-    ["node-api"]="trophy"
-    ["monorepo"]="balanced"
-    ["standalone"]="auto"
+# Strategy definitions (Bash 3.2 compatible - using parallel indexed arrays)
+PROJECT_TYPE_KEYS=(
+    "library" "rust-package" "go-module" "python-package"
+    "next-app" "react-app" "flutter-app" "node-api"
+    "monorepo" "standalone"
+)
+PROJECT_TYPE_VALUES=(
+    "pyramid" "pyramid" "pyramid" "pyramid"
+    "trophy" "trophy" "trophy" "trophy"
+    "balanced" "auto"
 )
 
-declare -A DIRECTORY_STRATEGIES=(
-    ["lib"]="pyramid"
-    ["packages"]="pyramid"
-    ["utils"]="pyramid"
-    ["src/components"]="trophy"
-    ["src/app"]="trophy"
-    ["app"]="trophy"
-    ["api"]="trophy"
-    ["server"]="trophy"
-    ["algorithms"]="pyramid"
-    ["core"]="pyramid"
+DIRECTORY_KEYS=(
+    "lib" "packages" "utils"
+    "src/components" "src/app" "app" "api" "server"
+    "algorithms" "core"
 )
+DIRECTORY_VALUES=(
+    "pyramid" "pyramid" "pyramid"
+    "trophy" "trophy" "trophy" "trophy" "trophy"
+    "pyramid" "pyramid"
+)
+
+# Lookup function for project type strategy
+get_project_type_strategy() {
+    local key="$1"
+    local i
+    for i in "${!PROJECT_TYPE_KEYS[@]}"; do
+        if [[ "${PROJECT_TYPE_KEYS[$i]}" == "$key" ]]; then
+            echo "${PROJECT_TYPE_VALUES[$i]}"
+            return 0
+        fi
+    done
+    echo "auto"
+}
+
+# Lookup function for directory strategy
+get_directory_strategy() {
+    local key="$1"
+    local i
+    for i in "${!DIRECTORY_KEYS[@]}"; do
+        if [[ "${DIRECTORY_KEYS[$i]}" == "$key" ]]; then
+            echo "${DIRECTORY_VALUES[$i]}"
+            return 0
+        fi
+    done
+    echo ""
+}
 
 # ============================================================================
 # STRATEGY DETECTION
@@ -66,7 +88,8 @@ detect_testing_strategy() {
 
     # Use project type if provided
     if [[ -n "$project_type" ]]; then
-        local strategy="${PROJECT_TYPE_STRATEGIES[$project_type]:-auto}"
+        local strategy
+        strategy=$(get_project_type_strategy "$project_type")
         if [[ "$strategy" != "auto" ]]; then
             echo "$strategy"
             return 0
@@ -139,10 +162,12 @@ detect_directory_strategy() {
     fi
 
     # Check directory patterns
-    for pattern in "${!DIRECTORY_STRATEGIES[@]}"; do
+    local i
+    for i in "${!DIRECTORY_KEYS[@]}"; do
+        local pattern="${DIRECTORY_KEYS[$i]}"
         if [[ "$relative_path" == "$pattern"* ]] || \
            [[ "$relative_path" == *"/$pattern"* ]]; then
-            echo "${DIRECTORY_STRATEGIES[$pattern]}"
+            echo "${DIRECTORY_VALUES[$i]}"
             return 0
         fi
     done

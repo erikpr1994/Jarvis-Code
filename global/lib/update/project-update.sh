@@ -57,10 +57,10 @@ update_project() {
     if [[ -d "${project_dir}/.claude/hooks" && ! -L "${project_dir}/.claude/hooks" ]]; then
         echo "=== Updating hooks ==="
         sync_directory "${jarvis_repo}/global/hooks" "${project_dir}/.claude/hooks" "$force" "$dry_run"
-        ((updated++)) || true
+        $1=$(($1 + 1)) || true
     else
         echo "Hooks: Using symlinks, skipping"
-        ((skipped++)) || true
+        $1=$(($1 + 1)) || true
     fi
 
     # 2. Update hook lib
@@ -75,7 +75,7 @@ update_project() {
         echo ""
         echo "=== Updating commands ==="
         sync_directory "${jarvis_repo}/global/commands" "${project_dir}/.claude/commands" "$force" "$dry_run"
-        ((updated++)) || true
+        $1=$(($1 + 1)) || true
     fi
 
     # 4. Update CLAUDE.md with preserved customizations

@@ -58,11 +58,27 @@ SKIP_AGENTS=false
 TIMEOUT_MINUTES=10
 STARTED_AT=$(date +%s)
 
-# Results tracking
-declare -A CHECK_RESULTS
-declare -A CHECK_TIMES
+# Results tracking (Bash 3.2 compatible - using indexed arrays)
+CHECK_NAMES=()
+CHECK_STATUSES=()
+CHECK_TIMES_LIST=()
 TOTAL_WARNINGS=0
 TOTAL_ERRORS=0
+
+# Helper to record check result
+record_check() {
+    local name="$1"
+    local status="$2"
+    local time_ms="${3:-0}"
+    CHECK_NAMES+=("$name")
+    CHECK_STATUSES+=("$status")
+    CHECK_TIMES_LIST+=("$time_ms")
+}
+
+# Helper to get check count
+get_check_count() {
+    echo "${#CHECK_NAMES[@]}"
+}
 
 # =============================================================================
 # UTILITY FUNCTIONS
@@ -81,8 +97,7 @@ log_pass() {
     local check_name="$1"
     local time_ms="$2"
     echo -e "${GREEN}✓${NC} $check_name ${DIM}(${time_ms}ms)${NC}"
-    CHECK_RESULTS["$check_name"]="pass"
-    CHECK_TIMES["$check_name"]="$time_ms"
+    record_check "$check_name" "pass" "$time_ms"
 }
 
 log_fail() {
@@ -90,8 +105,8 @@ log_fail() {
     local message="${2:-}"
     echo -e "${RED}✗${NC} $check_name"
     [[ -n "$message" ]] && echo -e "  ${DIM}$message${NC}"
-    CHECK_RESULTS["$check_name"]="fail"
-    ((TOTAL_ERRORS++))
+    record_check "$check_name" "fail" "0"
+    TOTAL_ERRORS=$((TOTAL_ERRORS + 1))
 }
 
 log_warn() {
@@ -99,15 +114,15 @@ log_warn() {
     local message="${2:-}"
     echo -e "${YELLOW}⚠${NC} $check_name"
     [[ -n "$message" ]] && echo -e "  ${DIM}$message${NC}"
-    CHECK_RESULTS["$check_name"]="warn"
-    ((TOTAL_WARNINGS++))
+    record_check "$check_name" "warn" "0"
+    TOTAL_WARNINGS=$((TOTAL_WARNINGS + 1))
 }
 
 log_skip() {
     local check_name="$1"
     local reason="${2:-Not applicable}"
     echo -e "${DIM}○${NC} $check_name ${DIM}(skipped: $reason)${NC}"
-    CHECK_RESULTS["$check_name"]="skip"
+    record_check "$check_name" "skip" "0"
 }
 
 measure_time() {
@@ -166,7 +181,7 @@ run_quick_checks() {
             log_pass "TypeScript" "$((end_time - start_time))"
         else
             log_fail "TypeScript" "$(head -5 /tmp/tsc-output.txt)"
-            ((phase_errors++))
+            $1=$(($1 + 1))
             [[ "$FAIL_FAST" == "true" ]] && return 1
         fi
     else
@@ -186,7 +201,7 @@ run_quick_checks() {
             local err_count=$(grep -c "error" /tmp/lint-output.txt 2>/dev/null || echo "0")
             if [[ "$err_count" -gt 0 ]]; then
                 log_fail "Biome lint" "$err_count errors, $warn_count warnings"
-                ((phase_errors++))
+                $1=$(($1 + 1))
             else
                 log_warn "Biome lint" "$warn_count warnings"
             fi
@@ -197,7 +212,7 @@ run_quick_checks() {
             log_pass "ESLint" "$((end_time - start_time))"
         else
             log_fail "ESLint" "$(tail -3 /tmp/lint-output.txt)"
-            ((phase_errors++))
+            $1=$(($1 + 1))
         fi
     else
         log_skip "Linting" "No lint configuration"
@@ -256,7 +271,7 @@ run_standard_checks() {
         else
             local failed=$(grep -oE "[0-9]+ failed" /tmp/test-output.txt | head -1 || echo "some")
             log_fail "Unit tests" "$failed tests failed"
-            ((phase_errors++))
+            $1=$(($1 + 1))
             [[ "$FAIL_FAST" == "true" ]] && return 1
         fi
     elif [[ -f "vitest.config.ts" ]] || [[ -f "vitest.config.js" ]]; then
@@ -265,7 +280,7 @@ run_standard_checks() {
             log_pass "Vitest" "$((end_time - start_time))"
         else
             log_fail "Vitest" "Tests failed"
-            ((phase_errors++))
+            $1=$(($1 + 1))
         fi
     elif [[ -f "jest.config.js" ]] || [[ -f "jest.config.ts" ]]; then
         if npx jest --passWithNoTests > /tmp/test-output.txt 2>&1; then
@@ -273,7 +288,7 @@ run_standard_checks() {
             log_pass "Jest" "$((end_time - start_time))"
         else
             log_fail "Jest" "Tests failed"
-            ((phase_errors++))
+            $1=$(($1 + 1))
         fi
     else
         log_skip "Unit tests" "No test runner configured"
@@ -300,7 +315,7 @@ run_full_checks() {
             log_pass "Integration tests" "$((end_time - start_time))"
         else
             log_fail "Integration tests" "Some tests failed"
-            ((phase_errors++))
+            $1=$(($1 + 1))
             [[ "$FAIL_FAST" == "true" ]] && return 1
         fi
     else
@@ -316,7 +331,7 @@ run_full_checks() {
             log_pass "E2E tests" "$((end_time - start_time))"
         else
             log_fail "E2E tests" "Some tests failed"
-            ((phase_errors++))
+            $1=$(($1 + 1))
         fi
     elif [[ -f "playwright.config.ts" ]]; then
         local start_time=$(($(date +%s%N)/1000000))
@@ -325,7 +340,7 @@ run_full_checks() {
             log_pass "Playwright E2E" "$((end_time - start_time))"
         else
             log_fail "Playwright E2E" "Tests failed"
-            ((phase_errors++))
+            $1=$(($1 + 1))
         fi
     else
         log_skip "E2E tests" "No E2E configuration"
@@ -340,7 +355,7 @@ run_full_checks() {
             log_pass "Build" "$((end_time - start_time))"
         else
             log_fail "Build" "Build failed"
-            ((phase_errors++))
+            $1=$(($1 + 1))
         fi
     else
         log_skip "Build" "No build script"
@@ -496,9 +511,11 @@ print_summary() {
     printf "%-25s %-10s %s\n" "Check" "Status" "Time"
     printf "%-25s %-10s %s\n" "-----" "------" "----"
 
-    for check in "${!CHECK_RESULTS[@]}"; do
-        local status="${CHECK_RESULTS[$check]}"
-        local time="${CHECK_TIMES[$check]:-0}"
+    local i
+    for i in "${!CHECK_NAMES[@]}"; do
+        local check="${CHECK_NAMES[$i]}"
+        local status="${CHECK_STATUSES[$i]}"
+        local time="${CHECK_TIMES_LIST[$i]:-0}"
         local status_icon
 
         case "$status" in
@@ -542,10 +559,14 @@ generate_json_output() {
     results+="\"checks\":{"
 
     local first=true
-    for check in "${!CHECK_RESULTS[@]}"; do
+    local i
+    for i in "${!CHECK_NAMES[@]}"; do
         [[ "$first" != "true" ]] && results+=","
         first=false
-        results+="\"$check\":{\"status\":\"${CHECK_RESULTS[$check]}\",\"time\":${CHECK_TIMES[$check]:-0}}"
+        local check="${CHECK_NAMES[$i]}"
+        local status="${CHECK_STATUSES[$i]}"
+        local time="${CHECK_TIMES_LIST[$i]:-0}"
+        results+="\"$check\":{\"status\":\"$status\",\"time\":$time}"
     done
 
     results+="}}"

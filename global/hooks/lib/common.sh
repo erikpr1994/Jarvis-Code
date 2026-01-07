@@ -343,7 +343,7 @@ report_hook_failure() {
 
     if has_error_handler; then
         log_error "$error_type" "$HOOK_NAME" "$details" "logged"
-        ((SESSION_HOOK_FAILURES++)) || true
+        $1=$(($1 + 1)) || true
         save_health_state 2>/dev/null || true
         check_degradation_triggers 2>/dev/null || true
     fi

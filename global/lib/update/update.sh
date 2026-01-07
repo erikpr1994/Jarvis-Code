@@ -228,7 +228,7 @@ validate_installation() {
         if [[ -f "$hook" ]]; then
             if ! bash -n "$hook" 2>/dev/null; then
                 echo "  ERROR: Syntax error in $(basename "$hook")"
-                ((errors++))
+                $1=$(($1 + 1))
             fi
         fi
     done
@@ -238,7 +238,7 @@ validate_installation() {
     if [[ -f "${GLOBAL_CLAUDE}/settings.json" ]]; then
         if ! jq empty "${GLOBAL_CLAUDE}/settings.json" 2>/dev/null; then
             echo "  ERROR: Invalid JSON in settings.json"
-            ((errors++))
+            $1=$(($1 + 1))
         fi
     fi
 

@@ -77,7 +77,7 @@ list_inbox() {
     local count=0
     for file in "$LEARNING_INBOX"/*.json; do
         if [[ -f "$file" ]]; then
-            ((count++))
+            $1=$(($1 + 1))
             local id type description frequency status
             if command -v jq &>/dev/null; then
                 id=$(jq -r '.id // "unknown"' "$file" 2>/dev/null)
@@ -125,17 +125,17 @@ process_inbox() {
 
     for file in "$LEARNING_INBOX"/*.json; do
         if [[ -f "$file" ]]; then
-            ((processed++))
+            $1=$(($1 + 1))
 
             local learning_id
             learning_id=$(basename "$file" .json)
 
             # Validate the learning
             if validate_learning "$file"; then
-                ((validated++))
+                $1=$(($1 + 1))
                 log "INFO" "Learning validated: $learning_id"
             else
-                ((rejected++))
+                $1=$(($1 + 1))
                 log "INFO" "Learning rejected: $learning_id"
             fi
         fi
@@ -306,7 +306,7 @@ generate_proposals() {
 
             if [[ "$status" == "validated" ]]; then
                 generate_proposal "$file"
-                ((count++))
+                $1=$(($1 + 1))
             fi
         fi
     done
@@ -602,7 +602,7 @@ search_learnings() {
 
                 if [[ -n "$match" ]]; then
                     echo "  $match"
-                    ((found++))
+                    $1=$(($1 + 1))
                 fi
             fi
         done
@@ -626,7 +626,7 @@ search_learnings() {
             if [[ -n "$matches" ]]; then
                 echo "$matches" | while read -r line; do
                     echo "  $line"
-                    ((found++))
+                    $1=$(($1 + 1))
                 done
             fi
         fi
@@ -650,7 +650,7 @@ search_learnings() {
         if [[ -n "$matches" ]]; then
             echo "$matches" | while read -r line; do
                 echo "  $line"
-                ((found++))
+                $1=$(($1 + 1))
             done
         fi
     fi
@@ -671,7 +671,7 @@ search_learnings() {
 
                         if [[ -n "$match" ]]; then
                             echo "  [$(basename "$archive_dir")] $match"
-                            ((found++))
+                            $1=$(($1 + 1))
                         fi
                     fi
                 done
@@ -705,13 +705,13 @@ show_status() {
 
     for file in "$LEARNING_INBOX"/*.json; do
         if [[ -f "$file" ]]; then
-            ((inbox_count++))
+            $1=$(($1 + 1))
             local status
             status=$(jq -r '.status // "pending"' "$file" 2>/dev/null || echo "pending")
             case "$status" in
-                validated) ((validated_count++)) ;;
-                proposed) ((proposed_count++)) ;;
-                confirmed) ((confirmed_count++)) ;;
+                validated) $1=$(($1 + 1)) ;;
+                proposed) $1=$(($1 + 1)) ;;
+                confirmed) $1=$(($1 + 1)) ;;
             esac
         fi
     done
@@ -727,7 +727,7 @@ show_status() {
     local archive_count=0
     for file in "$LEARNING_ARCHIVE"/*.json; do
         if [[ -f "$file" ]]; then
-            ((archive_count++))
+            $1=$(($1 + 1))
         fi
     done
     echo "Archive: $archive_count learnings"
@@ -736,7 +736,7 @@ show_status() {
     local proposal_count=0
     for file in "$PROPOSALS_DIR"/*.json; do
         if [[ -f "$file" ]]; then
-            ((proposal_count++))
+            $1=$(($1 + 1))
         fi
     done
     echo "Proposals: $proposal_count pending"
