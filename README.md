@@ -57,10 +57,13 @@ claude
 ### Installation Options
 
 ```bash
-./install.sh           # Interactive installation
-./install.sh --force   # Skip prompts
-./install.sh --help    # Show help
+./install.sh              # Interactive install with preferences setup
+./install.sh --skip-config # Install with default preferences
+./install.sh --force      # Skip version prompts
+./install.sh --help       # Show help
 ```
+
+The installer will prompt you to configure which hooks and rules you want enabled.
 
 ### What Gets Installed
 
@@ -68,7 +71,8 @@ claude
 ~/.claude/
 ├── settings.json          # Claude Code settings (hooks, statusline)
 ├── config/
-│   └── jarvis.json        # Jarvis preferences (rules, features)
+│   ├── preferences.json   # Your rules & hooks preferences
+│   └── defaults.json      # Default preference values
 ├── statusline.sh          # Custom status bar script
 ├── hooks/                 # Event-driven automations
 │   ├── git-safety-guard.sh    # Blocks destructive git commands
@@ -100,21 +104,45 @@ claude
 
 ## Configuration
 
-### Configurable Rules
+### Interactive Setup
 
-Edit `~/.claude/config/jarvis.json` or use `/config`:
+During installation, you'll be prompted to configure your preferences. You can reconfigure anytime with `/config`.
+
+### Preferences File
+
+Edit `~/.claude/config/preferences.json` or use `/config`:
 
 ```json
 {
+  "version": "1.0.0",
   "rules": {
-    "requireTDD": false,              // Strict test-driven development
-    "requireWorktreeIsolation": false, // Block edits on main branch
-    "requireTestsBeforeCommit": true,  // Tests must pass before commit
-    "requireConventionalCommits": true, // feat:, fix:, etc.
-    "strictTypeScript": true           // Strict TS mode
+    "tdd": { "enabled": false, "severity": "warning" },
+    "conventionalCommits": { "enabled": true, "severity": "warning" },
+    "codeQuality": { "enabled": true, "severity": "info" },
+    "documentation": { "enabled": true, "severity": "info" }
+  },
+  "hooks": {
+    "gitSafetyGuard": { "enabled": true, "bypassable": true },
+    "requireIsolation": { "enabled": false, "bypassable": true },
+    "preCommitTests": { "enabled": false, "bypassable": true },
+    "skillActivation": { "enabled": true, "bypassable": false },
+    "learningCapture": { "enabled": true, "bypassable": false }
   }
 }
 ```
+
+### Rules vs Hooks
+
+| Type | Purpose | Effect |
+|------|---------|--------|
+| **Rules** | Soft guidelines for Claude | Suggestions, warnings |
+| **Hooks** | Hard enforcement mechanisms | Block actions, require steps |
+
+### Severity Levels
+
+- `error` - Block the action
+- `warning` - Allow with caution message
+- `info` - Suggest, don't enforce
 
 ### Safety Hooks
 
