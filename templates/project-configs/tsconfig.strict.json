@@ -1,11 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Jarvis Strict TypeScript Config",
-  "_comment": "Enforces type safety rules that were previously 'soft rules' in prompts",
+  "_comment": "Enforces type safety rules - strict mode, additional checks, and module resolution",
   "compilerOptions": {
-    // ═══════════════════════════════════════════════════════════════════════════
-    // STRICT MODE - "Enable strict mode in all TypeScript configurations"
-    // ═══════════════════════════════════════════════════════════════════════════
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -15,10 +12,6 @@
     "noImplicitThis": true,
     "useUnknownInCatchVariables": true,
     "alwaysStrict": true,
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // ADDITIONAL CHECKS - Catch more errors at compile time
-    // ═══════════════════════════════════════════════════════════════════════════
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "exactOptionalPropertyTypes": true,
@@ -27,29 +20,17 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // MODULE RESOLUTION
-    // ═══════════════════════════════════════════════════════════════════════════
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // OUTPUT
-    // ═══════════════════════════════════════════════════════════════════════════
     "target": "ES2022",
     "lib": ["ES2022"],
     "skipLibCheck": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // PATHS - Adjust for your project
-    // ═══════════════════════════════════════════════════════════════════════════
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
