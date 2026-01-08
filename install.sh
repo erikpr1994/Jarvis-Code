@@ -643,7 +643,7 @@ main() {
     if [[ "$skip_config" != true ]]; then
         configure_preferences
     else
-        log_info "Skipping configuration (use '/config' in Claude Code to configure later)"
+        log_info "Skipping configuration (use '/jarvis-config' in Claude Code to configure later)"
     fi
 
     print_usage

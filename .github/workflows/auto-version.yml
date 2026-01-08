@@ -54,8 +54,8 @@ jobs:
           # Determine bump type based on conventional commits
           BUMP="patch"
 
-          # Check for breaking changes (major bump)
-          if echo "$COMMITS" | grep -qE '^[a-z]+(\([^)]+\))?!:|BREAKING CHANGE'; then
+          # Check for breaking changes (major bump) - uses type!: syntax in subject
+          if echo "$COMMITS" | grep -qE '^[a-z]+(\([^)]+\))?!:'; then
             BUMP="major"
           # Check for features (minor bump)
           elif echo "$COMMITS" | grep -qE '^feat(\([^)]+\))?:'; then
@@ -110,10 +110,10 @@ jobs:
           NEW_VERSION="${{ steps.new.outputs.version }}"
           DATE=$(date +%Y-%m-%d)
 
-          # Get commits for changelog
+          # Get commits for changelog (include triggering commit with HEAD)
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [[ -n "$LAST_TAG" ]]; then
-            CHANGES=$(git log --pretty=format:"- %s" ${LAST_TAG}..HEAD~1 | head -20)
+            CHANGES=$(git log --pretty=format:"- %s" ${LAST_TAG}..HEAD | head -20)
           else
             CHANGES=$(git log --pretty=format:"- %s" -10)
           fi
@@ -122,17 +122,18 @@ jobs:
           ENTRY=$(printf "## [%s] - %s\n\n%s\n\n" "$NEW_VERSION" "$DATE" "$CHANGES")
 
           # Prepend to CHANGELOG.md (or create if doesn't exist)
+          # Using printf consistently for YAML compatibility
           if [[ -f CHANGELOG.md ]]; then
             # Insert after the header
             if head -1 CHANGELOG.md | grep -q "^# "; then
               HEADER=$(head -1 CHANGELOG.md)
               BODY=$(tail -n +2 CHANGELOG.md)
-              echo -e "${HEADER}\n\n${ENTRY}${BODY}" > CHANGELOG.md
+              printf "%s\n\n%s%s" "$HEADER" "$ENTRY" "$BODY" > CHANGELOG.md
             else
-              echo -e "${ENTRY}\n$(cat CHANGELOG.md)" > CHANGELOG.md
+              printf "%s\n%s" "$ENTRY" "$(cat CHANGELOG.md)" > CHANGELOG.md
             fi
           else
-            echo -e "# Changelog\n\n${ENTRY}" > CHANGELOG.md
+            printf "# Changelog\n\n%s" "$ENTRY" > CHANGELOG.md
           fi
 
       - name: Commit and push
