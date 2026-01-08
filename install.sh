@@ -533,7 +533,7 @@ DEFAULTS
 
     echo ""
     log_success "Preferences saved to $config_file"
-    log_info "Run '/config' in Claude Code to change these later"
+    log_info "Run '/jarvis-config' in Claude Code to change these later"
 }
 
 # Print usage instructions
@@ -548,10 +548,10 @@ print_usage() {
     echo -e "${CYAN}Quick Start:${NC}"
     echo "  1. Navigate to any project directory"
     echo "  2. Run: claude"
-    echo "  3. Use /init to initialize Jarvis in that project"
+    echo "  3. Use /jarvis-init to initialize Jarvis in that project"
     echo ""
     echo -e "${CYAN}Available Commands:${NC}"
-    echo "  /init           - Initialize Jarvis in current project"
+    echo "  /jarvis-init    - Initialize Jarvis in current project"
     echo "  /skills         - List available skills"
     echo "  /agents         - List available agents"
     echo ""
@@ -643,7 +643,7 @@ main() {
     if [[ "$skip_config" != true ]]; then
         configure_preferences
     else
-        log_info "Skipping configuration (use '/config' in Claude Code to configure later)"
+        log_info "Skipping configuration (use '/jarvis-config' in Claude Code to configure later)"
     fi
 
     print_usage

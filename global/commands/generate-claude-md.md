@@ -210,7 +210,7 @@ After generation, validates:
 
 | Command | Purpose |
 |---------|---------|
-| `/init` | Initial project setup (includes CLAUDE.md) |
+| `/jarvis-init` | Initial project setup (includes CLAUDE.md) |
 | `/validate-claude-md` | Check for conflicts and issues |
 | `/update-claude-md` | Refresh from current folder state |
 

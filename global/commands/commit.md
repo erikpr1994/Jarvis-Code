@@ -135,7 +135,7 @@ Create well-structured commits with intelligent message generation, pre-commit c
 
 ### Next Steps
 - Push with: `git push` or `/commit push`
-- Create PR with: `/review`
+- Create PR with: `/jarvis-review pr`
 ```
 
 ## Examples

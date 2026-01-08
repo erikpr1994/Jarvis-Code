@@ -195,7 +195,7 @@ Check disk space and permissions in home directory.
 Check the specific errors reported. Common fixes:
 - Hook syntax errors: Fix the shell script syntax
 - Invalid settings.json: Fix JSON formatting
-- Missing directories: Run `/init` to recreate structure
+- Missing directories: Run `/jarvis-init` to recreate structure
 
 ### Rollback
 Backups are stored as `.claude.backup.{timestamp}`. To rollback:
@@ -208,5 +208,5 @@ mv ~/.claude.backup.{timestamp} ~/.claude
 
 - Updates sync from your local `claude-code-tools` repo
 - To get latest features, first `git pull` in the repo
-- Project updates require the project to have been initialized with `/init`
+- Project updates require the project to have been initialized with `/jarvis-init`
 - Symlinked .claude folders skip sync (already point to global)

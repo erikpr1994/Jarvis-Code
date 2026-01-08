@@ -43,7 +43,7 @@ claude
 
 Type in Claude:
 ```
-/init
+/jarvis-init
 ```
 
 This will:
@@ -55,7 +55,7 @@ This will:
 
 | Command | What It Does |
 |---------|--------------|
-| `/init` | Initialize Jarvis in current project |
+| `/jarvis-init` | Initialize Jarvis in current project |
 | `/plan` | Create implementation plan for a task |
 | `/execute` | Execute planned tasks with TDD |
 | `/status` | Show session progress and metrics |
