@@ -42,6 +42,14 @@
           },
           {
             "type": "command",
+            "command": "bash ~/.claude/hooks/conventional-commit.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/enforce-quality.sh"
+          },
+          {
+            "type": "command",
             "command": "bash ~/.claude/hooks/pre-commit.sh"
           }
         ]
@@ -52,6 +60,10 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/require-isolation.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/no-any-types.sh"
           }
         ]
       },
@@ -61,6 +73,10 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/require-isolation.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/no-any-types.sh"
           }
         ]
       },

@@ -1,0 +1,56 @@
+#!/bin/sh
+# Jarvis Pre-commit Hook
+# 
+# Enforces quality gates before commit:
+# - TypeScript type checking
+# - ESLint (if configured)
+# - Tests (if configured)
+#
+# Install: Copy to .husky/pre-commit and make executable
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+echo "🤖 Jarvis pre-commit checks..."
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TYPE CHECK - "No TypeScript errors before commit"
+# ═══════════════════════════════════════════════════════════════════════════════
+if [ -f "tsconfig.json" ]; then
+    echo "  → TypeScript check..."
+    if ! npx tsc --noEmit 2>/dev/null; then
+        echo "${RED}❌ TypeScript errors found. Fix before committing.${NC}"
+        exit 1
+    fi
+    echo "  ${GREEN}✓ TypeScript OK${NC}"
+fi
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# LINT CHECK - "No linting errors before commit"
+# ═══════════════════════════════════════════════════════════════════════════════
+if [ -f "eslint.config.js" ] || [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ]; then
+    echo "  → ESLint check..."
+    if ! npm run lint --silent 2>/dev/null; then
+        echo "${RED}❌ ESLint errors found. Fix before committing.${NC}"
+        exit 1
+    fi
+    echo "  ${GREEN}✓ ESLint OK${NC}"
+fi
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TEST CHECK - "Tests must pass before commit" (optional, can be slow)
+# ═══════════════════════════════════════════════════════════════════════════════
+# Uncomment to enable:
+# if [ -f "vitest.config.ts" ] || [ -f "jest.config.js" ]; then
+#     echo "  → Running tests..."
+#     if ! npm test --silent 2>/dev/null; then
+#         echo "${RED}❌ Tests failing. Fix before committing.${NC}"
+#         exit 1
+#     fi
+#     echo "  ${GREEN}✓ Tests OK${NC}"
+# fi
+
+echo "${GREEN}✅ All pre-commit checks passed${NC}"

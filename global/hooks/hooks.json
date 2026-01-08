@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Jarvis Unified Hook Configuration for Claude Code",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "hooks": {
     "SessionStart": [
       {
@@ -66,6 +66,11 @@
             "type": "command",
             "command": "bash \"~/.claude/hooks/require-isolation.sh\"",
             "description": "Enforce worktree/Conductor isolation for file edits"
+          },
+          {
+            "type": "command",
+            "command": "bash \"~/.claude/hooks/no-any-types.sh\"",
+            "description": "Warn or block 'any' types in TypeScript files"
           }
         ]
       },
@@ -76,6 +81,11 @@
             "type": "command",
             "command": "bash \"~/.claude/hooks/require-isolation.sh\"",
             "description": "Enforce worktree/Conductor isolation for file writes"
+          },
+          {
+            "type": "command",
+            "command": "bash \"~/.claude/hooks/no-any-types.sh\"",
+            "description": "Warn or block 'any' types in TypeScript files"
           }
         ]
       },
@@ -94,8 +104,23 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash \"~/.claude/hooks/git-safety-guard.sh\"",
+            "description": "Block destructive git and filesystem commands"
+          },
+          {
+            "type": "command",
             "command": "bash \"~/.claude/hooks/block-direct-submit.sh\"",
             "description": "Block direct gt submit or gh pr create commands"
+          },
+          {
+            "type": "command",
+            "command": "bash \"~/.claude/hooks/conventional-commit.sh\"",
+            "description": "Validate commit messages follow conventional format"
+          },
+          {
+            "type": "command",
+            "command": "bash \"~/.claude/hooks/enforce-quality.sh\"",
+            "description": "Run project's lint/typecheck before git commit"
           },
           {
             "type": "command",
@@ -122,6 +147,9 @@
       "skill-activation": false,
       "require-isolation": false,
       "block-direct-submit": false,
+      "conventional-commit": false,
+      "enforce-quality": false,
+      "no-any-types": false,
       "compress-output": false,
       "pre-commit": false,
       "coderabbit-review": false,
@@ -134,6 +162,9 @@
       "skill-activation": 2000,
       "require-isolation": 2000,
       "block-direct-submit": 2000,
+      "conventional-commit": 2000,
+      "enforce-quality": 15000,
+      "no-any-types": 2000,
       "compress-output": 2000,
       "pre-commit": 10000,
       "coderabbit-review": 2000,
@@ -147,6 +178,9 @@
       "CONDUCTOR_ROOT_PATH": "Indicates Conductor session (require-isolation bypass)",
       "CLAUDE_SUBMIT_PR_SKILL": "Set by submit-pr skill (block-direct-submit bypass)",
       "CLAUDE_ALLOW_DIRECT_SUBMIT": "Allow direct gt submit/gh pr create commands",
+      "CLAUDE_SKIP_COMMIT_FORMAT": "Skip conventional commit format validation",
+      "CLAUDE_SKIP_QUALITY_CHECK": "Skip lint/typecheck before commit",
+      "CLAUDE_ALLOW_ANY": "Allow 'any' types in TypeScript",
       "VERBOSE_OUTPUT": "Disable output compression (compress-output bypass)",
       "JARVIS_ALLOW_MAIN_COMMITS": "Allow direct commits to main/master branch",
       "JARVIS_SKIP_SKILL_ACTIVATION": "Skip skill recommendation hook",

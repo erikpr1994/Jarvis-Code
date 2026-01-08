@@ -1,0 +1,9 @@
+#!/bin/sh
+# Jarvis Commit Message Hook
+# 
+# Validates commit messages follow conventional commit format.
+# Requires: npm install -D @commitlint/{cli,config-conventional}
+#
+# Install: Copy to .husky/commit-msg and make executable
+
+npx --no -- commitlint --edit "$1"

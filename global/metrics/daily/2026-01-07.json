@@ -1,0 +1,21 @@
+{
+  "date": "2026-01-07",
+  "productivity": {
+    "features_completed": 0,
+    "commits": 0,
+    "prs_merged": 0
+  },
+  "quality": {
+    "test_coverage": 0,
+    "review_score_avg": 0,
+    "bugs_found": 0
+  },
+  "learning": {
+    "skills_invoked": [],
+    "patterns_matched": 0
+  },
+  "context": {
+    "tokens_used": 0,
+    "compactions": 0
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "rules": {
     "tdd": {
       "enabled": false,
@@ -21,27 +21,49 @@
   "hooks": {
     "gitSafetyGuard": {
       "enabled": true,
-      "bypassable": true
+      "bypassable": true,
+      "description": "Block destructive git commands (reset --hard, push --force, etc.)"
     },
     "requireIsolation": {
       "enabled": false,
-      "bypassable": true
+      "bypassable": true,
+      "description": "Block edits on main/master branch without worktree"
     },
     "preCommitTests": {
       "enabled": false,
-      "bypassable": true
+      "bypassable": true,
+      "description": "Run tests before allowing git commit"
     },
     "skillActivation": {
       "enabled": true,
-      "bypassable": false
+      "bypassable": false,
+      "description": "Recommend skills based on conversation context"
     },
     "learningCapture": {
       "enabled": true,
-      "bypassable": false
+      "bypassable": false,
+      "description": "Capture patterns from successful operations"
     },
     "blockDirectSubmit": {
       "enabled": false,
-      "bypassable": true
+      "bypassable": true,
+      "description": "Require submit-pr skill for PR creation"
+    },
+    "conventionalCommit": {
+      "enabled": true,
+      "bypassable": true,
+      "description": "Validate commit messages follow conventional format"
+    },
+    "enforceQuality": {
+      "enabled": true,
+      "bypassable": true,
+      "description": "Run project's lint/typecheck before commit"
+    },
+    "noAnyTypes": {
+      "enabled": true,
+      "bypassable": true,
+      "severity": "warn",
+      "description": "Warn or block when adding 'any' type to TypeScript"
     }
   }
 }

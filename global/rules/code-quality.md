@@ -2,357 +2,124 @@
 name: code-quality
 category: quality
 confidence: 0.8
-description: Code quality standards for maintainable, readable, and correct code
+description: Code quality standards (most enforced by ESLint)
 ---
 
 # Code Quality Standards
 
-## Overview
+## Enforcement
 
-Code quality is not optional. These standards ensure code is maintainable, readable, and correct across all projects.
+Most code quality rules are now enforced by **ESLint** at the project level.
 
-## Type Safety Standards
+See: `templates/project-configs/eslint.config.js`
 
-### TypeScript Configuration
-
-```json
-{
-  "compilerOptions": {
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true
-  }
-}
+Install in your project:
+```bash
+~/.claude/templates/project-configs/setup-enforcement.sh --eslint
 ```
 
-### Type Definitions
+---
+
+## What ESLint Enforces
+
+| Rule | ESLint Rule |
+|------|-------------|
+| No `any` types | `@typescript-eslint/no-explicit-any` |
+| No `@ts-ignore` without comment | `@typescript-eslint/ban-ts-comment` |
+| Cyclomatic complexity < 10 | `complexity` |
+| Function length < 30 lines | `max-lines-per-function` |
+| File length < 300 lines | `max-lines` |
+| No nested ternaries | `no-nested-ternary` |
+| No magic numbers | `no-magic-numbers` |
+| Naming conventions | `@typescript-eslint/naming-convention` |
+| Import order | `import/order` |
+| No floating promises | `@typescript-eslint/no-floating-promises` |
+
+---
+
+## Guidelines That Can't Be Automated
+
+### Type Guards for Runtime Validation
+
+When working with unknown data (API responses, user input), use type guards:
 
 ```typescript
-// GOOD: Explicit interfaces for domain objects
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  createdAt: Date;
-}
-
-// GOOD: Type inference for derived types
-type PublicUser = Omit<User, 'password' | 'internalId'>;
-
-// GOOD: Discriminated unions for state
-type ApiResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: string };
-
-// BAD: any type
-const user: any = getData();
-
-// BAD: Type assertions without validation
-const user = data as User; // No runtime check
-```
-
-### Type Guards
-
-```typescript
-// GOOD: Type guard for runtime validation
 function isUser(value: unknown): value is User {
   return (
     typeof value === 'object' &&
     value !== null &&
     'id' in value &&
-    'email' in value &&
-    typeof (value as any).email === 'string'
+    'email' in value
   );
 }
 
-// Usage with type narrowing
+// Usage
 if (isUser(data)) {
   console.log(data.email); // TypeScript knows data is User
 }
 ```
 
-## Code Organization
+### Guard Clauses (Early Returns)
 
-### File Structure
-
-```
-src/
-├── app/                    # Application entry points
-├── components/             # Reusable UI components
-│   ├── ui/                 # Base components
-│   ├── forms/              # Form components
-│   └── layouts/            # Layout components
-├── lib/                    # Utilities and helpers
-├── hooks/                  # Custom React hooks
-├── types/                  # Type definitions
-└── services/               # External service integrations
-```
-
-### Import Order
+Prefer early returns over nested conditionals:
 
 ```typescript
-// 1. React/Framework imports
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-
-// 2. External libraries
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-
-// 3. Internal packages (monorepo)
-import { Button } from '@turbostarter/ui/button';
-import { api } from '@/trpc/react';
-
-// 4. Relative imports
-import { DashboardHeader } from './dashboard-header';
-import type { DashboardProps } from './types';
-```
-
-### Naming Conventions
-
-| Type | Convention | Example |
-|------|------------|---------|
-| Components | PascalCase | `UserProfile.tsx` |
-| Utilities | camelCase | `formatDate.ts` |
-| Constants | SCREAMING_SNAKE | `MAX_RETRY_COUNT` |
-| Types/Interfaces | PascalCase | `UserInput` |
-| Enums | PascalCase + SCREAMING_SNAKE values | `UserRole.ADMIN` |
-| Files | lowercase-with-dashes | `api-error-handling.md` |
-
-## Function Design
-
-### Single Responsibility
-
-```typescript
-// GOOD: Each function does one thing
-async function validateEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-async function createUser(input: UserInput): Promise<User> {
-  const validated = await validateUserInput(input);
-  return await db.user.create(validated);
-}
-
-// BAD: Function does too many things
-async function createUserAndSendEmail(input: any): Promise<any> {
-  // Validation, creation, email sending, logging...
-}
-```
-
-### Guard Clauses
-
-```typescript
-// GOOD: Early returns for error conditions
+// GOOD
 function processOrder(order: Order | null): Result {
-  if (!order) {
-    return { success: false, error: 'No order provided' };
-  }
-
-  if (order.status !== 'pending') {
-    return { success: false, error: 'Order already processed' };
-  }
-
+  if (!order) return { error: 'No order' };
+  if (order.status !== 'pending') return { error: 'Already processed' };
+  
   // Main logic here
-  return { success: true, data: processedOrder };
+  return { success: true };
 }
 
-// BAD: Nested conditionals
+// BAD
 function processOrder(order: Order | null): Result {
   if (order) {
     if (order.status === 'pending') {
-      // Deeply nested logic
+      // Deeply nested
     }
   }
 }
 ```
 
-### Pure Functions
+### Pure Functions When Possible
+
+Functions should not have side effects when avoidable:
 
 ```typescript
-// GOOD: Pure function - no side effects
+// GOOD: Pure function
 function calculateTotal(items: CartItem[]): number {
   return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 }
 
-// BAD: Impure - modifies external state
+// BAD: Side effect
 let total = 0;
 function addToTotal(item: CartItem): void {
-  total += item.price * item.quantity;
+  total += item.price * item.quantity; // Modifies external state
 }
 ```
 
-## Error Handling
-
-### Structured Errors
+### Comments Explain WHY, Not WHAT
 
 ```typescript
-// Define error types
-class AppError extends Error {
-  constructor(
-    public statusCode: number,
-    message: string,
-    public code?: string,
-  ) {
-    super(message);
-    this.name = 'AppError';
-  }
-}
-
-const ErrorCode = {
-  UNAUTHORIZED: 'UNAUTHORIZED',
-  FORBIDDEN: 'FORBIDDEN',
-  NOT_FOUND: 'NOT_FOUND',
-  VALIDATION_ERROR: 'VALIDATION_ERROR',
-} as const;
-
-// Usage
-throw new AppError(401, 'Authentication required', ErrorCode.UNAUTHORIZED);
-```
-
-### Error Boundaries
-
-```typescript
-// Error handler that never leaks internal details
-function handleApiError(error: unknown): ApiErrorResponse {
-  console.error('API Error:', error);
-
-  if (error instanceof AppError) {
-    return {
-      error: { message: error.message, code: error.code },
-      status: error.statusCode,
-    };
-  }
-
-  if (error instanceof z.ZodError) {
-    return {
-      error: { message: 'Validation failed', code: 'VALIDATION_ERROR', details: error.errors },
-      status: 422,
-    };
-  }
-
-  // Never expose internal errors
-  return {
-    error: { message: 'Internal server error', code: 'INTERNAL_ERROR' },
-    status: 500,
-  };
-}
-```
-
-## Documentation
-
-### JSDoc Comments
-
-```typescript
-/**
- * Creates a new user in the database.
- *
- * @param input - User creation data
- * @param input.email - Must be a valid email address
- * @param input.name - User's display name
- * @returns The created user object
- * @throws {AppError} If email already exists
- *
- * @example
- * const user = await createUser({ email: 'user@example.com', name: 'John' });
- */
-async function createUser(input: UserInput): Promise<User> {
-  // Implementation
-}
-```
-
-### Inline Comments
-
-```typescript
-// GOOD: Explain WHY, not WHAT
+// GOOD: Explains why
 // Rate limit to prevent abuse - max 10 requests per minute per IP
 const rateLimiter = createRateLimiter({ max: 10, window: '1m' });
 
-// BAD: Explains what code does (obvious from reading)
+// BAD: Explains what (obvious from code)
 // Loop through users
-for (const user of users) {
-  // ...
-}
+for (const user of users) { }
 ```
 
-## Code Quality Checklist
+---
 
-### Before Writing Code
+## Before Commit Checklist
 
-- [ ] Understand requirements fully
-- [ ] Check existing patterns in codebase
-- [ ] Identify integration points
-- [ ] Plan test cases
+These are enforced by husky pre-commit hook:
 
-### During Implementation
+- [ ] `npm run type-check` passes
+- [ ] `npm run lint` passes
+- [ ] `npm test` passes (if enabled)
 
-- [ ] TDD: Write test first
-- [ ] Single responsibility per function
-- [ ] Guard clauses for error conditions
-- [ ] No magic numbers (use named constants)
-- [ ] Meaningful variable/function names
-
-### Before Commit
-
-- [ ] All tests pass
-- [ ] No TypeScript errors
-- [ ] No linting errors
-- [ ] No `any` types
-- [ ] No `@ts-ignore`
-- [ ] Code reviewed by self
-
-## Anti-Patterns to Avoid
-
-### Don't Do This
-
-```typescript
-// 1. Magic numbers
-if (retryCount > 3) { } // BAD
-if (retryCount > MAX_RETRIES) { } // GOOD
-
-// 2. Nested ternaries
-const result = a ? (b ? c : d) : (e ? f : g); // BAD
-
-// 3. Mutating function parameters
-function process(items: Item[]) {
-  items.push(newItem); // BAD - mutates input
-}
-
-// 4. God functions
-async function doEverything(data: any): Promise<any> {
-  // 200 lines of mixed responsibilities
-}
-
-// 5. Boolean trap
-createUser('john@example.com', true, false, true); // What do these mean?
-
-// 6. Stringly typed
-function setStatus(status: string) { } // BAD
-function setStatus(status: 'pending' | 'active' | 'done') { } // GOOD
-```
-
-## Metrics
-
-### Targets
-
-| Metric | Target | Rationale |
-|--------|--------|-----------|
-| Function length | <30 lines | Readability |
-| File length | <300 lines | Maintainability |
-| Cyclomatic complexity | <10 | Testability |
-| Test coverage | >80% | Confidence |
-| PR size | <300 lines | Review quality |
-
-## Rationale
-
-Good code quality:
-
-1. **Reduces bugs** - Clear code has fewer hiding places for bugs
-2. **Enables refactoring** - Understandable code can be safely changed
-3. **Speeds up development** - Less time debugging, more time building
-4. **Improves collaboration** - Others can understand and modify code
-5. **Reduces maintenance cost** - Future you will thank present you
+If checks fail, the commit is blocked.
