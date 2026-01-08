@@ -118,12 +118,8 @@ jobs:
             CHANGES=$(git log --pretty=format:"- %s" -10)
           fi
 
-          # Create new changelog entry
-          ENTRY="## [${NEW_VERSION}] - ${DATE}
-
-${CHANGES}
-
-"
+          # Create new changelog entry (using printf for YAML compatibility)
+          ENTRY=$(printf "## [%s] - %s\n\n%s\n\n" "$NEW_VERSION" "$DATE" "$CHANGES")
 
           # Prepend to CHANGELOG.md (or create if doesn't exist)
           if [[ -f CHANGELOG.md ]]; then

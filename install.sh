@@ -533,7 +533,7 @@ DEFAULTS
 
     echo ""
     log_success "Preferences saved to $config_file"
-    log_info "Run '/config' in Claude Code to change these later"
+    log_info "Run '/jarvis-config' in Claude Code to change these later"
 }
 
 # Print usage instructions

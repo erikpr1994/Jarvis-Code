@@ -105,7 +105,7 @@ Changes saved to `~/.claude/config/jarvis.json`
 
 ## Reset to Defaults
 
-For `/config reset`:
+For `/jarvis-config reset`:
 
 ```json
 {

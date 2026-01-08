@@ -6,7 +6,7 @@ disable-model-invocation: false
 
 # /jarvis-review - Code Review Command
 
-> **Note:** Use `/jarvis-review` for Claude Code's built-in code review.
+> **Note:** Use `/review` for Claude Code's built-in code review.
 
 Perform thorough code review with automated quality checks, security analysis, and optional PR creation.
 
