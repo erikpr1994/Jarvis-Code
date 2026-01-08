@@ -14,6 +14,8 @@ source: https://x.com/jarrodwatts/status/2008761427805544674
 
 Comments should explain **WHY**, not **WHAT**.
 
+> 📝 **Note:** Examples use JavaScript/TypeScript syntax but the principles apply across all programming languages.
+
 ---
 
 ## Unacceptable Comments
@@ -147,6 +149,24 @@ function createUser(email: string, password: string): User { }
 // TODO: fix this
 ```
 
+### 6. Disabled/Commented-Out Code
+
+Commented-out code is acceptable **only** when accompanied by a NOTE with date, owner, and a tracked issue/link. If obsolete, remove it entirely.
+
+```typescript
+// GOOD: Disabled with context and tracking
+// NOTE: Disabled 2026-01-08 - Waiting for AUTH-123 to ship before re-enabling OAuth flow
+// Owner: @erik | See: https://linear.app/team/issue/AUTH-123
+// const oauthHandler = initializeOAuth(config);
+
+// BAD: No context - is this obsolete or waiting for something?
+// const oauthHandler = initializeOAuth(config);
+```
+
+**When to keep vs remove:**
+- ✅ **Keep** if blocked by a tracked issue or feature flag
+- ❌ **Remove** if obsolete or no longer needed
+
 ---
 
 ## Quick Test
@@ -173,3 +193,5 @@ Before writing a comment, ask:
 | Documents public API | ✅ Keep |
 | Changelog in code | ❌ Use git history |
 | Vague TODO | ❌ Add context or delete |
+| Disabled code with tracking | ✅ Keep |
+| Disabled code without context | ❌ Remove or add context |
