@@ -5,6 +5,17 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0](https://github.com/erikpr1994/Jarvis-Code/compare/v1.1.1...v2.0.0) (2026-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* **hooks:** Worktree isolation is now strictly enforced. Users must work in worktrees for all modifications.
+
+### Features
+
+* **hooks:** enforce strict worktree isolation ([c9e1679](https://github.com/erikpr1994/Jarvis-Code/commit/c9e16796ea25a73611a440ef5c28778a976dbaaa))
+
 ## [1.1.1](https://github.com/erikpr1994/Jarvis-Code/compare/v1.1.0...v1.1.1) (2026-01-08)
 
 
