@@ -39,8 +39,8 @@ jobs:
       - name: Determine bump type from commits
         id: bump
         run: |
-          # Get commits since last version change
-          LAST_VERSION_COMMIT=$(git log --oneline --all -1 -- VERSION 2>/dev/null | cut -d' ' -f1 || echo "")
+          # Get commits since last version change (current branch only)
+          LAST_VERSION_COMMIT=$(git log -n1 --pretty=format:"%H" HEAD -- VERSION 2>/dev/null || echo "")
 
           if [[ -n "$LAST_VERSION_COMMIT" ]]; then
             COMMITS=$(git log --pretty=format:"%s" ${LAST_VERSION_COMMIT}..HEAD)
