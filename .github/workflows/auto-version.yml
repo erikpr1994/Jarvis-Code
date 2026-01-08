@@ -16,4 +16,4 @@ jobs:
       - uses: googleapis/release-please-action@v4
         with:
           release-type: simple
-          package-name: jarvis
+          token: ${{ secrets.GITHUB_TOKEN }}
