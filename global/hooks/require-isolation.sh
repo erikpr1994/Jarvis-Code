@@ -2,7 +2,8 @@
 # Hook: require-isolation
 # Event: PreToolUse
 # Tools: Edit, Write, NotebookEdit
-# Purpose: Enforce worktree/Conductor isolation - block modifications on main/master branch
+# Purpose: Enforce worktree/Conductor isolation - block modifications to project files outside worktree
+# Note: Only applies to files INSIDE the current git project. Files outside (e.g., ~/.config) are allowed.
 
 set -euo pipefail
 
@@ -76,6 +77,62 @@ log_debug "Tool: $TOOL_NAME, File: $FILE_PATH"
 # Only check if we're in a git repository
 if ! git rev-parse --git-dir > /dev/null 2>&1; then
     log_info "Not in a git repository, allowing modification"
+    finalize_hook 0
+    exit 0
+fi
+
+# Get the git repository root and resolve symlinks (macOS /tmp -> /private/tmp)
+GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+if [[ -z "$GIT_ROOT" ]]; then
+    log_info "Could not determine git root, allowing modification"
+    finalize_hook 0
+    exit 0
+fi
+# Resolve symlinks in git root (handles macOS /tmp -> /private/tmp)
+if command -v realpath &>/dev/null; then
+    GIT_ROOT=$(realpath "$GIT_ROOT" 2>/dev/null) || true
+elif command -v grealpath &>/dev/null; then
+    GIT_ROOT=$(grealpath "$GIT_ROOT" 2>/dev/null) || true
+else
+    # Fallback: use cd/pwd to resolve symlinks
+    GIT_ROOT=$(cd "$GIT_ROOT" 2>/dev/null && pwd -P) || true
+fi
+
+# Resolve the file path to absolute path for comparison
+# Handle ~ expansion and relative paths
+RESOLVED_FILE_PATH="$FILE_PATH"
+if [[ "$FILE_PATH" == "~"* ]]; then
+    RESOLVED_FILE_PATH="${FILE_PATH/#\~/$HOME}"
+fi
+# If path is relative, make it absolute from current directory
+if [[ "$RESOLVED_FILE_PATH" != /* ]]; then
+    RESOLVED_FILE_PATH="$(pwd)/$RESOLVED_FILE_PATH"
+fi
+# Normalize the path (resolve .. and .) and resolve symlinks
+if [[ -e "$(dirname "$RESOLVED_FILE_PATH")" ]]; then
+    RESOLVED_FILE_PATH=$(cd "$(dirname "$RESOLVED_FILE_PATH")" 2>/dev/null && pwd -P)/$(basename "$RESOLVED_FILE_PATH") || RESOLVED_FILE_PATH="$FILE_PATH"
+else
+    # Parent directory doesn't exist yet (new file) - just normalize what we can
+    PARENT_DIR=$(dirname "$RESOLVED_FILE_PATH")
+    # Try to resolve the deepest existing ancestor
+    while [[ ! -e "$PARENT_DIR" ]] && [[ "$PARENT_DIR" != "/" ]]; do
+        PARENT_DIR=$(dirname "$PARENT_DIR")
+    done
+    if [[ -e "$PARENT_DIR" ]]; then
+        RESOLVED_PARENT=$(cd "$PARENT_DIR" 2>/dev/null && pwd -P) || RESOLVED_PARENT="$PARENT_DIR"
+        # Reconstruct the path with resolved parent
+        REMAINING_PATH="${RESOLVED_FILE_PATH#$PARENT_DIR}"
+        RESOLVED_FILE_PATH="${RESOLVED_PARENT}${REMAINING_PATH}"
+    fi
+fi
+
+log_debug "Git root: $GIT_ROOT"
+log_debug "Resolved file path: $RESOLVED_FILE_PATH"
+
+# Check if the file is inside the git repository
+# If the file is outside the project, allow modification (not subject to project isolation)
+if [[ "$RESOLVED_FILE_PATH" != "$GIT_ROOT"* ]]; then
+    log_info "File is outside project ($GIT_ROOT), allowing modification: $RESOLVED_FILE_PATH"
     finalize_hook 0
     exit 0
 fi
