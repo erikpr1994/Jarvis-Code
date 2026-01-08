@@ -1,0 +1,89 @@
+name: Release PR CI
+
+on:
+  workflow_run:
+    workflows: ["Release Please"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: write
+
+jobs:
+  ci-and-merge:
+    name: Run CI and Auto-merge
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Get release PR
+        id: pr
+        run: |
+          PR=$(gh pr list --repo ${{ github.repository }} --label "autorelease: pending" --json number --jq '.[0].number')
+          if [[ -n "$PR" ]]; then
+            echo "number=$PR" >> $GITHUB_OUTPUT
+            echo "Found release PR #$PR"
+          else
+            echo "No release PR found"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout PR
+        if: ${{ steps.pr.outputs.number }}
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ steps.pr.outputs.number }}/head
+
+      - name: Install dependencies
+        if: ${{ steps.pr.outputs.number }}
+        run: sudo apt-get install -y jq shellcheck
+
+      - name: Validate JSON syntax
+        if: ${{ steps.pr.outputs.number }}
+        run: |
+          echo "Validating JSON files..."
+          errors=0
+          for json in $(find . -name "*.json" -type f); do
+            if ! jq empty "$json" 2>/dev/null; then
+              echo "❌ Invalid JSON: $json"
+              ((errors++))
+            fi
+          done
+          if [[ $errors -gt 0 ]]; then
+            exit 1
+          fi
+          echo "✅ All JSON files valid"
+
+      - name: Validate shell scripts
+        if: ${{ steps.pr.outputs.number }}
+        run: |
+          echo "Checking shell scripts..."
+          find . -name "*.sh" -type f -exec shellcheck --severity=error {} \; || true
+          echo "✅ Shell script check complete"
+
+      - name: Validate hook syntax
+        if: ${{ steps.pr.outputs.number }}
+        run: |
+          echo "Validating hook syntax..."
+          shopt -s globstar nullglob
+          errors=0
+          for hook in global/hooks/*.sh; do
+            if [[ -f "$hook" ]] && ! bash -n "$hook" 2>/dev/null; then
+              echo "❌ Syntax error in $hook"
+              ((errors++))
+            fi
+          done
+          if [[ $errors -gt 0 ]]; then
+            echo "Found $errors hook(s) with syntax errors"
+            exit 1
+          fi
+          echo "✅ All hooks have valid syntax"
+
+      - name: Enable auto-merge
+        if: ${{ steps.pr.outputs.number }}
+        run: |
+          echo "Enabling auto-merge for PR #${{ steps.pr.outputs.number }}"
+          gh pr merge --auto --squash ${{ steps.pr.outputs.number }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
