@@ -106,31 +106,35 @@ EOF
 fi
 
 # Check for git push to feature branches
-# Matches: git push -u origin <branch>, git push origin <branch>
+# Matches: git push, git push -u origin <branch>, git push origin <branch>, etc.
 # Allows: pushes to main, master, develop (merge pushes)
-if echo "$COMMAND" | grep -qE '\bgit[[:space:]]+push\b'; then
+# Uses POSIX-safe patterns (no \b word boundary which fails on BSD/macOS)
+if printf '%s\n' "$COMMAND" | grep -qE '(^|[[:space:]])git[[:space:]]+push([[:space:]]|$)'; then
     # Extract branch name from command if present
-    # Patterns: git push -u origin branch, git push origin branch
     PUSH_BRANCH=""
 
-    # Check for explicit branch in command (git push [-u] origin branch)
-    # Use POSIX character classes for macOS compatibility
-    if echo "$COMMAND" | grep -qE 'git[[:space:]]+push[[:space:]]+(-u[[:space:]]+)?origin[[:space:]]+[a-zA-Z0-9_/-]+'; then
-        # Extract the branch name (last argument after origin)
-        PUSH_BRANCH=$(echo "$COMMAND" | sed -E 's/.*git[[:space:]]+push[[:space:]]+(-u[[:space:]]+)?origin[[:space:]]+([a-zA-Z0-9_/-]+).*/\2/')
+    # Priority 1: Check for HEAD:branch refspec pattern (git push origin HEAD:branch)
+    if printf '%s\n' "$COMMAND" | grep -qE 'HEAD:[[:alnum:]._/-]+'; then
+        PUSH_BRANCH=$(printf '%s\n' "$COMMAND" | sed -E 's/.*HEAD:([[:alnum:]._/-]+).*/\1/')
+    # Priority 2: Check for "origin <branch>" pattern (allows arbitrary flags before origin)
+    elif printf '%s\n' "$COMMAND" | grep -qE 'origin[[:space:]]+[[:alnum:]._/-]+'; then
+        # Extract the branch name (first argument after origin that looks like a branch)
+        PUSH_BRANCH=$(printf '%s\n' "$COMMAND" | sed -E 's/.*origin[[:space:]]+([[:alnum:]._/-]+).*/\1/')
+    else
+        # Priority 3: Implicit push (no explicit branch) - detect current branch
+        if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+            PUSH_BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
+            # If in detached HEAD state, branch will be "HEAD" - treat as unknown
+            [[ "$PUSH_BRANCH" == "HEAD" ]] && PUSH_BRANCH=""
+        fi
     fi
 
-    # Check for HEAD:branch pattern (git push origin HEAD:branch)
-    if echo "$COMMAND" | grep -qE 'git[[:space:]]+push[[:space:]]+.*HEAD:[a-zA-Z0-9_/-]+'; then
-        PUSH_BRANCH=$(echo "$COMMAND" | sed -E 's/.*HEAD:([a-zA-Z0-9_/-]+).*/\1/')
-    fi
-
-    log_debug "Detected push to branch: ${PUSH_BRANCH:-<implicit>}"
+    log_debug "Detected push to branch: ${PUSH_BRANCH:-<unknown>}"
 
     # If we detected a branch name, check if it's a protected branch
     if [[ -n "$PUSH_BRANCH" ]]; then
         # Allow pushes to protected branches (main, master, develop)
-        if echo "$PUSH_BRANCH" | grep -qE '^(main|master|develop)$'; then
+        if printf '%s\n' "$PUSH_BRANCH" | grep -qE '^(main|master|develop)$'; then
             log_debug "Allowed: push to protected branch $PUSH_BRANCH"
         else
             # Block push to feature branches
@@ -144,6 +148,17 @@ EOF
             finalize_hook 1
             exit 0
         fi
+    else
+        # Branch cannot be determined - block to prevent bypass
+        log_warn "Blocked git push: unable to determine target branch"
+        cat << EOF
+{
+  "decision": "block",
+  "reason": "DIRECT PUSH BLOCKED: Cannot determine target branch.\n\nTO FIX: Either:\n1. Specify an explicit protected branch: git push origin main\n2. Use the Skill tool with skill: \"submit-pr\" for feature branches\n\nImplicit pushes to unknown branches are blocked to prevent bypassing the PR workflow."
+}
+EOF
+        finalize_hook 1
+        exit 0
     fi
 fi
 
