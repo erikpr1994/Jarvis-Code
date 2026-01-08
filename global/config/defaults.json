@@ -25,9 +25,9 @@
       "description": "Block destructive git commands (reset --hard, push --force, etc.)"
     },
     "requireIsolation": {
-      "enabled": false,
+      "enabled": true,
       "bypassable": true,
-      "description": "Block edits on main/master branch without worktree"
+      "description": "STRICT: Block ALL edits outside worktree - main folder is read-only"
     },
     "preCommitTests": {
       "enabled": false,

@@ -80,23 +80,18 @@ if ! git rev-parse --git-dir > /dev/null 2>&1; then
     exit 0
 fi
 
-# Check if we're on main/master branch
-if is_main_branch; then
-    local_branch=$(get_current_branch)
+# STRICT MODE: Always require worktree, regardless of branch
+# The main project folder should NEVER be modified directly
+local_branch=$(get_current_branch)
 
-    log_warn "Blocked modification on $local_branch branch: $FILE_PATH"
+log_warn "Blocked modification outside worktree: $FILE_PATH (branch: $local_branch)"
 
-    # Output block decision with helpful message
-    cat << EOF
+# Output block decision with helpful message
+cat << EOF
 {
   "decision": "block",
-  "reason": "ISOLATION REQUIRED: You are on the '$local_branch' branch. Direct modifications to main/master are not allowed.\n\nTo proceed, either:\n1. Create a git worktree: git worktree add ../feature-branch -b feature-name\n2. Create a new branch: git checkout -b feature-name\n3. Use Conductor for isolated sessions\n4. Set CLAUDE_ALLOW_MAIN_MODIFICATIONS=1 for emergency fixes\n\nThis policy helps prevent accidental changes to the main branch."
+  "reason": "WORKTREE REQUIRED: Direct modifications to the main project folder are not allowed.\n\nYou are currently in: $(pwd)\nBranch: $local_branch\n\nTo proceed:\n1. Create a git worktree:\n   git worktree add .worktrees/feature-name -b feature/feature-name\n   cd .worktrees/feature-name\n\n2. Or use Conductor for isolated sessions\n\n3. For emergency fixes only:\n   CLAUDE_ALLOW_MAIN_MODIFICATIONS=1\n\nThis policy ensures all work happens in isolated workspaces."
 }
 EOF
-    finalize_hook 1
-    exit 0
-fi
-
-# Not on main branch, allow modification
-log_info "Allowing modification on branch: $(get_current_branch)"
-finalize_hook 0
+finalize_hook 1
+exit 0
