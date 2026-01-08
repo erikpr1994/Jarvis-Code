@@ -2,7 +2,8 @@
 # Hook: block-direct-submit
 # Event: PreToolUse
 # Tools: Bash
-# Purpose: Block direct `gt submit` or `gh pr create` commands - require submit-pr skill
+# Purpose: Block direct PR submission commands and pushes to feature branches - require submit-pr skill
+# Blocks: gt submit, gh pr create, hub pull-request, git push to feature branches
 
 set -euo pipefail
 
@@ -102,6 +103,48 @@ if echo "$COMMAND" | grep -qE '\bhub\s+pull-request\b'; then
 EOF
     finalize_hook 1
     exit 0
+fi
+
+# Check for git push to feature branches
+# Matches: git push -u origin <branch>, git push origin <branch>
+# Allows: pushes to main, master, develop (merge pushes)
+if echo "$COMMAND" | grep -qE '\bgit[[:space:]]+push\b'; then
+    # Extract branch name from command if present
+    # Patterns: git push -u origin branch, git push origin branch
+    PUSH_BRANCH=""
+
+    # Check for explicit branch in command (git push [-u] origin branch)
+    # Use POSIX character classes for macOS compatibility
+    if echo "$COMMAND" | grep -qE 'git[[:space:]]+push[[:space:]]+(-u[[:space:]]+)?origin[[:space:]]+[a-zA-Z0-9_/-]+'; then
+        # Extract the branch name (last argument after origin)
+        PUSH_BRANCH=$(echo "$COMMAND" | sed -E 's/.*git[[:space:]]+push[[:space:]]+(-u[[:space:]]+)?origin[[:space:]]+([a-zA-Z0-9_/-]+).*/\2/')
+    fi
+
+    # Check for HEAD:branch pattern (git push origin HEAD:branch)
+    if echo "$COMMAND" | grep -qE 'git[[:space:]]+push[[:space:]]+.*HEAD:[a-zA-Z0-9_/-]+'; then
+        PUSH_BRANCH=$(echo "$COMMAND" | sed -E 's/.*HEAD:([a-zA-Z0-9_/-]+).*/\1/')
+    fi
+
+    log_debug "Detected push to branch: ${PUSH_BRANCH:-<implicit>}"
+
+    # If we detected a branch name, check if it's a protected branch
+    if [[ -n "$PUSH_BRANCH" ]]; then
+        # Allow pushes to protected branches (main, master, develop)
+        if echo "$PUSH_BRANCH" | grep -qE '^(main|master|develop)$'; then
+            log_debug "Allowed: push to protected branch $PUSH_BRANCH"
+        else
+            # Block push to feature branches
+            log_warn "Blocked direct git push to feature branch: $PUSH_BRANCH"
+            cat << EOF
+{
+  "decision": "block",
+  "reason": "DIRECT PUSH BLOCKED: Use the 'submit-pr' skill instead.\n\nDetected push to feature branch: $PUSH_BRANCH\n\nTO FIX: Use the Skill tool with skill: \"submit-pr\" to load the PR submission workflow.\n\nThe submit-pr skill ensures:\n- Pre-submission checklist (tests, lint, typecheck)\n- Proper PR description\n- CodeRabbit integration\n- Review request process\n\nDO NOT just add the bypass variable - actually invoke the skill to follow the proper process."
+}
+EOF
+            finalize_hook 1
+            exit 0
+        fi
+    fi
 fi
 
 # ============================================================================
