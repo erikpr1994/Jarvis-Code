@@ -240,9 +240,19 @@ is_main_branch() {
 
 # Check if we're in a git worktree
 is_worktree() {
+    # Method 1: Check if .git is a file (worktrees have a .git file, not directory)
+    if [[ -f ".git" ]]; then
+        return 0
+    fi
+
+    # Method 2: Check if git-dir path contains /worktrees/
     local git_dir
     git_dir=$(git rev-parse --git-dir 2>/dev/null || echo "")
-    [[ -f "$git_dir" ]]  # Worktrees have a file, not directory
+    if [[ "$git_dir" == *"/worktrees/"* ]]; then
+        return 0
+    fi
+
+    return 1
 }
 
 # Get current branch name
