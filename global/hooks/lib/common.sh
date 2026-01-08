@@ -18,7 +18,7 @@ LOG_ERROR=3
 JARVIS_LOG_LEVEL="${JARVIS_LOG_LEVEL:-$LOG_INFO}"
 
 # Log directory
-JARVIS_LOG_DIR="${JARVIS_LOG_DIR:-${HOME}/.jarvis/logs}"
+JARVIS_LOG_DIR="${JARVIS_LOG_DIR:-${CLAUDE_DIR:-$HOME/.claude}/logs}"
 mkdir -p "$JARVIS_LOG_DIR" 2>/dev/null || true
 
 # Get current timestamp

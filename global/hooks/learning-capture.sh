@@ -19,10 +19,11 @@ source "${SCRIPT_DIR}/lib/common.sh"
 init_hook "learning-capture" "standard"
 
 # Configuration
-JARVIS_ROOT="${JARVIS_ROOT:-$HOME/.jarvis}"
-LEARNING_INBOX="${JARVIS_ROOT}/learnings/inbox"
+# Use CLAUDE_DIR (where Jarvis is installed) not .jarvis
+JARVIS_ROOT="${JARVIS_ROOT:-${CLAUDE_DIR:-$HOME/.claude}}"
+LEARNING_INBOX="${JARVIS_ROOT}/learning/inbox"
 LEARNING_LOG="${JARVIS_ROOT}/logs/learning-capture.log"
-SESSION_PATTERNS_FILE="${JARVIS_ROOT}/learnings/.session-patterns.json"
+SESSION_PATTERNS_FILE="${JARVIS_ROOT}/learning/.session-patterns.json"
 
 # Memory tier thresholds
 HOT_MEMORY_MAX_ITEMS=20
@@ -279,7 +280,7 @@ detect_manual_guidance() {
     local tool_name="$1"
     local tool_input="$2"
 
-    local guidance_file="${JARVIS_ROOT}/learnings/.guidance-tracking.json"
+    local guidance_file="${JARVIS_ROOT}/learning/.guidance-tracking.json"
     local timestamp
     timestamp=$(date '+%Y-%m-%dT%H:%M:%SZ')
 
@@ -330,7 +331,7 @@ track_correction_pattern() {
     local timestamp
     timestamp=$(date '+%Y-%m-%dT%H:%M:%SZ')
 
-    local guidance_file="${JARVIS_ROOT}/learnings/.guidance-tracking.json"
+    local guidance_file="${JARVIS_ROOT}/learning/.guidance-tracking.json"
 
     if command -v jq &>/dev/null && [[ -f "$guidance_file" ]]; then
         # Check if we already have this pattern
@@ -458,7 +459,7 @@ detect_explicit_correction() {
     done
 
     if [[ "$is_correction" == true ]]; then
-        local correction_file="${JARVIS_ROOT}/learnings/.explicit-corrections.json"
+        local correction_file="${JARVIS_ROOT}/learning/.explicit-corrections.json"
 
         if [[ ! -f "$correction_file" ]]; then
             echo '{"corrections":[]}' > "$correction_file"
@@ -516,7 +517,7 @@ EOF
 
 # Check and update memory tiers based on age and access
 update_memory_tiers() {
-    local learnings_file="${JARVIS_ROOT}/learnings/global.json"
+    local learnings_file="${JARVIS_ROOT}/learning/global.json"
 
     if [[ ! -f "$learnings_file" ]]; then
         return

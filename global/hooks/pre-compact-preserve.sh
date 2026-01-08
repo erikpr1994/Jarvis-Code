@@ -19,10 +19,11 @@ source "${SCRIPT_DIR}/lib/common.sh"
 init_hook "pre-compact-preserve" "essential"
 
 # Configuration
-JARVIS_ROOT="${JARVIS_ROOT:-$HOME/.jarvis}"
+# Use CLAUDE_DIR (where Jarvis is installed) not .jarvis
+JARVIS_ROOT="${JARVIS_ROOT:-${CLAUDE_DIR:-$HOME/.claude}}"
 TASKS_DIR=".claude/tasks"
 SESSION_STATE_FILE="${TASKS_DIR}/session-state.json"
-HOT_MEMORY_FILE="${JARVIS_ROOT}/learnings/.hot-memory.json"
+HOT_MEMORY_FILE="${JARVIS_ROOT}/learning/.hot-memory.json"
 COMPACT_ARCHIVE_DIR="${JARVIS_ROOT}/archive/compactions"
 
 # Ensure directories exist
@@ -114,7 +115,7 @@ EOF
 preserve_hot_memory() {
     local timestamp
     timestamp=$(date '+%Y-%m-%dT%H:%M:%SZ')
-    local session_patterns_file="${JARVIS_ROOT}/learnings/.session-patterns.json"
+    local session_patterns_file="${JARVIS_ROOT}/learning/.session-patterns.json"
 
     # Read current session patterns
     local session_patterns='{}'
@@ -233,8 +234,8 @@ archive_session_state() {
 
 # Promote important hot memory items to warm tier before compaction
 promote_to_warm_memory() {
-    local session_patterns_file="${JARVIS_ROOT}/learnings/.session-patterns.json"
-    local warm_memory_file="${JARVIS_ROOT}/learnings/warm-memory.json"
+    local session_patterns_file="${JARVIS_ROOT}/learning/.session-patterns.json"
+    local warm_memory_file="${JARVIS_ROOT}/learning/warm-memory.json"
     local timestamp
     timestamp=$(date '+%Y-%m-%dT%H:%M:%SZ')
 
