@@ -5,6 +5,18 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.2.0...v2.3.0) (2026-01-09)
+
+
+### Features
+
+* replace custom statusline with claude-hud ([#17](https://github.com/erikpr1994/Jarvis-Code/issues/17)) ([ae22fe7](https://github.com/erikpr1994/Jarvis-Code/commit/ae22fe7fb8c0c6f246ebb5236cfbf49bcb454b65))
+
+
+### Bug Fixes
+
+* **hooks:** block git push to main and Bash file writes ([#18](https://github.com/erikpr1994/Jarvis-Code/issues/18)) ([d5323d9](https://github.com/erikpr1994/Jarvis-Code/commit/d5323d9376e2cbe865b47f2b34e7f146e8997ff3))
+
 ## [2.2.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.1.1...v2.2.0) (2026-01-09)
 
 
