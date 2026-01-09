@@ -8,14 +8,27 @@ disable-model-invocation: false
 
 Update Jarvis components from the local claude-code-tools repository.
 
+## CRITICAL: Safe Update
+
+**NEVER use `rsync --delete` or any command that removes files from ~/.claude!**
+
+Native Claude Code files (plugins, cache, config, etc.) must be preserved. Use the update script:
+
+```bash
+# Safe update using the script
+$JARVIS_SOURCE/scripts/update.sh
+
+# Or if JARVIS_SOURCE not set
+~/Documents/Projects/Jarvis/scripts/update.sh
+```
+
 ## What It Does
 
 1. **Checks versions** - Compares installed vs available versions
-2. **Creates backups** - Preserves existing configuration before changes
-3. **Syncs global** - Updates ~/.claude (hooks, skills, commands, agents, lib)
-4. **Updates project** - Refreshes current project's .claude folder and CLAUDE.md
-5. **Preserves customizations** - Files with `# JARVIS-USER-MODIFIED` marker are never overwritten
-6. **Validates** - Verifies all hooks and configs work after update
+2. **Syncs Jarvis-managed directories ONLY** - hooks, skills, commands, agents, lib, rules, patterns, metrics, learning
+3. **Preserves native Claude files** - plugins, cache, chrome, config, debug, etc. are NEVER touched
+4. **Preserves customizations** - Files with `# JARVIS-USER-MODIFIED` marker are never overwritten
+5. **Validates** - Verifies all hooks and configs work after update
 
 ## Arguments
 
