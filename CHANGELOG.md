@@ -5,6 +5,13 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.4.0...v2.5.0) (2026-01-09)
+
+
+### Features
+
+* **skills:** add background-tasks skill for efficient long-running commands ([#22](https://github.com/erikpr1994/Jarvis-Code/issues/22)) ([96dfc01](https://github.com/erikpr1994/Jarvis-Code/commit/96dfc0194b9d639cfed4af3797cfb7f48764089e))
+
 ## [2.4.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.3.0...v2.4.0) (2026-01-09)
 
 
