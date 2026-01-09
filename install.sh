@@ -455,14 +455,31 @@ install_claude_hud() {
     fi
 
     log_info "Adding marketplace..."
-    # Capture output to avoid noise, check for failure
-    if ! claude plugin marketplace add jarrodwatts/claude-hud >/dev/null 2>&1; then
-        log_info "Marketplace might already exist or failed to add. Continuing..."
+    # Capture output to check for specific errors
+    local market_output
+    if ! market_output=$(claude plugin marketplace add jarrodwatts/claude-hud 2>&1); then
+        # Check if it failed because it already exists (which is fine)
+        if [[ "$market_output" == *"already exists"* ]]; then
+             log_info "Marketplace already exists."
+        else
+             log_warning "Failed to add marketplace: $market_output"
+             log_info "Attempting to proceed with installation anyway..."
+        fi
+    else
+        log_success "Marketplace added."
     fi
 
     log_info "Installing plugin..."
-    if ! claude plugin install claude-hud >/dev/null 2>&1; then
-        log_info "Plugin might already be installed. Continuing..."
+    local install_output
+    if ! install_output=$(claude plugin install claude-hud 2>&1); then
+        if [[ "$install_output" == *"already installed"* ]]; then
+             log_info "Plugin already installed."
+        else
+             log_warning "Failed to install plugin: $install_output"
+             log_info "Setup may be incomplete."
+        fi
+    else
+        log_success "Plugin installed."
     fi
 
     # Configure statusline
