@@ -440,6 +440,104 @@ make_executable() {
     log_success "Permissions set"
 }
 
+# Install and configure Claude HUD
+install_claude_hud() {
+    log_step "Installing Claude HUD..."
+
+    if ! command_exists claude; then
+        log_warning "Claude CLI not found. Skipping Claude HUD installation."
+        return
+    fi
+
+    if ! command_exists jq; then
+        log_warning "jq not found. Skipping Claude HUD configuration."
+        return
+    fi
+
+    log_info "Adding marketplace..."
+    # Capture output to check for specific errors
+    local market_output
+    if ! market_output=$(claude plugin marketplace add jarrodwatts/claude-hud 2>&1); then
+        # Check if it failed because it already exists (which is fine)
+        if [[ "$market_output" == *"already exists"* ]]; then
+             log_info "Marketplace already exists."
+        else
+             log_warning "Failed to add marketplace: $market_output"
+             log_info "Attempting to proceed with installation anyway..."
+        fi
+    else
+        log_success "Marketplace added."
+    fi
+
+    log_info "Installing plugin..."
+    local install_output
+    if ! install_output=$(claude plugin install claude-hud 2>&1); then
+        if [[ "$install_output" == *"already installed"* ]]; then
+             log_info "Plugin already installed."
+        else
+             log_warning "Failed to install plugin: $install_output"
+             log_info "Setup may be incomplete."
+        fi
+    else
+        log_success "Plugin installed."
+    fi
+
+    # Configure statusline
+    log_info "Configuring statusline..."
+    
+    # Find install path from installed_plugins.json
+    local plugins_file="${CLAUDE_DIR}/plugins/installed_plugins.json"
+    
+    if [[ ! -f "$plugins_file" ]]; then
+        log_warning "Plugins file not found at $plugins_file"
+        return
+    fi
+    
+    local install_path
+    install_path=$(jq -r '.plugins["claude-hud@claude-hud"][0].installPath // empty' "$plugins_file")
+    
+    if [[ -z "$install_path" ]]; then
+        log_warning "Could not determine Claude HUD installation path."
+        return
+    fi
+    
+    local entry_point="${install_path}/dist/index.js"
+    
+    # Verify the plugin entry point exists
+    if [[ ! -f "$entry_point" ]]; then
+        log_warning "Claude HUD entry point not found at $entry_point"
+        log_info "The plugin may have a different structure. Please configure statusLine manually."
+        return
+    fi
+    
+    local cmd="node ${entry_point}"
+    local settings_file="${CLAUDE_DIR}/settings.json"
+    
+    if [[ -f "$settings_file" ]]; then
+        # Check if statusLine is already configured
+        local existing_statusline
+        existing_statusline=$(jq -r '.statusLine // empty' "$settings_file" 2>/dev/null)
+        
+        if [[ -n "$existing_statusline" && "$existing_statusline" != "null" ]]; then
+            log_info "Existing statusLine configuration detected. Preserving user settings."
+            log_info "To use Claude HUD, update statusLine.command in settings.json to: $cmd"
+            return
+        fi
+        
+        local tmp_file="${settings_file}.tmp"
+        # Add statusLine config (only if not already configured)
+        if jq --arg cmd "$cmd" '.statusLine = {"type": "command", "command": $cmd, "padding": 0}' "$settings_file" > "$tmp_file"; then
+            mv "$tmp_file" "$settings_file"
+            log_success "Claude HUD configured successfully"
+        else
+            log_warning "Failed to configure statusLine. Please configure manually."
+            rm -f "$tmp_file"
+        fi
+    else
+        log_warning "settings.json not found. Skipping configuration."
+    fi
+}
+
 # Create version file (uses save_version_info from version management section)
 create_version_file() {
     log_step "Creating version marker..."
@@ -557,6 +655,7 @@ print_usage() {
     echo ""
     echo -e "${CYAN}Key Features:${NC}"
     echo "  - Smart skill activation based on context"
+    echo "  - Enhanced status line (Claude HUD)"
     echo "  - Code review and test generation agents"
     echo "  - Pattern library for common solutions"
     echo "  - Session tracking and learning"
@@ -637,6 +736,7 @@ main() {
     copy_files
     setup_hooks
     make_executable
+    install_claude_hud
     create_version_file
 
     # Configure preferences (unless skipped)
