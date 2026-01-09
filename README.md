@@ -173,9 +173,9 @@ The installer (`./install.sh`) automatically sets this up for you.
 If the automated installer fails, you can set it up manually:
 
 ```bash
-/plugin marketplace add jarrodwatts/claude-hud
-/plugin install claude-hud
-/claude-hud:setup
+claude plugin marketplace add jarrodwatts/claude-hud
+claude plugin install claude-hud
+claude claude-hud:setup
 ```
 
 ## Updating

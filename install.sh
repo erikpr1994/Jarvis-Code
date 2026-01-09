@@ -501,14 +501,38 @@ install_claude_hud() {
         return
     fi
     
-    local cmd="node ${install_path}/dist/index.js"
+    local entry_point="${install_path}/dist/index.js"
+    
+    # Verify the plugin entry point exists
+    if [[ ! -f "$entry_point" ]]; then
+        log_warning "Claude HUD entry point not found at $entry_point"
+        log_info "The plugin may have a different structure. Please configure statusLine manually."
+        return
+    fi
+    
+    local cmd="node ${entry_point}"
     local settings_file="${CLAUDE_DIR}/settings.json"
     
     if [[ -f "$settings_file" ]]; then
+        # Check if statusLine is already configured
+        local existing_statusline
+        existing_statusline=$(jq -r '.statusLine // empty' "$settings_file" 2>/dev/null)
+        
+        if [[ -n "$existing_statusline" && "$existing_statusline" != "null" ]]; then
+            log_info "Existing statusLine configuration detected. Preserving user settings."
+            log_info "To use Claude HUD, update statusLine.command in settings.json to: $cmd"
+            return
+        fi
+        
         local tmp_file="${settings_file}.tmp"
-        # Add statusLine config
-        jq --arg cmd "$cmd" '.statusLine = {"type": "command", "command": $cmd, "padding": 0}' "$settings_file" > "$tmp_file" && mv "$tmp_file" "$settings_file"
-        log_success "Claude HUD configured successfully"
+        # Add statusLine config (only if not already configured)
+        if jq --arg cmd "$cmd" '.statusLine = {"type": "command", "command": $cmd, "padding": 0}' "$settings_file" > "$tmp_file"; then
+            mv "$tmp_file" "$settings_file"
+            log_success "Claude HUD configured successfully"
+        else
+            log_warning "Failed to configure statusLine. Please configure manually."
+            rm -f "$tmp_file"
+        fi
     else
         log_warning "settings.json not found. Skipping configuration."
     fi
