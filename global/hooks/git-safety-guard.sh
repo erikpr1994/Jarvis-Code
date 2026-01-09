@@ -25,15 +25,8 @@ if ! is_hook_enabled "gitSafetyGuard" "true"; then
     exit 0
 fi
 
-# Check for explicit bypass
-if bypass_enabled "CLAUDE_ALLOW_DESTRUCTIVE"; then
-    log_info "Bypass enabled: CLAUDE_ALLOW_DESTRUCTIVE=1"
-    finalize_hook 0
-    exit 0
-fi
-
 # ============================================================================
-# COMMAND DETECTION
+# COMMAND DETECTION (early, needed for inline bypass checks)
 # ============================================================================
 
 # Read input from stdin
@@ -50,6 +43,36 @@ fi
 
 log_debug "Checking command: $COMMAND"
 
+# ============================================================================
+# BYPASS CONDITIONS
+# ============================================================================
+
+# Check for explicit bypass via environment variable
+if bypass_enabled "CLAUDE_ALLOW_DESTRUCTIVE"; then
+    log_info "Bypass enabled: CLAUDE_ALLOW_DESTRUCTIVE=1"
+    finalize_hook 0
+    exit 0
+fi
+
+# Check for inline bypass variables in command string
+# Handles: CLAUDE_ALLOW_DESTRUCTIVE=1 git reset --hard ...
+if echo "$COMMAND" | grep -qE "^CLAUDE_ALLOW_DESTRUCTIVE=1[[:space:]]"; then
+    log_info "Bypass enabled: CLAUDE_ALLOW_DESTRUCTIVE=1 (inline in command)"
+    finalize_hook 0
+    exit 0
+fi
+
+if echo "$COMMAND" | grep -qE "^JARVIS_ALLOW_MAIN_PUSH=1[[:space:]]"; then
+    log_info "Bypass enabled: JARVIS_ALLOW_MAIN_PUSH=1 (inline in command)"
+    finalize_hook 0
+    exit 0
+fi
+
+if echo "$COMMAND" | grep -qE "^CLAUDE_ALLOW_BASH_WRITE=1[[:space:]]"; then
+    log_info "Bypass enabled: CLAUDE_ALLOW_BASH_WRITE=1 (inline in command)"
+    finalize_hook 0
+    exit 0
+fi
 # Normalize absolute paths (e.g., /usr/bin/git -> git)
 # Handle both git and rm separately for macOS compatibility
 NORMALIZED_CMD="$COMMAND"
