@@ -235,6 +235,86 @@ export const test = base.extend<Fixtures>({
 });
 ```
 
+## Running Long E2E Tests Efficiently
+
+E2E tests often take 2-5+ minutes. Use the **TaskOutput pattern** to avoid token waste.
+
+### The Problem: Polling Waste
+
+```
+❌ INEFFICIENT - wastes tokens on empty polling:
+1. Bash(test, run_in_background: true) → task_id
+2. Bash(sleep 60 && tail output)  ← empty, wasted tokens
+3. Bash(cat output)               ← still empty, wasted
+4. Bash(ps aux | grep test)       ← check if running, wasted
+5. Bash(sleep 90 && cat output)   ← wasted again
+... repeat 5-10 times before getting results
+```
+
+### The Solution: Block Until Complete
+
+```
+✅ EFFICIENT - one call, waits for completion:
+1. Bash(test, run_in_background: true) → task_id
+2. TaskOutput(task_id, block: true, timeout: 300000)
+   ↳ Waits up to 5 min, returns results when done
+```
+
+That's it. **Two tool calls instead of 6+**.
+
+### Pattern: E2E Test Execution
+
+```typescript
+// Step 1: Start test in background
+Bash("pnpm test:e2e -- e2e/checkout.spec.ts", run_in_background: true)
+// Returns: task_id = "abc123"
+
+// Step 2: Wait for completion (up to 5 min)
+TaskOutput(task_id: "abc123", block: true, timeout: 300000)
+// Returns full output when test completes
+```
+
+### Pattern: Parallel E2E with TaskOutput
+
+```typescript
+// Start multiple tests in parallel
+Bash("pnpm test:e2e auth.spec.ts", run_in_background: true)  // task_a
+Bash("pnpm test:e2e cart.spec.ts", run_in_background: true)  // task_b
+Bash("pnpm test:e2e checkout.spec.ts", run_in_background: true)  // task_c
+
+// Wait for all to complete
+TaskOutput(task_id: "task_a", block: true, timeout: 300000)
+TaskOutput(task_id: "task_b", block: true, timeout: 300000)
+TaskOutput(task_id: "task_c", block: true, timeout: 300000)
+```
+
+### When to Use Non-Blocking
+
+Use `block: false` only when you need a quick status check:
+
+```typescript
+// Quick status check (doesn't wait)
+TaskOutput(task_id: "abc123", block: false, timeout: 5000)
+
+// Returns immediately with current output
+// Use this if you want to continue other work
+```
+
+### Timeout Guidelines
+
+| Test Type | Suggested Timeout |
+|-----------|-------------------|
+| Single unit test file | 60000 (1 min) |
+| Integration tests | 120000 (2 min) |
+| E2E single spec | 300000 (5 min) |
+| E2E full suite | 600000 (10 min) |
+
+### Red Flags
+
+- Using `sleep && tail` to poll → Use TaskOutput instead
+- Multiple `cat` commands checking same file → Use TaskOutput with block: true
+- Checking `ps aux | grep` for process → TaskOutput tells you if still running
+
 ## Anti-Patterns
 
 | Anti-Pattern | Problem | Solution |
@@ -244,6 +324,8 @@ export const test = base.extend<Fixtures>({
 | Hardcoded delays | Slow, flaky | Use waitFor/polling |
 | Testing third-party code | Wasted effort | Mock at boundary |
 | Snapshot abuse | Meaningless diffs | Use for specific UI |
+| Polling background tasks | Token waste | Use TaskOutput(block: true) |
+
 
 ```typescript
 // BAD: Testing implementation
