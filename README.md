@@ -170,13 +170,15 @@ The installer (`./install.sh`) automatically sets this up for you.
 
 #### Manual Setup (Fallback)
 
-If the automated installer fails, you can set it up manually:
+If the automated installer fails, you can set it up manually inside Claude Code using these slash commands:
 
-```bash
-claude plugin marketplace add jarrodwatts/claude-hud
-claude plugin install claude-hud
-claude claude-hud:setup
 ```
+/plugin marketplace add jarrodwatts/claude-hud
+/plugin install claude-hud
+/claude-hud:setup
+```
+
+> **Note**: These are Claude Code slash commands, not terminal commands. Run them in an active Claude Code session.
 
 ## Updating
 
