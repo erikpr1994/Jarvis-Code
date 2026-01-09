@@ -11,7 +11,7 @@ Jarvis is an advanced system that enhances [Claude Code CLI](https://claude.ai/c
 
 ### Productivity
 - **Smart Skill Activation** - Automatically suggests relevant skills based on context
-- **Custom Status Line** - Shows git info, context usage, cost tracking in terminal
+- **Enhanced Status Line** - Real-time insights via Claude HUD (context, tools, agents)
 - **Session Tracking** - Maintains context across conversations
 - **Learning Capture** - Learns from successful patterns
 
@@ -69,11 +69,10 @@ The installer will prompt you to configure which hooks and rules you want enable
 
 ```
 ~/.claude/
-├── settings.json          # Claude Code settings (hooks, statusline)
+├── settings.json          # Claude Code settings (hooks)
 ├── config/
 │   ├── preferences.json   # Your rules & hooks preferences
 │   └── defaults.json      # Default preference values
-├── statusline.sh          # Custom status bar script
 ├── hooks/                 # Event-driven automations
 │   ├── git-safety-guard.sh    # Blocks destructive git commands
 │   ├── block-direct-submit.sh # Enforces PR workflow
@@ -161,20 +160,18 @@ The git-safety-guard blocks dangerous commands:
 
 ### Status Line
 
-Custom terminal status showing:
+We recommend using [Claude HUD](https://github.com/jarrodwatts/claude-hud) for a rich, real-time status line showing:
 - Project name and git branch
-- File changes (+added/-removed)
-- Context window usage (%)
-- Session cost ($)
+- Context usage and costs
+- Active tools and agents
+- Todo progress
 
-Configured in `settings.json`:
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh"
-  }
-}
+To install and configure:
+
+```bash
+/plugin marketplace add jarrodwatts/claude-hud
+/plugin install claude-hud
+/claude-hud:setup
 ```
 
 ## Updating
@@ -244,7 +241,6 @@ claude-code-tools/
 ├── global/                 # Files installed to ~/.claude/
 │   ├── settings.json       # Claude Code settings
 │   ├── jarvis.json         # Jarvis config
-│   ├── statusline.sh       # Status bar script
 │   ├── hooks/              # Hook scripts
 │   ├── skills/             # Skill definitions
 │   ├── commands/           # Slash commands

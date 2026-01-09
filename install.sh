@@ -557,6 +557,7 @@ print_usage() {
     echo ""
     echo -e "${CYAN}Key Features:${NC}"
     echo "  - Smart skill activation based on context"
+    echo "  - Enhanced status line (Claude HUD)"
     echo "  - Code review and test generation agents"
     echo "  - Pattern library for common solutions"
     echo "  - Session tracking and learning"

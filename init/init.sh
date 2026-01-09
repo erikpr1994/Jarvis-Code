@@ -643,7 +643,6 @@ ${stack:-"No specific stack detected"}
 | Command | Description |
 |---------|-------------|
 | \`/init\` | Re-run initialization |
-| \`/status\` | Show project status |
 | \`/plan\` | Create implementation plan |
 | \`/implement\` | Start implementation |
 | \`/review\` | Request code review |
