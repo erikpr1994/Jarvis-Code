@@ -1,13 +1,14 @@
 ---
 name: submit-pr
-description: Use when submitting pull requests. Covers pre-submit checklist, PR description, CodeRabbit integration, and review request process.
+description: |
+  Complete PR submission pipeline with local sub-agent review before pushing, CI verification, and automated review integration. Dispatches specialized review agents (security, performance, dependency) before code leaves the machine. Waits for CI with `gh pr checks --watch`. Integrates CodeRabbit and Greptile feedback.
 ---
 
 # Submit PR
 
 ## Overview
 
-Complete PR submission pipeline from pre-submit verification through review request. Sub-skill of git-expert focused specifically on the PR creation and review workflow.
+Orchestrates the full PR lifecycle: pre-submit verification → local sub-agent review → push → CI verification → automated review feedback → human review request. Catches issues at the earliest possible stage.
 
 ## When to Use
 
@@ -16,7 +17,7 @@ Complete PR submission pipeline from pre-submit verification through review requ
 - Bug fix is tested and ready to merge
 - Creating your first PR in a new repository
 - Unsure about PR description format or best practices
-- Need to set up CodeRabbit review integration
+- Need comprehensive pre-push quality checks
 - Preparing stacked PRs with Graphite
 
 **Do NOT use when:**
@@ -29,16 +30,19 @@ Complete PR submission pipeline from pre-submit verification through review requ
 
 | Phase | Actions |
 |-------|---------|
-| **Pre-Submit** | Tests, lint, typecheck, diff review |
-| **PR Creation** | Branch push, description, labels |
-| **Review** | CodeRabbit, team reviewers, comments |
-| **Post-Review** | Address feedback, re-request review |
+| **1. Pre-Submit** | Local tests, lint, typecheck, diff review |
+| **2. Sub-Agent Review** | Dispatch security/performance/structure reviewers |
+| **3. Address Findings** | Fix issues found by sub-agents |
+| **4. Push & Create PR** | Branch push, description, labels |
+| **5. CI Verification** | Wait for CI with `gh pr checks --watch` |
+| **6. Automated Review** | Read CodeRabbit/Greptile feedback |
+| **7. Final Fixes** | Address any remaining feedback |
 
 ---
 
-## Pre-Submit Checklist
+## Phase 1: Pre-Submit Checklist
 
-**MANDATORY before creating PR:**
+**MANDATORY before proceeding:**
 
 ```bash
 # 1. Verify all tests pass
@@ -51,7 +55,7 @@ npm run lint
 npm run typecheck
 
 # 4. Review your changes
-git diff main...HEAD
+git diff main...HEAD --stat
 
 # 5. Check for secrets/sensitive data
 git diff main...HEAD | grep -E "(password|secret|api_key|token)" || echo "Clean"
@@ -62,6 +66,182 @@ git rebase origin/main
 ```
 
 **Do NOT proceed if any check fails.**
+
+---
+
+## Phase 2: Local Sub-Agent Review
+
+**BEFORE pushing**, dispatch specialized review agents to catch issues early.
+
+### Determine Which Agents to Dispatch
+
+Analyze changes to select appropriate reviewers:
+
+```bash
+# Get changed files for analysis
+git diff main...HEAD --stat
+git diff main...HEAD --name-only
+```
+
+| Change Type | Dispatch Agent |
+|-------------|----------------|
+| Auth/security code | `security-reviewer` |
+| Database queries, loops, rendering | `performance-reviewer` |
+| package.json/lock files | `dependency-reviewer` |
+| New files, reorganization | `structure-reviewer` |
+| Complex PR (10+ files) | `code-reviewer` (comprehensive) |
+
+### Dispatch Review Agents in Parallel
+
+Use the Task tool to run specialized reviewers simultaneously:
+
+```markdown
+Task: @security-reviewer
+Review changes for security vulnerabilities.
+Run: git diff main...HEAD
+Focus: authentication, authorization, input validation, data exposure, XSS, injection.
+
+---
+
+Task: @performance-reviewer
+Analyze performance implications of changes.
+Run: git diff main...HEAD
+Focus: query efficiency, N+1 problems, rendering, bundle size, memory leaks.
+
+---
+
+Task: @dependency-reviewer
+Review dependency changes (if package.json modified).
+Check: known vulnerabilities, license compatibility, maintenance status.
+```
+
+### Aggregate Sub-Agent Results
+
+Collect and assess findings:
+
+```markdown
+## Local Review Summary
+
+### Security Review: [PASS/WARN/FAIL]
+- Critical: [count]
+- Warnings: [count]
+- [Key findings]
+
+### Performance Review: [PASS/WARN/FAIL]
+- Critical: [count]
+- Warnings: [count]
+- [Key findings]
+
+### Dependency Review: [PASS/WARN/FAIL]
+- Vulnerabilities: [count]
+- [Key findings]
+
+### Overall: [READY TO PUSH / NEEDS FIXES]
+```
+
+---
+
+## Phase 3: Address Sub-Agent Findings
+
+**If any sub-agent reports FAIL or critical issues:**
+
+1. Fix the identified issues
+2. Re-run affected tests
+3. Re-dispatch the sub-agent that found issues
+4. Verify PASS before proceeding
+
+**Do NOT push with unresolved critical findings.**
+
+---
+
+## Phase 4: Push & Create PR
+
+Only after local sub-agent review passes:
+
+### Push Branch
+
+```bash
+# Push with upstream tracking
+CLAUDE_SUBMIT_PR_SKILL=1 git push -u origin feature/my-feature
+```
+
+### Create PR
+
+```bash
+CLAUDE_SUBMIT_PR_SKILL=1 gh pr create --title "feat: add feature" --body "$(cat <<'EOF'
+## Summary
+- [What changed and why]
+
+## Test Plan
+- [ ] Unit tests added/updated
+- [ ] Integration tests pass
+
+## Local Review
+- [x] Security review passed
+- [x] Performance review passed
+- [x] Tests pass locally
+
+Closes #[issue]
+EOF
+)"
+
+# Capture PR number
+PR_NUMBER=$(gh pr view --json number -q '.number')
+echo "Created PR #$PR_NUMBER"
+```
+
+---
+
+## Phase 5: CI Verification
+
+**Wait for CI checks to complete:**
+
+```bash
+# Watch CI checks until completion (blocks until done)
+gh pr checks $PR_NUMBER --watch
+```
+
+| CI Status | Action |
+|-----------|--------|
+| All pass | Proceed to Phase 6 |
+| Tests fail | Fix, push, re-watch |
+| Lint/Type errors | Fix, push, re-watch |
+
+---
+
+## Phase 6: Automated Review Feedback
+
+Read feedback from CodeRabbit, Greptile, and other automated reviewers:
+
+```bash
+# View all comments
+gh pr view $PR_NUMBER --comments
+
+# Check review status
+gh pr view $PR_NUMBER --json reviewDecision -q '.reviewDecision'
+```
+
+### Addressing Automated Feedback
+
+1. Review each comment for actionable items
+2. Fix issues in code
+3. Commit and push fixes
+4. Re-run `gh pr checks --watch`
+5. Verify automated reviewers are satisfied
+
+---
+
+## Phase 7: Request Human Review
+
+Only after all automated checks pass:
+
+```bash
+# Request specific reviewers
+gh pr edit $PR_NUMBER --add-reviewer reviewer1,reviewer2
+
+# Or request team review
+gh pr edit $PR_NUMBER --add-reviewer org/team-name
+```
 
 ---
 
@@ -92,104 +272,6 @@ git rebase origin/main
 
 ---
 
-## PR Creation Process
-
-### Step 1: Push Branch
-
-```bash
-# Push with upstream tracking
-git push -u origin feature/my-feature
-```
-
-### Step 2: Create PR
-
-```bash
-gh pr create --title "feat: add user authentication" --body "$(cat <<'EOF'
-## Summary
-- Implement JWT-based authentication
-- Add login/logout endpoints
-- Include session management
-
-## Test Plan
-- [ ] Unit tests for auth logic
-- [ ] Integration tests for endpoints
-- [ ] Manual login/logout testing
-
-Closes #42
-EOF
-)"
-```
-
-### Step 3: Add Labels (if applicable)
-
-```bash
-gh pr edit --add-label "feature,needs-review"
-```
-
-### Step 4: Request Review
-
-```bash
-# Request specific reviewer
-gh pr edit --add-reviewer username
-
-# Or request team review
-gh pr edit --add-reviewer org/team-name
-```
-
----
-
-## CodeRabbit Integration
-
-**Trigger CodeRabbit review:**
-- CodeRabbit reviews automatically on PR creation (if configured)
-- To re-trigger: push new commits or comment `@coderabbitai review`
-
-**Addressing CodeRabbit feedback:**
-1. Read each comment carefully
-2. Address actionable items with code changes
-3. Reply to explain non-obvious decisions
-4. Mark conversations as resolved when addressed
-
-See `coderabbit.md` skill for detailed CodeRabbit workflow.
-
----
-
-## Review Request Process
-
-### Requesting Human Review
-
-```bash
-# Check PR status
-gh pr status
-
-# Request specific reviewers
-gh pr edit --add-reviewer reviewer1,reviewer2
-
-# View pending reviews
-gh pr view --json reviewRequests
-```
-
-### After Review Feedback
-
-```bash
-# 1. View review comments
-gh pr view --comments
-
-# 2. Make requested changes
-# ... edit code ...
-
-# 3. Commit fixes
-git add .
-git commit -m "fix: address review feedback"
-
-# 4. Push updates
-git push
-
-# 5. Re-request review if needed
-gh pr edit --add-reviewer original-reviewer
-```
-
----
 
 ## Common Patterns
 
@@ -209,38 +291,83 @@ gh pr ready
 
 ```bash
 # Submit entire stack
-gt stack submit
+CLAUDE_SUBMIT_PR_SKILL=1 gt stack submit
 
 # View stack status
 gt log
+```
+
+### Quick PR (Skip Optional Sub-Agents)
+
+For small, low-risk changes, you may skip optional sub-agents:
+
+```bash
+# Minimum required: security-reviewer for any code changes
+# Skip: performance-reviewer, dependency-reviewer, structure-reviewer
+```
+
+---
+
+## Decision Tree
+
+```
+Phase 1: Pre-Submit Checks Pass?
+├── NO → Fix issues, re-run checks
+└── YES → Phase 2: Dispatch Sub-Agents
+           ↓
+      Phase 2: Sub-Agent Review Complete?
+      ├── Any FAIL? → Phase 3: Fix issues, re-dispatch
+      └── All PASS? → Phase 4: Push & Create PR
+                      ↓
+                 Phase 5: CI Passes?
+                 ├── NO → Fix, push, re-watch
+                 └── YES → Phase 6: Read Automated Feedback
+                           ↓
+                      Issues Found?
+                      ├── YES → Fix, push, verify
+                      └── NO → Phase 7: Request Human Review
 ```
 
 ---
 
 ## Red Flags - STOP
 
-**Do NOT submit PR when:**
+**Do NOT push when:**
 - Tests are failing
 - Linter errors exist
 - Type errors present
 - Secrets in diff
+- Sub-agent reports FAIL or critical issues
 - Incomplete implementation without draft flag
 
 **Do NOT:**
 - Skip pre-submit checklist
+- Skip local sub-agent review
+- Push with unresolved critical findings
 - Create PR without description
-- Ignore CodeRabbit feedback
+- Ignore CodeRabbit/Greptile feedback
 - Force merge without approval
 
 ---
 
 ## Verification Checklist
 
-Before marking PR ready:
+### Before Dispatching Sub-Agents (Phase 1)
 - [ ] All tests pass locally
-- [ ] CI pipeline green
+- [ ] Linter clean
+- [ ] Type check passes
+- [ ] No secrets in diff
+- [ ] Branch rebased on main
+
+### Before Pushing (Phase 3)
+- [ ] Sub-agent reviews complete
+- [ ] No critical findings unresolved
+- [ ] All WARN items assessed
+
+### Before Requesting Human Review (Phase 7)
+- [ ] CI pipeline green (`gh pr checks --watch`)
+- [ ] Automated review feedback addressed
 - [ ] PR description complete
-- [ ] Relevant reviewers assigned
 - [ ] No merge conflicts
 - [ ] Self-review completed
 
@@ -249,4 +376,21 @@ Before marking PR ready:
 ## Integration
 
 **Parent skill:** git-expert
-**Related skills:** coderabbit, tdd-workflow, verification
+**Related skills:** coderabbit, tdd, verification, dispatching-parallel-agents, multi-agent-patterns
+
+**Review sub-agents (Phase 2):**
+- `security-reviewer` - XSS, injection, auth vulnerabilities
+- `performance-reviewer` - Queries, rendering, bundle size
+- `dependency-reviewer` - Vulnerabilities, licenses, maintenance
+- `structure-reviewer` - File organization, patterns
+- `code-reviewer` - Comprehensive multi-file review
+- `test-coverage-analyzer` - Test adequacy and gaps
+
+**Architecture note:** Uses supervisor pattern from multi-agent-patterns. Sub-agents provide context isolation - each reviewer operates in a clean context focused on its domain. Results aggregate without any single context bearing the full burden.
+
+---
+
+## Metadata
+
+**Version:** 2.0.0
+**Last Updated:** 2026-01-08

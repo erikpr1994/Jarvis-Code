@@ -137,6 +137,14 @@ if [[ "$RESOLVED_FILE_PATH" != "$GIT_ROOT"* ]]; then
     exit 0
 fi
 
+# Check if the file is inside a worktree directory (allows editing from main CWD)
+# This handles the case where Claude runs from main project but edits files in .worktrees/
+if [[ "$RESOLVED_FILE_PATH" == *"/.worktrees/"* ]]; then
+    log_info "File is inside a worktree directory, allowing modification: $RESOLVED_FILE_PATH"
+    finalize_hook 0
+    exit 0
+fi
+
 # STRICT MODE: Always require worktree, regardless of branch
 # The main project folder should NEVER be modified directly
 local_branch=$(get_current_branch)
