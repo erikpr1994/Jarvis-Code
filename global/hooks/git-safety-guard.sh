@@ -25,15 +25,8 @@ if ! is_hook_enabled "gitSafetyGuard" "true"; then
     exit 0
 fi
 
-# Check for explicit bypass
-if bypass_enabled "CLAUDE_ALLOW_DESTRUCTIVE"; then
-    log_info "Bypass enabled: CLAUDE_ALLOW_DESTRUCTIVE=1"
-    finalize_hook 0
-    exit 0
-fi
-
 # ============================================================================
-# COMMAND DETECTION
+# COMMAND DETECTION (early, needed for inline bypass checks)
 # ============================================================================
 
 # Read input from stdin
@@ -49,6 +42,52 @@ if [[ -z "$COMMAND" ]]; then
 fi
 
 log_debug "Checking command: $COMMAND"
+
+# ============================================================================
+# BYPASS FLAGS (set flags instead of early exit - each check uses its own flag)
+# ============================================================================
+
+BYPASS_DESTRUCTIVE=0
+BYPASS_MAIN_PUSH=0
+BYPASS_BASH_WRITE=0
+
+# Check for explicit bypass via environment variable (global - skips all)
+if bypass_enabled "CLAUDE_ALLOW_DESTRUCTIVE"; then
+    log_info "Bypass enabled: CLAUDE_ALLOW_DESTRUCTIVE=1 (env)"
+    BYPASS_DESTRUCTIVE=1
+fi
+
+# Check for inline bypass variables - each sets ONLY its specific flag
+if echo "$COMMAND" | grep -qE "^CLAUDE_ALLOW_DESTRUCTIVE=1[[:space:]]"; then
+    log_info "Bypass enabled: CLAUDE_ALLOW_DESTRUCTIVE=1 (inline)"
+    BYPASS_DESTRUCTIVE=1
+fi
+
+if echo "$COMMAND" | grep -qE "^JARVIS_ALLOW_MAIN_PUSH=1[[:space:]]"; then
+    log_info "Bypass enabled: JARVIS_ALLOW_MAIN_PUSH=1 (inline)"
+    BYPASS_MAIN_PUSH=1
+fi
+
+if echo "$COMMAND" | grep -qE "^CLAUDE_ALLOW_BASH_WRITE=1[[:space:]]"; then
+    log_info "Bypass enabled: CLAUDE_ALLOW_BASH_WRITE=1 (inline)"
+    BYPASS_BASH_WRITE=1
+fi
+
+# Check env vars for specific bypasses too
+if bypass_enabled "JARVIS_ALLOW_MAIN_PUSH"; then
+    BYPASS_MAIN_PUSH=1
+fi
+
+if bypass_enabled "CLAUDE_ALLOW_BASH_WRITE"; then
+    BYPASS_BASH_WRITE=1
+fi
+
+# Global bypass (all checks) - only CLAUDE_ALLOW_DESTRUCTIVE via env does this
+if [[ "$BYPASS_DESTRUCTIVE" == "1" ]] && bypass_enabled "CLAUDE_ALLOW_DESTRUCTIVE"; then
+    log_info "Global bypass: all checks skipped"
+    finalize_hook 0
+    exit 0
+fi
 
 # Normalize absolute paths (e.g., /usr/bin/git -> git)
 # Handle both git and rm separately for macOS compatibility
@@ -157,6 +196,16 @@ if echo "$NORMALIZED_CMD" | grep -qE 'git\s+clean\s+-[a-z]*f' && \
     block_command "git clean -f removes untracked files permanently. Review with 'git clean -n' first."
 fi
 
+
+# git push to main/master (direct push to protected branches)
+# Bypass: JARVIS_ALLOW_MAIN_PUSH=1
+if [[ "$BYPASS_MAIN_PUSH" != "1" ]]; then
+    if echo "$NORMALIZED_CMD" | grep -qE "git\s+push\s+.*\s+(main|master)(\s|$)" || \
+       echo "$NORMALIZED_CMD" | grep -qE "git\s+push\s+origin\s+(main|master)" || \
+       echo "$NORMALIZED_CMD" | grep -qE "git\s+push\s+-u\s+origin\s+(main|master)"; then
+        block_command "Direct push to main/master is blocked. Create a PR instead.\n\nTo bypass (emergency only): JARVIS_ALLOW_MAIN_PUSH=1 git push ..."
+    fi
+fi
 # git push --force/-f (destroys remote history)
 # Note: Allow --force-with-lease which is safer
 if echo "$NORMALIZED_CMD" | grep -qE 'git\s+push\s+.*--force($|\s)' || \
@@ -189,6 +238,27 @@ fi
 # rm -rf generic (requires approval)
 if echo "$NORMALIZED_CMD" | grep -qE 'rm\s+.*-[rRfF]+'; then
     block_command "rm -rf is destructive and requires human approval. Explain what you want to delete."
+fi
+
+# Bash file write patterns - force use of Write/Edit tools
+# Block: >, >>, tee (except to /dev/null and file descriptor redirects)
+# Bypass: CLAUDE_ALLOW_BASH_WRITE=1
+if [[ "$BYPASS_BASH_WRITE" != "1" ]]; then
+    # Check for redirect operators (but allow /dev/null and file descriptor redirects like 2>&1)
+    if echo "$NORMALIZED_CMD" | grep -qE ">[^>&0-9]" && \
+       ! echo "$NORMALIZED_CMD" | grep -qE ">\s*/dev/null"; then
+        block_command "Bash file writes are blocked. Use the Write or Edit tool instead.\n\nDetected: output redirection (>)\n\nTo bypass (if truly needed): CLAUDE_ALLOW_BASH_WRITE=1"
+    fi
+    # Check for append operator
+    if echo "$NORMALIZED_CMD" | grep -qE ">>" && \
+       ! echo "$NORMALIZED_CMD" | grep -qE ">>\s*/dev/null"; then
+        block_command "Bash file writes are blocked. Use the Write or Edit tool instead.\n\nDetected: append redirection (>>)\n\nTo bypass (if truly needed): CLAUDE_ALLOW_BASH_WRITE=1"
+    fi
+    # Check for tee command (except to /dev/null)
+    if echo "$NORMALIZED_CMD" | grep -qE "\btee\b" && \
+       ! echo "$NORMALIZED_CMD" | grep -qE "tee\s+/dev/null"; then
+        block_command "Bash file writes are blocked. Use the Write or Edit tool instead.\n\nDetected: tee command\n\nTo bypass (if truly needed): CLAUDE_ALLOW_BASH_WRITE=1"
+    fi
 fi
 
 # ============================================================================

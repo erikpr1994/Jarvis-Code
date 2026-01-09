@@ -186,7 +186,9 @@
       "JARVIS_SKIP_SKILL_ACTIVATION": "Skip skill recommendation hook",
       "JARVIS_SKIP_METRICS": "Skip metrics capture hook",
       "JARVIS_SKIP_LEARNING": "Skip learning capture hook",
-      "SKIP_CODERABBIT": "Skip CodeRabbit review context (coderabbit-review bypass)"
+      "SKIP_CODERABBIT": "Skip CodeRabbit review context (coderabbit-review bypass)",
+      "JARVIS_ALLOW_MAIN_PUSH": "Allow direct push to main/master (git-safety-guard bypass)",
+      "CLAUDE_ALLOW_BASH_WRITE": "Allow Bash file writes with > >> tee (git-safety-guard bypass)"
     }
   }
 }
