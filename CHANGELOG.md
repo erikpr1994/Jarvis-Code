@@ -5,6 +5,13 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.1.1...v2.2.0) (2026-01-09)
+
+
+### Features
+
+* **skills:** add sub-agent review workflow to submit-pr skill ([#15](https://github.com/erikpr1994/Jarvis-Code/issues/15)) ([ac62cfc](https://github.com/erikpr1994/Jarvis-Code/commit/ac62cfcc8fffc6ecaa1bee6f89b4d071cb23b51a))
+
 ## [2.1.1](https://github.com/erikpr1994/Jarvis-Code/compare/v2.1.0...v2.1.1) (2026-01-08)
 
 
