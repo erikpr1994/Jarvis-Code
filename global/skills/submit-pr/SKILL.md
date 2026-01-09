@@ -160,8 +160,23 @@ Only after local sub-agent review passes:
 
 ### Push Branch
 
+For pushes with pre-push hooks, use background execution with TaskOutput:
+
+```typescript
+// Start push in background (hooks may run tests)
+Bash("CLAUDE_SUBMIT_PR_SKILL=1 git push -u origin feature/my-feature", run_in_background: true)
+// → task_id: "push_123"
+
+// Wait for push + hooks to complete (up to 3 min)
+TaskOutput(task_id: "push_123", block: true, timeout: 180000)
+// → Returns push result
+```
+
+**See `background-tasks` skill for efficient waiting patterns.**
+
+For quick pushes without hooks:
 ```bash
-# Push with upstream tracking
+# Direct push (no pre-push hooks)
 CLAUDE_SUBMIT_PR_SKILL=1 git push -u origin feature/my-feature
 ```
 
@@ -376,7 +391,7 @@ Phase 1: Pre-Submit Checks Pass?
 ## Integration
 
 **Parent skill:** git-expert
-**Related skills:** coderabbit, tdd, verification, dispatching-parallel-agents, multi-agent-patterns
+**Related skills:** coderabbit, tdd, verification, dispatching-parallel-agents, multi-agent-patterns, background-tasks
 
 **Review sub-agents (Phase 2):**
 - `security-reviewer` - XSS, injection, auth vulnerabilities
