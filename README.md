@@ -69,7 +69,7 @@ The installer will prompt you to configure which hooks and rules you want enable
 
 ```
 ~/.claude/
-├── settings.json          # Claude Code settings (hooks)
+├── settings.json          # Claude Code settings (hooks, statusline)
 ├── config/
 │   ├── preferences.json   # Your rules & hooks preferences
 │   └── defaults.json      # Default preference values
@@ -166,13 +166,7 @@ We recommend using [Claude HUD](https://github.com/jarrodwatts/claude-hud) for a
 - Active tools and agents
 - Todo progress
 
-To install and configure:
-
-```bash
-/plugin marketplace add jarrodwatts/claude-hud
-/plugin install claude-hud
-/claude-hud:setup
-```
+The installer (`./install.sh`) automatically sets this up for you.
 
 ## Updating
 
