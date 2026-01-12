@@ -141,10 +141,10 @@ sync_directory() {
         sync_file "$source_file" "$dest_file" "$force" "$dry_run" || result=$?
 
         case $result in
-            0) $1=$(($1 + 1)) ;;
-            1) $1=$(($1 + 1)) ;;
-            2) $1=$(($1 + 1)) ;;
-            *) $1=$(($1 + 1)) ;;
+            0) synced=$((synced + 1)) ;;
+            1) skipped=$((skipped + 1)) ;;
+            2) unchanged=$((unchanged + 1)) ;;
+            *) errors=$((errors + 1)) ;;
         esac
     done < <(find "$source_dir" -type f -print0 2>/dev/null) || true
 

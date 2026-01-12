@@ -133,10 +133,27 @@ update_global() {
 
     echo ""
     echo "--- Settings ---"
-    # Sync Claude Code settings.json (correct schema format)
-    # Note: sync_file returns 2 for unchanged files, so we use || true
+    # Sync Claude Code settings.json - PRESERVE user's statusLine config
     if [[ -f "${JARVIS_REPO}/global/settings.json" ]]; then
-        sync_file "${JARVIS_REPO}/global/settings.json" "${GLOBAL_CLAUDE}/settings.json" "$force" "$dry_run" || true
+        local dest_settings="${GLOBAL_CLAUDE}/settings.json"
+
+        if [[ -f "$dest_settings" && "$dry_run" != "true" ]]; then
+            # Preserve user's statusLine configuration during update
+            local user_statusline
+            user_statusline=$(jq '.statusLine // empty' "$dest_settings" 2>/dev/null || echo "")
+
+            if [[ -n "$user_statusline" && "$user_statusline" != "null" ]]; then
+                # Merge: take new config but preserve user's statusLine
+                jq --argjson statusLine "$user_statusline" '.statusLine = $statusLine' \
+                    "${JARVIS_REPO}/global/settings.json" > "${dest_settings}.tmp" && \
+                    mv "${dest_settings}.tmp" "$dest_settings"
+                echo "updated (statusLine preserved): $dest_settings"
+            else
+                sync_file "${JARVIS_REPO}/global/settings.json" "$dest_settings" "$force" "$dry_run" || true
+            fi
+        else
+            sync_file "${JARVIS_REPO}/global/settings.json" "$dest_settings" "$force" "$dry_run" || true
+        fi
     fi
 
     echo ""
@@ -242,7 +259,7 @@ validate_installation() {
         if [[ -f "$hook" ]]; then
             if ! bash -n "$hook" 2>/dev/null; then
                 echo "  ERROR: Syntax error in $(basename "$hook")"
-                $1=$(($1 + 1))
+                errors=$((errors + 1))
             fi
         fi
     done
@@ -252,7 +269,7 @@ validate_installation() {
     if [[ -f "${GLOBAL_CLAUDE}/settings.json" ]]; then
         if ! jq empty "${GLOBAL_CLAUDE}/settings.json" 2>/dev/null; then
             echo "  ERROR: Invalid JSON in settings.json"
-            $1=$(($1 + 1))
+            errors=$((errors + 1))
         fi
     fi
 
