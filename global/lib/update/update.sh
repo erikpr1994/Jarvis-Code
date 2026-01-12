@@ -139,13 +139,24 @@ update_global() {
         sync_file "${JARVIS_REPO}/global/settings.json" "${GLOBAL_CLAUDE}/settings.json" "$force" "$dry_run" || true
     fi
 
+    echo ""
+    echo "--- Jarvis Config ---"
     # Sync Jarvis-specific config - PRESERVE user rules section
+    # Creates config file if it doesn't exist (e.g., first run after init)
     if [[ -f "${JARVIS_REPO}/global/jarvis.json" ]]; then
         mkdir -p "${GLOBAL_CLAUDE}/config"
         local dest_config="${GLOBAL_CLAUDE}/config/jarvis.json"
 
-        if [[ -f "$dest_config" && "$dry_run" != "true" ]]; then
-            # Preserve user's rules section during update
+        if [[ ! -f "$dest_config" ]]; then
+            # Config doesn't exist - create it
+            if [[ "$dry_run" == "true" ]]; then
+                echo "CREATE: $dest_config"
+            else
+                cp "${JARVIS_REPO}/global/jarvis.json" "$dest_config"
+                echo "created: $dest_config"
+            fi
+        elif [[ "$dry_run" != "true" ]]; then
+            # Config exists - preserve user's rules section during update
             local user_rules
             user_rules=$(jq '.rules // empty' "$dest_config" 2>/dev/null || echo "")
 
@@ -159,8 +170,11 @@ update_global() {
                 sync_file "${JARVIS_REPO}/global/jarvis.json" "$dest_config" "$force" "$dry_run" || true
             fi
         else
+            # Dry run with existing file
             sync_file "${JARVIS_REPO}/global/jarvis.json" "$dest_config" "$force" "$dry_run" || true
         fi
+    else
+        echo "warning: jarvis.json not found in source repo"
     fi
 
     # Update version file
