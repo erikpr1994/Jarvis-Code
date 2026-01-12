@@ -42,16 +42,12 @@ TDD vs tdd-workflow. What's the difference? (✅)
 
 Add a rule like: https://x.com/jarrodwatts/status/2008761427805544674
 
-## Statusline
-Use 
+## Statusline 
+Use jarrodwatts/claude-hud instead of our custom statusline
 /plugin marketplace add jarrodwatts/claude-hud
 /plugin install claude-hud
 /claude-hud:setup
 
 ## Agent Guidelines / Architecture
 
-Analyze the current CLAUDE.md and any agent instruction files. For every "soft rule" or behavioral instruction you find (e.g., "use conventional commits", "validate inputs", "use ripgrep over grep"), propose a technical enforcement mechanism—a linter rule, git hook, CLI wrapper, or automated script—that makes the rule impossible to break.
-
-The goal: remove text-based instructions from the agent's context window entirely. If something can be enforced by a tool, it shouldn't be in the prompt. This saves context, increases reliability, and turns "please do X" into "X is the only option."
-
-Reference: https://x.com/i/status/2008596745622589922
+Analyze the current CLAUDE.md and any agent instruction files. For every "soft rule" or behavioral instruction you find (e.g., "use conventional commits", "validate inputs", "use ripgrep over grep"), propose a technical enforcement mechanism—a linter rule, git hook, CLI wrapper, or automated script—that makes the rule impossible to break. The goal: remove text-based instructions from the agent's context window entirely. If something can be enforced by a tool, it shouldn't be in the prompt. This saves context, increases reliability, and turns "please do X" into "X is the only option." Reference: https://x.com/i/status/2008596745622589922

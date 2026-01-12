@@ -49,6 +49,7 @@ log_debug "Checking command: $COMMAND"
 
 BYPASS_DESTRUCTIVE=0
 BYPASS_MAIN_PUSH=0
+BYPASS_MAIN_MERGE=0
 BYPASS_BASH_WRITE=0
 
 # Check for explicit bypass via environment variable (global - skips all)
@@ -68,6 +69,11 @@ if echo "$COMMAND" | grep -qE "^JARVIS_ALLOW_MAIN_PUSH=1[[:space:]]"; then
     BYPASS_MAIN_PUSH=1
 fi
 
+if echo "$COMMAND" | grep -qE "^JARVIS_ALLOW_MAIN_MERGE=1[[:space:]]"; then
+    log_info "Bypass enabled: JARVIS_ALLOW_MAIN_MERGE=1 (inline)"
+    BYPASS_MAIN_MERGE=1
+fi
+
 if echo "$COMMAND" | grep -qE "^CLAUDE_ALLOW_BASH_WRITE=1[[:space:]]"; then
     log_info "Bypass enabled: CLAUDE_ALLOW_BASH_WRITE=1 (inline)"
     BYPASS_BASH_WRITE=1
@@ -76,6 +82,10 @@ fi
 # Check env vars for specific bypasses too
 if bypass_enabled "JARVIS_ALLOW_MAIN_PUSH"; then
     BYPASS_MAIN_PUSH=1
+fi
+
+if bypass_enabled "JARVIS_ALLOW_MAIN_MERGE"; then
+    BYPASS_MAIN_MERGE=1
 fi
 
 if bypass_enabled "CLAUDE_ALLOW_BASH_WRITE"; then
@@ -204,6 +214,18 @@ if [[ "$BYPASS_MAIN_PUSH" != "1" ]]; then
        echo "$NORMALIZED_CMD" | grep -qE "git\s+push\s+origin\s+(main|master)" || \
        echo "$NORMALIZED_CMD" | grep -qE "git\s+push\s+-u\s+origin\s+(main|master)"; then
         block_command "Direct push to main/master is blocked. Create a PR instead.\n\nTo bypass (emergency only): JARVIS_ALLOW_MAIN_PUSH=1 git push ..."
+    fi
+fi
+
+# git merge on main/master (direct merge to protected branches)
+# Bypass: JARVIS_ALLOW_MAIN_MERGE=1
+if [[ "$BYPASS_MAIN_MERGE" != "1" ]]; then
+    if echo "$NORMALIZED_CMD" | grep -qE 'git\s+merge\s+'; then
+        # Check if we're on main/master branch
+        current_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+        if [[ "$current_branch" == "main" || "$current_branch" == "master" ]]; then
+            block_command "Merging to main/master is blocked. Use /submit-pr instead.\n\nTo bypass (emergency only): JARVIS_ALLOW_MAIN_MERGE=1 git merge ..."
+        fi
     fi
 fi
 # git push --force/-f (destroys remote history)
