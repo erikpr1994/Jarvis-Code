@@ -159,6 +159,23 @@ for file in "${JARVIS_FILES[@]}"; do
     sync_file "$file"
 done
 
+# Configure file suggestion hook (ensure it's enabled even if settings.json was skipped)
+if [[ -f "$CLAUDE_HOME/settings.json" ]] && command -v jq >/dev/null; then
+    SETTINGS_FILE="$CLAUDE_HOME/settings.json"
+    HOOK_SCRIPT="~/.claude/hooks/file-suggestion.sh"
+    
+    # Check if fileSuggestion is already configured
+    if [[ "$(jq -r '.fileSuggestion // empty' "$SETTINGS_FILE")" == "null" ]]; then
+        echo -e "  ${YELLOW}configuring${NC}: fileSuggestion in settings.json"
+        TMP_FILE="${SETTINGS_FILE}.tmp"
+        if jq --arg cmd "$HOOK_SCRIPT" '.fileSuggestion = {"type": "command", "command": $cmd}' "$SETTINGS_FILE" > "$TMP_FILE"; then
+            mv "$TMP_FILE" "$SETTINGS_FILE"
+        else
+            rm -f "$TMP_FILE"
+        fi
+    fi
+fi
+
 # Update version file
 echo ""
 echo -e "${YELLOW}=== Updating Version ===${NC}"
