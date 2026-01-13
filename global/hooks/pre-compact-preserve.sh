@@ -25,9 +25,10 @@ TASKS_DIR=".claude/tasks"
 SESSION_STATE_FILE="${TASKS_DIR}/session-state.json"
 HOT_MEMORY_FILE="${JARVIS_ROOT}/learning/.hot-memory.json"
 COMPACT_ARCHIVE_DIR="${JARVIS_ROOT}/archive/compactions"
+COMPACTION_MARKER_FILE="${JARVIS_ROOT}/state/compaction-pending.json"
 
 # Ensure directories exist
-mkdir -p "$TASKS_DIR" "$COMPACT_ARCHIVE_DIR" "$(dirname "$HOT_MEMORY_FILE")"
+mkdir -p "$TASKS_DIR" "$COMPACT_ARCHIVE_DIR" "$(dirname "$HOT_MEMORY_FILE")" "$(dirname "$COMPACTION_MARKER_FILE")"
 
 # ============================================================================
 # STATE EXTRACTION
@@ -290,6 +291,55 @@ promote_to_warm_memory() {
 }
 
 # ============================================================================
+# SKILL PERSISTENCE (for post-compaction re-injection)
+# ============================================================================
+
+# Create compaction marker for skill-activation.sh to detect
+create_compaction_marker() {
+    local timestamp
+    timestamp=$(date '+%Y-%m-%dT%H:%M:%SZ')
+
+    # Try to detect active skill from recent skill activation state
+    local active_skill=""
+    local skill_phase=""
+    local skill_state_file="${HOME}/.jarvis/skill-activation-state.json"
+
+    # Check for any recently accessed skill files
+    local recent_skill_file=""
+    if [[ -d "${JARVIS_ROOT}/skills" ]]; then
+        recent_skill_file=$(find "${JARVIS_ROOT}/skills" -name "SKILL.md" -mmin -30 2>/dev/null | head -1 || echo "")
+        if [[ -n "$recent_skill_file" ]]; then
+            # Extract skill name from path
+            active_skill=$(dirname "$recent_skill_file" | xargs basename 2>/dev/null || echo "")
+            log_info "Detected recently accessed skill: $active_skill"
+        fi
+    fi
+
+    # Extract in-progress todos if available
+    local in_progress_todos=""
+    if [[ -f "$SESSION_STATE_FILE" ]] && command -v jq &>/dev/null; then
+        # Get task info from session state
+        in_progress_todos=$(jq -r '.task.current_task // ""' "$SESSION_STATE_FILE" 2>/dev/null || echo "")
+    fi
+
+    # Create marker file
+    cat > "$COMPACTION_MARKER_FILE" << EOF
+{
+    "compaction_time": "${timestamp}",
+    "active_skill": "$(escape_for_json "${active_skill:-}")",
+    "skill_phase": "$(escape_for_json "${skill_phase:-}")",
+    "in_progress_task": "$(escape_for_json "${in_progress_todos:-}")",
+    "working_directory": "$(pwd)",
+    "git_branch": "$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")",
+    "session_state_file": "${SESSION_STATE_FILE}",
+    "recovery_action": "Check todos and re-load active skill if needed"
+}
+EOF
+
+    log_info "Created compaction marker at $COMPACTION_MARKER_FILE"
+}
+
+# ============================================================================
 # OUTPUT
 # ============================================================================
 
@@ -344,6 +394,9 @@ main() {
 
     # Save complete session state
     save_session_state
+
+    # Create compaction marker for skill re-injection
+    create_compaction_marker
 
     # Output context for post-compaction
     output_preserved_context
