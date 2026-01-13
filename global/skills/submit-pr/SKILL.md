@@ -338,8 +338,14 @@ gh pr view $PR_NUMBER --json reviewDecision -q '.reviewDecision'
 1. Review each comment for actionable items
 2. Fix issues in code
 3. Commit and push fixes
-4. Re-run CI watch: `gh pr checks $PR_NUMBER --watch`
-5. Verify automated reviewers are satisfied
+4. **Mark comments as resolved** on GitHub (important for PR hygiene)
+5. Re-run CI watch: `gh pr checks $PR_NUMBER --watch`
+6. Verify automated reviewers are satisfied
+
+**Resolving comments:**
+- After fixing an issue, go to the PR conversation and click "Resolve conversation" on each addressed comment
+- This signals to reviewers that feedback has been handled
+- Unresolved comments block merge in some configurations
 
 **If no automated feedback or all addressed:** Proceed to Phase 7.
 
