@@ -5,6 +5,18 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.6.1...v2.7.0) (2026-01-13)
+
+
+### Features
+
+* Add rg+fzf file suggestion hook ([#30](https://github.com/erikpr1994/Jarvis-Code/issues/30)) ([aa6aa61](https://github.com/erikpr1994/Jarvis-Code/commit/aa6aa611e5adba75763e66fdb1f4340e2921a390))
+
+
+### Bug Fixes
+
+* **submit-pr:** ensure all 7 phases complete via context engineering ([#32](https://github.com/erikpr1994/Jarvis-Code/issues/32)) ([b5e12cb](https://github.com/erikpr1994/Jarvis-Code/commit/b5e12cbd621ddd0b97e22d533f5822f3dd7877f8))
+
 ## [2.6.1](https://github.com/erikpr1994/Jarvis-Code/compare/v2.6.0...v2.6.1) (2026-01-12)
 
 
