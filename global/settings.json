@@ -91,11 +91,25 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "*",
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/compress-output.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|Bash|Task",
         "hooks": [
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/learning-capture.sh",
+            "runInBackground": true
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/metrics-capture.sh",
             "runInBackground": true
           }
         ]
