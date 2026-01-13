@@ -200,14 +200,32 @@ check_prerequisites() {
 
     # Check for fzf
     if ! command_exists fzf; then
-        log_warning "fzf not found (recommended for file suggestions)"
+        if command_exists brew; then
+             log_info "Installing fzf via Homebrew..."
+             brew install fzf || log_warning "Failed to install fzf via Homebrew"
+        elif command_exists apt-get; then
+             log_info "Installing fzf via apt-get..."
+             sudo apt-get install -y fzf || log_warning "Failed to install fzf via apt-get"
+        else
+             log_warning "fzf not found and could not install automatically."
+             log_info "Please install manually: https://github.com/junegunn/fzf#installation"
+        fi
     else
         log_info "fzf: $(fzf --version | head -n 1)"
     fi
 
     # Check for ripgrep
     if ! command_exists rg; then
-        log_warning "rg not found (recommended for file suggestions)"
+        if command_exists brew; then
+             log_info "Installing ripgrep via Homebrew..."
+             brew install ripgrep || log_warning "Failed to install ripgrep via Homebrew"
+        elif command_exists apt-get; then
+             log_info "Installing ripgrep via apt-get..."
+             sudo apt-get install -y ripgrep || log_warning "Failed to install ripgrep via apt-get"
+        else
+             log_warning "rg (ripgrep) not found and could not install automatically."
+             log_info "Please install manually: https://github.com/BurntSushi/ripgrep#installation"
+        fi
     else
         log_info "rg: $(rg --version | head -n 1)"
     fi
