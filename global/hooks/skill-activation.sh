@@ -30,6 +30,7 @@ fi
 JARVIS_ROOT=$(get_jarvis_root)
 STATE_FILE="${HOME}/.jarvis/skill-activation-state.json"
 RULES_FILE="${JARVIS_ROOT}/global/skills/skill-rules.json"
+COMPACTION_MARKER_FILE="${HOME}/.claude/state/compaction-pending.json"
 
 # Fallback to project-local skill-rules if available
 if [[ -f ".claude/skills/skill-rules.json" ]]; then
@@ -39,6 +40,62 @@ fi
 
 # Ensure state directory exists
 mkdir -p "$(dirname "$STATE_FILE")" 2>/dev/null || true
+
+# ============================================================================
+# COMPACTION RECOVERY
+# ============================================================================
+
+# Check if we're recovering from a compaction and need to re-inject skills
+check_compaction_recovery() {
+    if [[ ! -f "$COMPACTION_MARKER_FILE" ]]; then
+        return 1
+    fi
+
+    log_info "Compaction marker found - recovering skill context"
+
+    local marker_content
+    marker_content=$(cat "$COMPACTION_MARKER_FILE" 2>/dev/null || echo "{}")
+
+    # Extract info from marker
+    local active_skill=""
+    local in_progress_task=""
+    local compaction_time=""
+
+    if command -v jq &>/dev/null; then
+        active_skill=$(echo "$marker_content" | jq -r '.active_skill // ""' 2>/dev/null || echo "")
+        in_progress_task=$(echo "$marker_content" | jq -r '.in_progress_task // ""' 2>/dev/null || echo "")
+        compaction_time=$(echo "$marker_content" | jq -r '.compaction_time // ""' 2>/dev/null || echo "")
+    else
+        # Fallback parsing without jq
+        active_skill=$(echo "$marker_content" | grep -o '"active_skill"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*: *"//' | sed 's/"$//' || echo "")
+        in_progress_task=$(echo "$marker_content" | grep -o '"in_progress_task"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*: *"//' | sed 's/"$//' || echo "")
+        compaction_time=$(echo "$marker_content" | grep -o '"compaction_time"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*: *"//' | sed 's/"$//' || echo "")
+    fi
+
+    # Delete the marker file (consumed)
+    rm -f "$COMPACTION_MARKER_FILE"
+    log_info "Compaction marker consumed and deleted"
+
+    # Build recovery message
+    local recovery_message="⚠️ COMPACTION RECOVERY\n\n"
+    recovery_message+="Context was compacted at: ${compaction_time:-unknown}\n\n"
+
+    if [[ -n "$active_skill" ]]; then
+        recovery_message+="**Previously Active Skill:** ${active_skill}\n"
+        recovery_message+="→ Use \`skill: \"${active_skill}\"\` to reload skill instructions\n\n"
+    fi
+
+    if [[ -n "$in_progress_task" ]]; then
+        recovery_message+="**In-Progress Task:** ${in_progress_task}\n\n"
+    fi
+
+    recovery_message+="**IMPORTANT:** Check your todo list for current phase and continue from there.\n"
+    recovery_message+="If following a multi-phase skill (e.g., submit-pr), reload the skill NOW.\n"
+
+    # Output recovery context
+    COMPACTION_RECOVERY_MESSAGE="$recovery_message"
+    return 0
+}
 
 # ============================================================================
 # SKILL DEFINITIONS (Embedded fallback if JSON not available)
@@ -199,12 +256,22 @@ clean_old_sessions() {
 main() {
     log_info "Skill activation check started"
 
+    # Check for compaction recovery FIRST
+    COMPACTION_RECOVERY_MESSAGE=""
+    if check_compaction_recovery; then
+        log_info "Compaction recovery detected"
+    fi
+
     # Read input from stdin
     local input
     input=$(cat)
 
     if [[ -z "$input" ]]; then
         log_warn "No input received"
+        # Even with no input, output compaction recovery if present
+        if [[ -n "$COMPACTION_RECOVERY_MESSAGE" ]]; then
+            echo -e "$COMPACTION_RECOVERY_MESSAGE"
+        fi
         exit 0
     fi
 
@@ -216,6 +283,10 @@ main() {
 
     if [[ -z "$prompt" ]]; then
         log_debug "No prompt in input, skipping"
+        # Still output compaction recovery if present
+        if [[ -n "$COMPACTION_RECOVERY_MESSAGE" ]]; then
+            echo -e "$COMPACTION_RECOVERY_MESSAGE"
+        fi
         exit 0
     fi
 
@@ -263,13 +334,23 @@ main() {
 
     if [[ $total_matches -eq 0 ]]; then
         log_info "No skill matches found"
+        # Still output compaction recovery if present
+        if [[ -n "$COMPACTION_RECOVERY_MESSAGE" ]]; then
+            echo -e "$COMPACTION_RECOVERY_MESSAGE"
+            finalize_hook 0
+        fi
         exit 0
     fi
 
     log_info "Found $total_matches skill matches"
 
-    # Build recommendation output
-    local output="SKILL ACTIVATION CHECK\n\n"
+    # Build recommendation output - prepend compaction recovery if present
+    local output=""
+    if [[ -n "$COMPACTION_RECOVERY_MESSAGE" ]]; then
+        output+="$COMPACTION_RECOVERY_MESSAGE\n"
+        output+="---\n\n"
+    fi
+    output+="SKILL ACTIVATION CHECK\n\n"
 
     if [[ ${#critical_skills[@]} -gt 0 ]]; then
         output+="CRITICAL SKILLS (REQUIRED):\n"
