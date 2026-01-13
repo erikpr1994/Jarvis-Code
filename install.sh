@@ -200,14 +200,14 @@ check_prerequisites() {
 
     # Check for fzf
     if ! command_exists fzf; then
-        missing+=("fzf")
+        log_warning "fzf not found (recommended for file suggestions)"
     else
         log_info "fzf: $(fzf --version | head -n 1)"
     fi
 
     # Check for ripgrep
     if ! command_exists rg; then
-        missing+=("rg")
+        log_warning "rg not found (recommended for file suggestions)"
     else
         log_info "rg: $(rg --version | head -n 1)"
     fi
