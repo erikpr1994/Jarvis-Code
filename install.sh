@@ -198,6 +198,38 @@ check_prerequisites() {
 
     local missing=()
 
+    # Check for fzf
+    if ! command_exists fzf; then
+        if command_exists brew; then
+             log_info "Installing fzf via Homebrew..."
+             brew install fzf || log_warning "Failed to install fzf via Homebrew"
+        elif command_exists apt-get; then
+             log_info "Installing fzf via apt-get..."
+             sudo apt-get install -y fzf || log_warning "Failed to install fzf via apt-get"
+        else
+             log_warning "fzf not found and could not install automatically."
+             log_info "Please install manually: https://github.com/junegunn/fzf#installation"
+        fi
+    else
+        log_info "fzf: $(fzf --version | head -n 1)"
+    fi
+
+    # Check for ripgrep
+    if ! command_exists rg; then
+        if command_exists brew; then
+             log_info "Installing ripgrep via Homebrew..."
+             brew install ripgrep || log_warning "Failed to install ripgrep via Homebrew"
+        elif command_exists apt-get; then
+             log_info "Installing ripgrep via apt-get..."
+             sudo apt-get install -y ripgrep || log_warning "Failed to install ripgrep via apt-get"
+        else
+             log_warning "rg (ripgrep) not found and could not install automatically."
+             log_info "Please install manually: https://github.com/BurntSushi/ripgrep#installation"
+        fi
+    else
+        log_info "rg: $(rg --version | head -n 1)"
+    fi
+
     # Check for git
     if ! command_exists git; then
         missing+=("git")
@@ -538,6 +570,43 @@ install_claude_hud() {
     fi
 }
 
+# Configure file suggestion hook
+configure_file_suggestion() {
+    log_step "Configuring file suggestion hook..."
+
+    local settings_file="${CLAUDE_DIR}/settings.json"
+    local hook_script="~/.claude/hooks/file-suggestion.sh"
+    
+    # Check if script exists (it should have been copied)
+    if [[ ! -f "${CLAUDE_DIR}/hooks/file-suggestion.sh" ]]; then
+        log_warning "File suggestion script not found at ${CLAUDE_DIR}/hooks/file-suggestion.sh"
+        return
+    fi
+
+    if [[ -f "$settings_file" ]]; then
+        # Check if fileSuggestion is already configured
+        local existing_config
+        existing_config=$(jq -r '.fileSuggestion // empty' "$settings_file" 2>/dev/null)
+        
+        if [[ -n "$existing_config" && "$existing_config" != "null" ]]; then
+            log_info "Existing fileSuggestion configuration detected. Preserving user settings."
+            return
+        fi
+        
+        local tmp_file="${settings_file}.tmp"
+        # Add fileSuggestion config
+        if jq --arg cmd "$hook_script" '.fileSuggestion = {"type": "command", "command": $cmd}' "$settings_file" > "$tmp_file"; then
+            mv "$tmp_file" "$settings_file"
+            log_success "File suggestion hook configured successfully"
+        else
+            log_warning "Failed to configure fileSuggestion. Please configure manually."
+            rm -f "$tmp_file"
+        fi
+    else
+        log_warning "settings.json not found. Skipping configuration."
+    fi
+}
+
 # Create version file (uses save_version_info from version management section)
 create_version_file() {
     log_step "Creating version marker..."
@@ -737,6 +806,7 @@ main() {
     setup_hooks
     make_executable
     install_claude_hud
+    configure_file_suggestion
     create_version_file
 
     # Configure preferences (unless skipped)
