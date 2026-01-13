@@ -6,6 +6,72 @@ description: |
 
 # Submit PR
 
+## CRITICAL: Complete ALL 7 Phases
+
+> **This skill has 7 phases. PR creation (Phase 4) is NOT the end.**
+>
+> **You MUST execute ALL phases. Do NOT stop after creating the PR.**
+
+```
+Phase 1: Pre-Submit     → Local verification
+Phase 2: Sub-Agents     → Dispatch reviewers
+Phase 3: Fix Findings   → Address issues
+Phase 4: Push & PR      → Create PR ← THIS IS NOT THE END
+Phase 5: CI Wait        → Wait for CI  ← MUST DO
+Phase 6: Review Feed    → Read feedback ← MUST DO
+Phase 7: Human Review   → Request review ← MUST DO
+```
+
+**Completion = Phase 7 done. Not before.**
+
+---
+
+## Mandatory: Track All Phases with TodoWrite
+
+**BEFORE starting Phase 1**, create todos for ALL 7 phases:
+
+```
+TodoWrite([
+  { content: "Phase 1: Pre-submit checks", status: "pending" },
+  { content: "Phase 2: Dispatch sub-agent reviewers", status: "pending" },
+  { content: "Phase 3: Address sub-agent findings", status: "pending" },
+  { content: "Phase 4: Push branch and create PR", status: "pending" },
+  { content: "Phase 5: Wait for CI verification", status: "pending" },
+  { content: "Phase 6: Read automated review feedback", status: "pending" },
+  { content: "Phase 7: Request human review", status: "pending" }
+])
+```
+
+**Mark each phase `in_progress` before starting, `completed` after finishing.**
+
+This ensures phases 5-7 remain visible and tracked.
+
+---
+
+## Decision Tree (Reference)
+
+```
+Phase 1: Pre-Submit Checks Pass?
+├── NO → Fix issues, re-run checks
+└── YES → Phase 2: Dispatch Sub-Agents
+           ↓
+      Phase 2: Sub-Agent Review Complete?
+      ├── Any FAIL? → Phase 3: Fix issues, re-dispatch
+      └── All PASS? → Phase 4: Push & Create PR
+                      ↓
+                 Phase 5: CI Passes? ← YOU ARE NOT DONE YET
+                 ├── NO → Fix, push, re-watch
+                 └── YES → Phase 6: Read Automated Feedback
+                           ↓
+                      Issues Found?
+                      ├── YES → Fix, push, verify
+                      └── NO → Phase 7: Request Human Review
+                               ↓
+                          ✅ SKILL COMPLETE
+```
+
+---
+
 ## Overview
 
 Orchestrates the full PR lifecycle: pre-submit verification → local sub-agent review → push → CI verification → automated review feedback → human review request. Catches issues at the earliest possible stage.
@@ -26,21 +92,11 @@ Orchestrates the full PR lifecycle: pre-submit verification → local sub-agent 
 - You haven't rebased on main recently
 - Changes include sensitive data or secrets
 
-## Quick Reference
-
-| Phase | Actions |
-|-------|---------|
-| **1. Pre-Submit** | Local tests, lint, typecheck, diff review |
-| **2. Sub-Agent Review** | Dispatch security/performance/structure reviewers |
-| **3. Address Findings** | Fix issues found by sub-agents |
-| **4. Push & Create PR** | Branch push, description, labels |
-| **5. CI Verification** | Wait for CI with `gh pr checks --watch` |
-| **6. Automated Review** | Read CodeRabbit/Greptile feedback |
-| **7. Final Fixes** | Address any remaining feedback |
-
 ---
 
 ## Phase 1: Pre-Submit Checklist
+
+**Mark todo: Phase 1 → in_progress**
 
 **MANDATORY before proceeding:**
 
@@ -67,9 +123,15 @@ git rebase origin/main
 
 **Do NOT proceed if any check fails.**
 
+**Mark todo: Phase 1 → completed**
+
+**→ IMMEDIATELY proceed to Phase 2**
+
 ---
 
 ## Phase 2: Local Sub-Agent Review
+
+**Mark todo: Phase 2 → in_progress**
 
 **BEFORE pushing**, dispatch specialized review agents to catch issues early.
 
@@ -139,9 +201,15 @@ Collect and assess findings:
 ### Overall: [READY TO PUSH / NEEDS FIXES]
 ```
 
+**Mark todo: Phase 2 → completed**
+
+**→ IMMEDIATELY proceed to Phase 3**
+
 ---
 
 ## Phase 3: Address Sub-Agent Findings
+
+**Mark todo: Phase 3 → in_progress**
 
 **If any sub-agent reports FAIL or critical issues:**
 
@@ -152,9 +220,17 @@ Collect and assess findings:
 
 **Do NOT push with unresolved critical findings.**
 
+**If all sub-agents report PASS:** Mark complete and proceed.
+
+**Mark todo: Phase 3 → completed**
+
+**→ IMMEDIATELY proceed to Phase 4**
+
 ---
 
 ## Phase 4: Push & Create PR
+
+**Mark todo: Phase 4 → in_progress**
 
 Only after local sub-agent review passes:
 
@@ -200,21 +276,36 @@ Closes #[issue]
 EOF
 )"
 
-# Capture PR number
+# Capture PR number for subsequent phases
 PR_NUMBER=$(gh pr view --json number -q '.number')
 echo "Created PR #$PR_NUMBER"
 ```
+
+**Mark todo: Phase 4 → completed**
+
+> **IMPORTANT: Creating the PR is NOT the end. You MUST continue.**
+
+**→ IMMEDIATELY proceed to Phase 5**
 
 ---
 
 ## Phase 5: CI Verification
 
-**Wait for CI checks to complete:**
+**Mark todo: Phase 5 → in_progress**
 
-```bash
-# Watch CI checks until completion (blocks until done)
-gh pr checks $PR_NUMBER --watch
+**Wait for CI checks to complete using background execution:**
+
+```typescript
+// Start CI watch in background (can take several minutes)
+Bash("gh pr checks $PR_NUMBER --watch", run_in_background: true)
+// → task_id: "ci_watch_123"
+
+// Wait for CI to complete (up to 10 min)
+TaskOutput(task_id: "ci_watch_123", block: true, timeout: 600000)
+// → Returns CI results when all checks complete
 ```
+
+**Do NOT poll repeatedly. Use TaskOutput with block: true.**
 
 | CI Status | Action |
 |-----------|--------|
@@ -222,9 +313,15 @@ gh pr checks $PR_NUMBER --watch
 | Tests fail | Fix, push, re-watch |
 | Lint/Type errors | Fix, push, re-watch |
 
+**Mark todo: Phase 5 → completed**
+
+**→ IMMEDIATELY proceed to Phase 6**
+
 ---
 
 ## Phase 6: Automated Review Feedback
+
+**Mark todo: Phase 6 → in_progress**
 
 Read feedback from CodeRabbit, Greptile, and other automated reviewers:
 
@@ -241,12 +338,26 @@ gh pr view $PR_NUMBER --json reviewDecision -q '.reviewDecision'
 1. Review each comment for actionable items
 2. Fix issues in code
 3. Commit and push fixes
-4. Re-run `gh pr checks --watch`
-5. Verify automated reviewers are satisfied
+4. **Mark comments as resolved** on GitHub (important for PR hygiene)
+5. Re-run CI watch: `gh pr checks $PR_NUMBER --watch`
+6. Verify automated reviewers are satisfied
+
+**Resolving comments:**
+- After fixing an issue, go to the PR conversation and click "Resolve conversation" on each addressed comment
+- This signals to reviewers that feedback has been handled
+- Unresolved comments block merge in some configurations
+
+**If no automated feedback or all addressed:** Proceed to Phase 7.
+
+**Mark todo: Phase 6 → completed**
+
+**→ IMMEDIATELY proceed to Phase 7**
 
 ---
 
 ## Phase 7: Request Human Review
+
+**Mark todo: Phase 7 → in_progress**
 
 Only after all automated checks pass:
 
@@ -257,6 +368,10 @@ gh pr edit $PR_NUMBER --add-reviewer reviewer1,reviewer2
 # Or request team review
 gh pr edit $PR_NUMBER --add-reviewer org/team-name
 ```
+
+**Mark todo: Phase 7 → completed**
+
+**→ SKILL COMPLETE. You may now report success.**
 
 ---
 
@@ -286,7 +401,6 @@ gh pr edit $PR_NUMBER --add-reviewer org/team-name
 ```
 
 ---
-
 
 ## Common Patterns
 
@@ -323,28 +437,6 @@ For small, low-risk changes, you may skip optional sub-agents:
 
 ---
 
-## Decision Tree
-
-```
-Phase 1: Pre-Submit Checks Pass?
-├── NO → Fix issues, re-run checks
-└── YES → Phase 2: Dispatch Sub-Agents
-           ↓
-      Phase 2: Sub-Agent Review Complete?
-      ├── Any FAIL? → Phase 3: Fix issues, re-dispatch
-      └── All PASS? → Phase 4: Push & Create PR
-                      ↓
-                 Phase 5: CI Passes?
-                 ├── NO → Fix, push, re-watch
-                 └── YES → Phase 6: Read Automated Feedback
-                           ↓
-                      Issues Found?
-                      ├── YES → Fix, push, verify
-                      └── NO → Phase 7: Request Human Review
-```
-
----
-
 ## Red Flags - STOP
 
 **Do NOT push when:**
@@ -360,6 +452,7 @@ Phase 1: Pre-Submit Checks Pass?
 - Skip local sub-agent review
 - Push with unresolved critical findings
 - Create PR without description
+- **Stop after Phase 4** ← Most common failure
 - Ignore CodeRabbit/Greptile feedback
 - Force merge without approval
 
@@ -386,12 +479,17 @@ Phase 1: Pre-Submit Checks Pass?
 - [ ] No merge conflicts
 - [ ] Self-review completed
 
+### Skill Completion (REQUIRED)
+- [ ] All 7 phase todos marked completed
+- [ ] Human reviewers assigned
+- [ ] PR ready for review
+
 ---
 
 ## Integration
 
 **Parent skill:** git-expert
-**Related skills:** coderabbit, tdd, verification, dispatching-parallel-agents, multi-agent-patterns, background-tasks
+**Related skills:** coderabbit, tdd, verification, dispatching-parallel-agents, background-tasks
 
 **Review sub-agents (Phase 2):**
 - `security-reviewer` - XSS, injection, auth vulnerabilities
@@ -401,11 +499,11 @@ Phase 1: Pre-Submit Checks Pass?
 - `code-reviewer` - Comprehensive multi-file review
 - `test-coverage-analyzer` - Test adequacy and gaps
 
-**Architecture note:** Uses supervisor pattern from multi-agent-patterns. Sub-agents provide context isolation - each reviewer operates in a clean context focused on its domain. Results aggregate without any single context bearing the full burden.
+**Architecture note:** Uses supervisor pattern. Sub-agents provide context isolation - each reviewer operates in a clean context focused on its domain. Results aggregate without any single context bearing the full burden.
 
 ---
 
 ## Metadata
 
-**Version:** 2.0.0
-**Last Updated:** 2026-01-08
+**Version:** 3.0.0
+**Last Updated:** 2026-01-13
