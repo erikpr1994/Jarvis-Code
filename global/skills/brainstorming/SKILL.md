@@ -1,32 +1,200 @@
 ---
 name: brainstorming
-description: Use when generating ideas, exploring options, or making decisions with multiple viable approaches. Triggers - ideate, brainstorm, options, alternatives, explore, what if, could we, ways to, approaches.
+description: Use when generating ideas, exploring options, defining requirements, or making decisions. Covers both discovery (what to build) and approach (how to build). Triggers - ideate, brainstorm, options, alternatives, explore, what if, could we, ways to, approaches, spec, requirements, user story.
 ---
 
 # Brainstorming
 
-**Iron Law:** NEVER commit to an approach without exploring at least 3 alternatives first.
+**Iron Law:** NEVER commit to requirements or approach without exploring alternatives first.
 
 ## Overview
 
-Brainstorming is structured ideation that generates options before evaluation. The goal is divergent thinking first (quantity), then convergent thinking (quality). Rushing to the first solution is the enemy of good solutions.
+Brainstorming is structured ideation with two modes:
+1. **Discovery Mode** - What should we build? → Outputs a spec
+2. **Approach Mode** - How should we build it? → Outputs a decision
+
+Both use divergent thinking first (quantity), then convergent thinking (quality).
 
 ## When to Use
 
-- User asks "how could we..." or "what are the options for..."
-- Architecture or design decisions with trade-offs
-- Debugging when root cause is unclear
-- Feature implementation with multiple valid approaches
-- Any decision where the first idea might not be the best
+**Discovery Mode (Spec):**
+- Starting a new feature from scratch
+- Unclear requirements - need to explore use cases
+- User asks "what should this feature do?"
+- Before any technical discussion
 
-## The Process
+**Approach Mode (Decision):**
+- Requirements are clear, need to choose implementation
+- Architecture or design decisions with trade-offs
+- User asks "how could we..." or "what are the options for..."
+- Multiple valid approaches exist
+
+---
+
+# Mode 1: Discovery (Spec Writing)
+
+## The Discovery Process
 
 ```
-1. DIVERGE  -> Generate options (quantity over quality)
+1. EXPLORE    -> What problems exist? Who has them?
+2. BRAINSTORM -> What are ALL the things this could do?
+3. PRIORITIZE -> What's essential vs nice-to-have?
+4. SPECIFY    -> Write user stories + acceptance criteria
+5. VALIDATE   -> Review with stakeholder
+```
+
+## Step 1: Explore the Problem Space
+
+Before listing features, understand the problem:
+
+```markdown
+## Problem Exploration
+
+**Who has this problem?**
+- Primary user: [persona]
+- Secondary users: [others affected]
+
+**What's the pain today?**
+- [Current workaround 1]
+- [Current workaround 2]
+
+**What triggers the need?**
+- [Trigger event 1]
+- [Trigger event 2]
+
+**What does success look like?**
+- [Outcome 1]
+- [Outcome 2]
+```
+
+## Step 2: Brainstorm Requirements
+
+Generate ALL possible requirements without filtering:
+
+```markdown
+## Raw Requirements (Unfiltered)
+
+### Core Functionality
+- [ ] [Requirement] - even if seems obvious
+- [ ] [Requirement] - even if seems complex
+- [ ] [Requirement] - even if seems edge case
+
+### User Experience
+- [ ] [UX requirement]
+- [ ] [Accessibility need]
+
+### Edge Cases
+- [ ] What if [edge case]?
+- [ ] What about [unusual scenario]?
+
+### Integration
+- [ ] Must work with [system]
+- [ ] Must support [format]
+```
+
+**Quantity over quality at this stage.**
+
+## Step 3: Prioritize Requirements
+
+Apply MoSCoW prioritization:
+
+```markdown
+## Prioritized Requirements
+
+### Must Have (P0) - Without these, feature is useless
+- [ ] [Requirement 1]
+- [ ] [Requirement 2]
+
+### Should Have (P1) - Important but not critical
+- [ ] [Requirement 3]
+- [ ] [Requirement 4]
+
+### Could Have (P2) - Nice to have
+- [ ] [Requirement 5]
+
+### Won't Have (This Release)
+- [Requirement 6] - Reason: [why deferred]
+```
+
+## Step 4: Write the Spec
+
+Formalize requirements into user stories:
+
+```markdown
+# Feature Spec: [Name]
+
+**Status**: Draft | Review | Approved
+**Author**: [Name]
+**Created**: [Date]
+
+## Problem Statement
+[2-3 sentences on the problem being solved]
+
+## Target Users
+- **Primary**: [Who] - [Goal]
+- **Secondary**: [Who] - [Goal]
+
+## Success Metrics
+| Metric | Current | Target |
+|--------|---------|--------|
+| [Metric] | X | Y |
+
+---
+
+## User Stories
+
+### US-1: [Title]
+
+**As a** [user type]
+**I want to** [action]
+**So that** [benefit]
+
+**Acceptance Criteria:**
+- [ ] Given [context], when [action], then [result]
+- [ ] Given [context], when [action], then [result]
+- [ ] Edge: Given [edge case], then [behavior]
+
+### US-2: [Title]
+[Same format]
+
+---
+
+## Out of Scope
+- [Explicitly excluded 1]
+- [Explicitly excluded 2]
+
+## Open Questions
+- [ ] [Question 1]
+- [ ] [Question 2]
+
+## Next Steps
+1. Review spec with stakeholders
+2. Brainstorm approach: `/brainstorm how to implement [feature]`
+3. Create design doc
+4. Create implementation plan
+```
+
+## Step 5: Validate
+
+Before proceeding:
+- [ ] All must-haves have user stories
+- [ ] Each story has acceptance criteria
+- [ ] Edge cases are covered
+- [ ] Success metrics are measurable
+- [ ] Stakeholder reviewed
+
+---
+
+# Mode 2: Approach (Solution Brainstorming)
+
+## The Approach Process
+
+```
+1. DIVERGE  -> Generate options (minimum 3)
 2. CAPTURE  -> Document ALL ideas without judgment
 3. EVALUATE -> Apply criteria to each option
 4. DECIDE   -> Choose with explicit reasoning
-5. DOCUMENT -> Record decision and alternatives considered
+5. DOCUMENT -> Record decision and alternatives
 ```
 
 ## Step 1: Diverge - Generate Options
@@ -35,8 +203,8 @@ Brainstorming is structured ideation that generates options before evaluation. T
 
 Techniques:
 - **Inversion**: What's the opposite approach?
-- **Extreme**: What if we had unlimited resources? Zero resources?
-- **Steal**: How do others solve this? (competitors, other domains)
+- **Extreme**: What if unlimited resources? Zero resources?
+- **Steal**: How do others solve this?
 - **Combine**: Can we merge two partial solutions?
 - **Simplify**: What's the minimum viable approach?
 
@@ -53,11 +221,9 @@ Techniques:
 [Brief description]
 ```
 
-**Do NOT evaluate during this step.** Capture everything.
+**Do NOT evaluate during this step.**
 
 ## Step 2: Capture - Document Without Judgment
-
-Write down every idea, even "bad" ones. Bad ideas often spark good ones.
 
 ```markdown
 ## Raw Ideas (Unfiltered)
@@ -69,20 +235,19 @@ Write down every idea, even "bad" ones. Bad ideas often spark good ones.
 **Rules:**
 - No criticism during capture
 - No "but that won't work because..."
-- No filtering or ranking yet
 - Quantity is the goal
 
 ## Step 3: Evaluate - Apply Criteria
 
-Define evaluation criteria BEFORE scoring options:
+Define criteria BEFORE scoring:
 
 | Criterion | Weight | Description |
 |-----------|--------|-------------|
-| Complexity | High | Implementation effort required |
-| Maintainability | High | Long-term maintenance burden |
+| Complexity | High | Implementation effort |
+| Maintainability | High | Long-term burden |
 | Performance | Medium | Runtime efficiency |
-| Time to Implement | Medium | Calendar time to complete |
-| Risk | High | Unknowns and failure modes |
+| Time | Medium | Calendar time |
+| Risk | High | Unknowns |
 
 **Score each option:**
 
@@ -98,127 +263,161 @@ Define evaluation criteria BEFORE scoring options:
 
 ## Step 4: Decide - Choose with Explicit Reasoning
 
-State the chosen option AND why alternatives were rejected:
-
 ```markdown
 ## Decision
 
 **Selected**: Option 3 - [Name]
 
 **Reasoning**:
-- Highest maintainability score (our codebase prioritizes this)
-- Lowest risk despite moderate complexity
-- Aligns with existing patterns in [specific location]
+- [Why this option wins]
+- [Alignment with constraints]
 
-**Why NOT Option 1**:
-- Time to implement too high for current sprint
-
-**Why NOT Option 2**:
-- Risk score unacceptable given production stability requirements
+**Why NOT Option 1**: [explicit reason]
+**Why NOT Option 2**: [explicit reason]
 ```
 
-## Step 5: Document - Record for Future Reference
+## Step 5: Document - Record for Future
 
 ```markdown
 ## Decision Record
 
 **Date**: [date]
-**Context**: [what prompted this decision]
+**Context**: [what prompted this]
 **Options Considered**: [list all]
 **Decision**: [chosen option]
-**Consequences**: [expected outcomes, trade-offs accepted]
-**Review Date**: [when to revisit if applicable]
+**Consequences**: [trade-offs accepted]
+**Review Date**: [when to revisit]
 ```
+
+---
+
+# Combined Workflow
+
+For a complete feature, use both modes:
+
+```
+/brainstorm what should [feature] do?
+  ↓
+[Discovery Mode → Spec output]
+  ↓
+/brainstorm how should we implement [feature]?
+  ↓
+[Approach Mode → Decision output]
+  ↓
+/design [feature]
+  ↓
+/plan [feature]
+```
+
+---
 
 ## Examples
 
-### Good Brainstorming
+### Discovery Mode Example
 
 ```
-User: "How should we implement user notifications?"
+User: "We need user notifications"
+
+Discovery Phase:
+- Who: All authenticated users
+- Pain: Miss important updates, have to refresh manually
+- Triggers: New message, status change, mention
+
+Requirements Brainstorm:
+- Real-time in-app notifications
+- Email fallback for away users
+- Notification preferences
+- Read/unread status
+- Notification center
+- Push notifications (mobile)
+- Do not disturb mode
+- Digest mode for high volume
+
+Prioritized:
+- P0: In-app real-time, read status
+- P1: Email fallback, preferences
+- P2: Push, digest mode
+
+Output: Feature spec with 4 user stories
+```
+
+### Approach Mode Example
+
+```
+User: "How should we implement notifications?"
 
 Options Generated:
 1. WebSocket real-time push
 2. Polling with exponential backoff
 3. Server-Sent Events (SSE)
 4. Push notifications via service worker
-5. Email digests (async)
+5. Email digests only (async)
 
-Evaluation applied against:
-- Real-time requirement: Yes
-- Browser support: Must support all modern browsers
-- Server complexity: Minimize infrastructure
+Evaluation:
+- Real-time needed: Yes
+- Browser support: All modern
+- Complexity budget: Low
 
-Decision: SSE for in-app, email digest for away
-Reasoning: SSE simpler than WebSocket, native browser support,
-falls back gracefully. Email catches users who are away.
+Decision: SSE for in-app, email for away
+Reasoning: SSE simpler than WebSocket, native support
 
-Rejected WebSocket: Overkill for unidirectional notifications
-Rejected Polling: Wasteful, poor UX for real-time feel
+Rejected: WebSocket (overkill), Polling (wasteful)
 ```
 
-### Bad Brainstorming (DO NOT DO THIS)
+---
 
-```
-User: "How should we implement user notifications?"
+## Red Flags - STOP
 
-"Let's use WebSocket - it's real-time and modern."
-[Proceeds to implement without considering alternatives]
-```
+**Discovery Mode:**
+- Jumping to solutions before understanding problem
+- No user stories, just feature list
+- Missing acceptance criteria
+- No prioritization
 
-**Why wrong:** No options explored, no evaluation, no documented reasoning.
-
-## Common Rationalizations
-
-| Excuse | Reality |
-|--------|---------|
-| "The answer is obvious" | Obvious to you now. Document for future maintainers. |
-| "We don't have time to brainstorm" | Time spent now saves 10x in rework later. |
-| "I already know the best approach" | Then documenting alternatives takes 5 minutes. |
-| "The user asked for X specifically" | Explore X plus alternatives. User may not know all options. |
-| "It's a simple decision" | Simple decisions compound. Document anyway. |
-| "I'll remember why later" | You won't. Future you needs this. |
-| "Only one option is technically feasible" | Are you sure? Document why others are infeasible. |
-
-## Red Flags - STOP and Start Over
-
-- Implementing the first idea without alternatives
-- "Let me just try this..." without exploration
-- Skipping evaluation criteria
-- No documented reasoning for decision
-- Dismissing options without explicit reasoning
-- Evaluating while still generating (mixing phases)
+**Approach Mode:**
+- Implementing first idea without alternatives
 - Fewer than 3 options considered
-- No trade-offs acknowledged
+- No evaluation criteria defined
+- No documented reasoning
 
-**If you catch yourself doing any of these: STOP. Go back to Step 1.**
+---
 
 ## Verification Checklist
 
-Before proceeding with chosen approach:
+### Discovery Mode
+- [ ] Problem clearly understood
+- [ ] At least 5 requirements brainstormed
+- [ ] Prioritized (P0/P1/P2)
+- [ ] User stories with acceptance criteria
+- [ ] Edge cases covered
+- [ ] Success metrics defined
 
-- [ ] Generated at least 3 options
-- [ ] Captured all ideas without judgment first
-- [ ] Defined evaluation criteria before scoring
-- [ ] Evaluated each option against criteria
-- [ ] Documented explicit reasoning for decision
-- [ ] Explained why alternatives were rejected
-- [ ] Acknowledged trade-offs of chosen approach
-- [ ] Created decision record for future reference
+### Approach Mode
+- [ ] At least 3 options generated
+- [ ] Evaluation criteria defined
+- [ ] Each option scored
+- [ ] Decision documented with reasoning
+- [ ] Rejected alternatives explained
+- [ ] Trade-offs acknowledged
+
+---
 
 ## Quick Reference
 
 ```
-MINIMUM: 3 options
-IDEAL: 5-7 options
-ALWAYS: Document reasoning
-NEVER: Implement first idea without alternatives
+DISCOVERY: Problem → Requirements → Prioritize → Spec
+APPROACH:  Options → Evaluate → Decide → Record
+
+MINIMUM: 3 options (approach), 5 requirements (discovery)
+ALWAYS:  Document reasoning
+NEVER:   Skip to implementation
 ```
 
 ## Integration
 
-**Pairs with:**
-- **writing-plans** - Brainstorm before planning
-- **executing-plans** - Decision informs execution
-- **systematic-debugging** - Brainstorm hypotheses
-- **verification** - Verify decision criteria met
+**Outputs to:**
+- **writing-design** - Technical architecture
+- **writing-plans** - Implementation steps
+- **executing-plans** - Execute the plan
+
+**Triggers:** brainstorm, ideate, options, alternatives, explore, spec, requirements, user story, what should, how could
