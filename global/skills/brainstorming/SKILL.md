@@ -7,6 +7,15 @@ description: Use when generating ideas, exploring options, defining requirements
 
 **Iron Law:** NEVER commit to requirements or approach without exploring alternatives first.
 
+## No Code Policy
+
+> **All output documents must be plain prose.** No code blocks, no technical snippets, no implementation details. Explain concepts in written English that any stakeholder can understand.
+
+This applies to:
+- Specs (Discovery Mode output)
+- Decision records (Approach Mode output)
+- All brainstorming artifacts
+
 ## Overview
 
 Brainstorming is structured ideation with two modes:

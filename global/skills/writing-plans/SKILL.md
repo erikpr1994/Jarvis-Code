@@ -7,6 +7,15 @@ description: Use when you have a spec or requirements for a multi-step task, bef
 
 **Iron Law:** NEVER write code before the plan is complete and approved.
 
+## No Code Policy
+
+> **Plans must be plain prose.** No code blocks, no implementation snippets. Describe tasks in clear written English. Code belongs in the implementation phase, not the plan.
+
+Why:
+- Plans should be readable by anyone (technical or not)
+- Code in plans creates false precision - it will change during implementation
+- Prose forces you to think through the approach, not just copy-paste patterns
+
 ## Overview
 
 Plans bridge the gap between requirements and implementation. A good plan enables any skilled developer to execute correctly, even with zero context about the codebase. Plans fail when they're vague, miss edge cases, or skip verification steps.
@@ -107,118 +116,38 @@ Break down into phases and tasks:
 
 ### Plan Document Format
 
-```markdown
-# [Feature Name] Implementation Plan
+Plans should be written in plain prose. Here's the structure:
 
-> **For Claude:** Use executing-plans skill to implement this plan task-by-task.
+**Header Section:**
+- Feature name and goal (one sentence)
+- Status (Draft, In Review, Approved, In Progress, Complete)
+- Estimated scope (Small, Medium, Large)
+- Architecture summary (2-3 sentences on approach)
 
-**Created**: [date]
-**Status**: Draft | In Review | Approved | In Progress | Complete
-**Estimated Scope**: Small | Medium | Large
+**Success Criteria:**
+List 3-5 measurable criteria. Each should be verifiable - describe what success looks like, not how to verify it.
 
-**Goal**: [One sentence describing what this builds]
+**Phases:**
+Break work into logical phases (typically 3-5). Each phase should have:
+- Clear objective (what this phase accomplishes)
+- List of tasks with descriptive names
+- Checkpoint criteria to verify phase completion
 
-**Architecture**: [2-3 sentences about approach]
+**Tasks:**
+Each task should include:
+- Which files will be created or modified (exact paths)
+- What the task accomplishes in plain English
+- How to verify it worked
+- TDD order: write test first, then implementation
 
-**Tech Stack**: [Key technologies/libraries]
+**Dependencies:**
+List any packages, API keys, or external services needed.
 
----
+**Risks:**
+Identify potential problems and how to mitigate them.
 
-## Success Criteria
-
-- [ ] Criterion 1 (with verification command)
-- [ ] Criterion 2 (with expected output)
-- [ ] Criterion 3 (with test to run)
-
-## Phase 1: [Name]
-
-**Objective**: [What this phase accomplishes]
-
-### Task 1.1: [Descriptive Name]
-
-**Files**:
-- Create: `exact/path/to/file.ts`
-- Modify: `exact/path/to/existing.ts:123-145`
-- Test: `tests/exact/path/to/test.ts`
-
-**Step 1: Write the failing test**
-
-```typescript
-describe('feature', () => {
-  it('should do specific thing', () => {
-    const result = feature(input);
-    expect(result).toBe(expected);
-  });
-});
-```
-
-**Step 2: Run test to verify it fails**
-
-```bash
-npm test -- --testPathPattern="feature" -v
-```
-Expected: FAIL with "feature is not defined"
-
-**Step 3: Write minimal implementation**
-
-```typescript
-export function feature(input: Input): Output {
-  return expected;
-}
-```
-
-**Step 4: Run test to verify it passes**
-
-```bash
-npm test -- --testPathPattern="feature" -v
-```
-Expected: PASS
-
-**Step 5: Commit**
-
-```bash
-git add src/feature.ts tests/feature.test.ts
-git commit -m "feat: add feature functionality"
-```
-
-### Task 1.2: [Next Task]
-...
-
-**Phase 1 Checkpoint**:
-- [ ] All tests passing: `npm test`
-- [ ] Feature X works: [verification command]
-- [ ] No regressions: `npm run test:all`
-
-## Phase 2: [Name]
-...
-
----
-
-## Dependencies
-
-| Dependency | Purpose | Status |
-|------------|---------|--------|
-| Package X | Does Y | Installed |
-| API Key | External service | Needed |
-
-## Risks & Mitigations
-
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Risk 1 | High | Strategy |
-| Risk 2 | Medium | Strategy |
-
-## Alternatives Considered
-
-1. **Alternative A**: [Why not chosen]
-2. **Alternative B**: [Why not chosen]
-
-## Notes for Implementer
-
-- Remember to [specific gotcha]
-- Check [specific file] for [specific pattern]
-- Don't forget [common mistake to avoid]
-```
+**Alternatives:**
+Document other approaches considered and why they weren't chosen.
 
 ### Task Granularity Rules
 
@@ -299,56 +228,33 @@ Which approach would you prefer?
 
 ### Good Plan Excerpt
 
-```markdown
-### Task 2.1: Add Password Hashing
+**Task 2.1: Add Password Hashing**
 
-**Files**:
-- Create: `src/utils/password.ts`
-- Test: `tests/utils/password.test.ts`
+Files to create:
+- src/utils/password.ts (password hashing utility)
+- tests/utils/password.test.ts (unit tests)
 
-**Step 1: Write failing test**
+Step 1: Write failing test that verifies passwords can be hashed and the hash differs from the original. Also test that the original password can be verified against its hash.
 
-```typescript
-import { hashPassword, verifyPassword } from '../src/utils/password';
+Step 2: Run the test and confirm it fails because the module doesn't exist yet.
 
-describe('password utils', () => {
-  it('should hash password', async () => {
-    const password = 'testPassword123';
-    const hash = await hashPassword(password);
-    expect(hash).not.toBe(password);
-    expect(hash.length).toBeGreaterThan(50);
-  });
+Step 3: Implement the password utility with hashPassword and verifyPassword functions using bcrypt. The hash should be at least 50 characters.
 
-  it('should verify correct password', async () => {
-    const password = 'testPassword123';
-    const hash = await hashPassword(password);
-    const isValid = await verifyPassword(password, hash);
-    expect(isValid).toBe(true);
-  });
-});
-```
+Step 4: Run the test again and verify it passes.
 
-**Step 2: Run test**
-```bash
-npm test -- tests/utils/password.test.ts
-```
-Expected: FAIL - "Cannot find module '../src/utils/password'"
-```
+Step 5: Commit with message describing the new password utility.
 
 ### Bad Plan (DO NOT DO THIS)
 
-```markdown
-### Task: Implement Password System
-
+**Task: Implement Password System**
 - Add password hashing
 - Add verification
 - Make sure it's secure
 - Add tests
 
 Files: utils folder
-```
 
-**Why wrong:** Vague tasks, no exact paths, no code, no commands.
+**Why wrong:** Vague tasks, no exact paths, no specific steps, no verification criteria.
 
 ## Common Rationalizations
 

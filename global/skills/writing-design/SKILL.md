@@ -5,6 +5,15 @@ description: Use when creating design documents, technical specs, architecture d
 
 # Writing Design Documents
 
+## No Code Policy
+
+> **Design documents must be plain prose.** No code blocks, no schema definitions, no API examples. Describe architecture and decisions in written English.
+
+Why:
+- Designs should be accessible to all stakeholders
+- Code creates false precision - designs should describe intent, not implementation
+- Prose forces clear thinking about the "why" behind decisions
+
 ## Overview
 
 Design documents capture decisions, trade-offs, and rationale BEFORE implementation. They prevent rework, align stakeholders, and create institutional knowledge.
@@ -30,151 +39,61 @@ Design documents capture decisions, trade-offs, and rationale BEFORE implementat
 
 ## Structure Template
 
+All design documents should be written in plain prose. Here are the key sections for each type:
+
 ### RFC (Request for Comments)
 
-```markdown
-# RFC: [Title]
+An RFC proposes significant changes and needs team buy-in.
 
-**Status**: Draft | Review | Accepted | Rejected | Superseded
-**Author**: [Name]
-**Created**: [Date]
-**Reviewers**: [Names]
+**Header:** Title, status (Draft/Review/Accepted/Rejected), author, date, reviewers.
 
-## Summary
-[1-2 paragraph executive summary]
+**Summary:** One or two paragraphs capturing the essence of the proposal. A busy reader should understand the key points from this alone.
 
-## Problem Statement
-[What problem are we solving? Why now?]
+**Problem Statement:** What problem are we solving? Why is it important now? What's the cost of not solving it?
 
-## Goals
-- [Goal 1]
-- [Goal 2]
+**Goals and Non-Goals:** Explicitly state what we're trying to achieve AND what's out of scope. Non-goals prevent scope creep.
 
-## Non-Goals
-- [Explicitly out of scope]
+**Proposed Solution:** Describe the approach in prose. Use diagrams if helpful, but no code. Focus on the "what" and "why", not the "how".
 
-## Proposed Solution
-[Detailed solution with diagrams if helpful]
+**Alternatives Considered:** List other approaches you evaluated. For each, explain the pros, cons, and why it wasn't chosen. These should be genuine alternatives, not strawmen.
 
-## Alternatives Considered
-### Alternative 1: [Name]
-- Pros: [...]
-- Cons: [...]
-- Why not: [...]
+**Trade-offs:** What are we giving up with this approach? Be honest.
 
-### Alternative 2: [Name]
-[Same structure]
+**Risks:** What could go wrong? For each risk, assess likelihood and impact, and describe the mitigation strategy.
 
-## Trade-offs
-[Explicit trade-offs being made]
-
-## Implementation Plan
-1. [Phase 1]
-2. [Phase 2]
-
-## Risks
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| [Risk 1] | Low/Med/High | Low/Med/High | [Plan] |
-
-## Open Questions
-- [ ] [Question 1]
-- [ ] [Question 2]
-
-## Timeline
-[Estimated phases, no specific dates]
-
-## References
-- [Link 1]
-```
+**Open Questions:** What still needs to be resolved before implementation?
 
 ### ADR (Architecture Decision Record)
 
-```markdown
-# ADR-[Number]: [Title]
+An ADR records a significant architectural decision for future reference.
 
-**Status**: Proposed | Accepted | Deprecated | Superseded by ADR-X
-**Date**: [Date]
-**Deciders**: [Names]
+**Header:** Number, title, status (Proposed/Accepted/Deprecated/Superseded), date, deciders.
 
-## Context
-[What is the issue that we're seeing that is motivating this decision?]
+**Context:** What situation or problem motivated this decision? Provide enough background that someone reading this later understands the constraints.
 
-## Decision
-[What is the change that we're proposing?]
+**Decision:** What did we decide? State it clearly in one or two sentences.
 
-## Consequences
+**Consequences:** What are the positive outcomes, negative trade-offs, and neutral side effects of this decision?
 
-### Positive
-- [Benefit 1]
-- [Benefit 2]
-
-### Negative
-- [Trade-off 1]
-- [Trade-off 2]
-
-### Neutral
-- [Side effect]
-
-## Alternatives Not Chosen
-- [Alternative 1]: [Why not]
-- [Alternative 2]: [Why not]
-```
+**Alternatives Not Chosen:** What other options were considered and why weren't they selected?
 
 ### Tech Spec
 
-```markdown
-# Tech Spec: [Feature Name]
+A tech spec details the implementation approach for a specific feature.
 
-**Author**: [Name]
-**Status**: Draft | Approved | In Progress | Complete
-**Target**: [Version/Sprint]
+**Header:** Feature name, author, status, target version.
 
-## Overview
-[Brief description of what this feature does]
+**Overview:** Brief description of what this feature does and why it matters.
 
-## Background
-[Context needed to understand the spec]
+**Requirements:** Functional requirements (what it must do) and non-functional requirements (performance, security, scalability targets).
 
-## Requirements
-### Functional
-- [ ] [Requirement 1]
-- [ ] [Requirement 2]
+**Design:** Describe the data model, API approach, and component architecture in prose. Explain how pieces fit together and data flows through the system.
 
-### Non-Functional
-- Performance: [Target]
-- Security: [Requirements]
-- Scalability: [Requirements]
+**Testing Strategy:** How will we verify this works? Describe the approach for unit, integration, and end-to-end testing.
 
-## Design
+**Rollout Plan:** How will we deploy this? Describe phases if applicable.
 
-### Data Model
-[Schema, types, structures]
-
-### API Design
-[Endpoints, contracts]
-
-### Component Architecture
-[How pieces fit together]
-
-### Flow Diagrams
-[Sequence or flow diagrams]
-
-## Implementation Notes
-[Specific implementation guidance]
-
-## Testing Strategy
-- Unit tests: [Approach]
-- Integration tests: [Approach]
-- E2E tests: [Approach]
-
-## Rollout Plan
-1. [Phase 1]
-2. [Phase 2]
-
-## Monitoring
-[What to monitor, alerts]
-```
+**Monitoring:** What should we watch after deployment to ensure it's working correctly?
 
 ---
 
@@ -232,29 +151,17 @@ Design documents capture decisions, trade-offs, and rationale BEFORE implementat
 
 ## Anti-patterns
 
-```markdown
-# BAD: Solution disguised as problem
-## Problem
-We need to use Redis for caching.
+**Solution disguised as problem:**
 
-# GOOD: Actual problem
-## Problem
-API response times exceed 500ms for dashboard queries,
-causing poor user experience.
-```
+Bad: "We need to use Redis for caching." This states a solution, not a problem.
 
-```markdown
-# BAD: Strawman alternatives
-## Alternatives
-1. Do nothing (bad)
-2. Use our solution (good)
+Good: "API response times exceed 500ms for dashboard queries, causing poor user experience." This describes the actual problem, leaving solution space open.
 
-# GOOD: Real alternatives
-## Alternatives
-1. Redis: Fast but operational overhead
-2. In-memory: Simple but doesn't scale
-3. CDN edge caching: Fast but invalidation complex
-```
+**Strawman alternatives:**
+
+Bad: Listing "do nothing" or obviously terrible options just to make your preferred solution look good.
+
+Good: Presenting genuine alternatives with honest trade-offs. For example, when solving slow API responses, real alternatives might be Redis (fast but operational overhead), in-memory caching (simple but doesn't scale), or CDN edge caching (fast but invalidation is complex). Each has genuine merit.
 
 ---
 
