@@ -378,6 +378,40 @@
         ]
       }
     },
+    "react-best-practices": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "react-best-practices/SKILL.md",
+      "description": "React and Next.js best practices (from vercel-labs)",
+      "external": true,
+      "source": "github:vercel-labs/agent-skills",
+      "promptTriggers": {
+        "keywords": [
+          "react",
+          "next.js",
+          "nextjs",
+          "tsx",
+          "jsx",
+          "component",
+          "hook",
+          "useState",
+          "useEffect"
+        ],
+        "intentPatterns": [
+          "\\.(tsx|jsx)$",
+          "(react|next).*?(component|hook|page)",
+          "(create|build|add).*?(component|page|hook)"
+        ],
+        "filePatterns": [
+          "*.tsx",
+          "*.jsx",
+          "**/components/**",
+          "**/pages/**",
+          "**/app/**"
+        ]
+      }
+    },
     "nextjs-patterns": {
       "type": "domain",
       "enforcement": "suggest",
