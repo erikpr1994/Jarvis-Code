@@ -8,6 +8,8 @@ disable-model-invocation: false
 
 Create a feature specification using the brainstorming skill's Discovery Mode.
 
+> **The Spec Rule:** A spec contains WHAT and WHY. Never HOW. No code. No technical decisions.
+
 ## What It Does
 
 1. **Explores the problem** - Understands who has the problem and why
@@ -143,6 +145,19 @@ Save spec document with:
 /execute [plan]           → Implementation
 ```
 
+## What Does NOT Belong in a Spec
+
+| NOT in Spec | Belongs in |
+|-------------|------------|
+| Code snippets | Design doc, Plan |
+| Database schema | Design doc |
+| API endpoints | Design doc |
+| "Use React/PostgreSQL/etc" | Design doc |
+| Technical architecture | Design doc |
+| Implementation steps | Plan |
+
+**The test:** Could a non-technical stakeholder read and validate this spec?
+
 ## Notes
 
 - Always ask clarifying questions before brainstorming
@@ -150,3 +165,4 @@ Save spec document with:
 - Every P0/P1 requirement needs a user story
 - Every user story needs acceptance criteria
 - Edge cases are often where bugs hide - cover them
+- **NO code or technical implementation details**

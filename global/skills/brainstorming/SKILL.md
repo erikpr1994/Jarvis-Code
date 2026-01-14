@@ -15,6 +15,20 @@ Brainstorming is structured ideation with two modes:
 
 Both use divergent thinking first (quantity), then convergent thinking (quality).
 
+## The Spec Rule
+
+> **A spec contains WHAT and WHY. Never HOW.**
+
+| In Spec | NOT In Spec |
+|---------|-------------|
+| User stories | Code snippets |
+| Acceptance criteria | Technical approach |
+| Success metrics | Database schema |
+| Requirements | API design |
+| Constraints | Implementation details |
+
+**If you're writing code or technical details, you've left spec territory and entered design.**
+
 ## When to Use
 
 **Discovery Mode (Spec):**
@@ -32,6 +46,8 @@ Both use divergent thinking first (quantity), then convergent thinking (quality)
 ---
 
 # Mode 1: Discovery (Spec Writing)
+
+> **Iron Law:** Specs define WHAT and WHY. Never HOW. No code. No technical decisions.
 
 ## The Discovery Process
 
@@ -182,6 +198,47 @@ Before proceeding:
 - [ ] Edge cases are covered
 - [ ] Success metrics are measurable
 - [ ] Stakeholder reviewed
+- [ ] **NO code or technical details in spec**
+
+## Spec Anti-Patterns
+
+```markdown
+# BAD - Implementation in spec
+## Requirements
+- Use PostgreSQL for storage
+- Implement with React and Next.js
+- Cache with Redis
+
+# GOOD - Pure requirements
+## Requirements
+- Data must persist across sessions
+- UI must load within 2 seconds
+- Frequently accessed data should be fast
+```
+
+```markdown
+# BAD - Code in acceptance criteria
+Given the user calls POST /api/users with { email, password }
+Then the bcrypt hash is stored in the users table
+
+# GOOD - Behavior only
+Given the user submits the registration form
+When they provide valid email and password
+Then their account is created
+And they receive a confirmation email
+```
+
+```markdown
+# BAD - Technical constraints as requirements
+- Must use WebSocket for real-time updates
+- Database must be normalized to 3NF
+
+# GOOD - Business constraints
+- Updates must appear within 1 second
+- No data duplication that could cause inconsistency
+```
+
+**The test:** Could a non-technical stakeholder understand and validate this spec? If not, it contains too much "how".
 
 ---
 
