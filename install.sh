@@ -456,6 +456,53 @@ EOF
     log_success "Hooks setup complete"
 }
 
+# Sync external skills from git submodules
+sync_external_skills() {
+    log_step "Syncing external skills..."
+
+    local external_dir="${SCRIPT_DIR}/global/skills/external"
+
+    # Check if external skills directory exists
+    if [[ ! -d "$external_dir" ]]; then
+        log_info "No external skills directory found, skipping"
+        return 0
+    fi
+
+    # Initialize and update submodules
+    if [[ -f "${SCRIPT_DIR}/.gitmodules" ]]; then
+        log_info "Updating git submodules..."
+        (cd "$SCRIPT_DIR" && git submodule update --init --recursive 2>/dev/null) || {
+            log_warn "Could not update submodules (git may not be available)"
+        }
+    fi
+
+    # Copy external skills to ~/.claude/skills/
+    local skills_copied=0
+
+    # Look for skills in agent-skills submodule
+    local agent_skills_dir="${external_dir}/agent-skills/skills"
+    if [[ -d "$agent_skills_dir" ]]; then
+        for skill_dir in "$agent_skills_dir"/*/; do
+            if [[ -f "${skill_dir}SKILL.md" ]]; then
+                local skill_name=$(basename "$skill_dir")
+                local dest_dir="${CLAUDE_DIR}/skills/${skill_name}"
+
+                # Copy skill directory
+                mkdir -p "$dest_dir"
+                cp -r "${skill_dir}"* "$dest_dir/" 2>/dev/null
+                ((skills_copied++))
+                log_info "Installed external skill: ${skill_name}"
+            fi
+        done
+    fi
+
+    if [[ $skills_copied -gt 0 ]]; then
+        log_success "External skills synced: ${skills_copied} skills"
+    else
+        log_info "No external skills to sync"
+    fi
+}
+
 # Make all scripts executable
 make_executable() {
     log_step "Setting file permissions..."
@@ -803,6 +850,7 @@ main() {
     backup_existing
     create_directories
     copy_files
+    sync_external_skills
     setup_hooks
     make_executable
     install_claude_hud
