@@ -5,6 +5,13 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.14.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.13.0...v2.14.0) (2026-01-14)
+
+
+### Features
+
+* **hooks:** add PostToolUse hook for React and code-simplifier suggestions ([#50](https://github.com/erikpr1994/Jarvis-Code/issues/50)) ([b2d6bf0](https://github.com/erikpr1994/Jarvis-Code/commit/b2d6bf08cc259dde2fe97cacb7081d3e73bfb360))
+
 ## [2.13.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.12.0...v2.13.0) (2026-01-14)
 
 
