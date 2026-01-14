@@ -5,6 +5,13 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.13.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.12.0...v2.13.0) (2026-01-14)
+
+
+### Features
+
+* **submit-pr:** integrate code-simplifier agent in Phase 2 ([#48](https://github.com/erikpr1994/Jarvis-Code/issues/48)) ([536094b](https://github.com/erikpr1994/Jarvis-Code/commit/536094bd43fa4f8953a24439cac19bad63bfadfd))
+
 ## [2.12.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.11.0...v2.12.0) (2026-01-14)
 
 
