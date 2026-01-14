@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Git commit-msg hook for conventional commit validation
+# Install: cp scripts/commit-msg .git/hooks/commit-msg && chmod +x .git/hooks/commit-msg
+
+set -euo pipefail
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Get first line (the commit title)
+COMMIT_TITLE=$(echo "$COMMIT_MSG" | head -1)
+
+# Skip merge commits
+if echo "$COMMIT_TITLE" | grep -qE '^Merge '; then
+    exit 0
+fi
+
+# Conventional commit pattern:
+# type(scope): description  OR  type: description
+# type must be: feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert|merge
+PATTERN='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert|merge)(\([a-z0-9\-]+\))?!?: .+'
+
+if echo "$COMMIT_TITLE" | grep -qE "$PATTERN"; then
+    exit 0
+fi
+
+# Invalid format - show error
+cat <<EOF
+ERROR: Commit message does not follow conventional commit format
+
+Your message: "$COMMIT_TITLE"
+
+Required format: <type>(<scope>): <description>
+
+Valid types:
+  feat     - New feature
+  fix      - Bug fix
+  docs     - Documentation only
+  style    - Formatting (no code change)
+  refactor - Code change, no feature/fix
+  perf     - Performance improvement
+  test     - Adding/fixing tests
+  chore    - Maintenance, dependencies
+  ci       - CI/CD changes
+  build    - Build system changes
+  revert   - Revert previous commit
+  merge    - Merge commit
+
+Examples:
+  feat(auth): add OAuth2 login flow
+  fix(api): handle null user in profile endpoint
+  chore(deps): update dependencies
+  docs: update README
+
+EOF
+exit 1
