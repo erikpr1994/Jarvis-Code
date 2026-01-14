@@ -501,6 +501,33 @@ sync_external_skills() {
     else
         log_info "No external skills to sync"
     fi
+
+    # Copy external agents from claude-plugins-official
+    local agents_copied=0
+    local plugins_dir="${external_dir}/claude-plugins-official/plugins"
+    if [[ -d "$plugins_dir" ]]; then
+        for plugin_dir in "$plugins_dir"/*/; do
+            local agents_dir="${plugin_dir}agents"
+            if [[ -d "$agents_dir" ]]; then
+                for agent_file in "$agents_dir"/*.md; do
+                    if [[ -f "$agent_file" ]]; then
+                        local agent_name=$(basename "$agent_file" .md)
+                        local dest_file="${CLAUDE_DIR}/agents/${agent_name}.md"
+
+                        # Copy agent file
+                        mkdir -p "${CLAUDE_DIR}/agents"
+                        cp "$agent_file" "$dest_file" 2>/dev/null
+                        ((agents_copied++))
+                        log_info "Installed external agent: ${agent_name}"
+                    fi
+                done
+            fi
+        done
+    fi
+
+    if [[ $agents_copied -gt 0 ]]; then
+        log_success "External agents synced: ${agents_copied} agents"
+    fi
 }
 
 # Make all scripts executable

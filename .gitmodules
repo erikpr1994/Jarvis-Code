@@ -2,3 +2,6 @@
 	path = global/skills/external/agent-skills
 	url = https://github.com/vercel-labs/agent-skills.git
 	branch = react-best-practices
+[submodule "global/skills/external/claude-plugins-official"]
+	path = global/skills/external/claude-plugins-official
+	url = https://github.com/anthropics/claude-plugins-official.git
