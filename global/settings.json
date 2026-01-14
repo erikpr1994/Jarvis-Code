@@ -104,16 +104,7 @@
         ]
       },
       {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/post-edit-suggest.sh"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|Bash|Task",
+        "matcher": "Bash|Task",
         "hooks": [
           {
             "type": "command",
