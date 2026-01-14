@@ -49,12 +49,20 @@ fi
 # EXTRACT COMMIT MESSAGE
 # ============================================================================
 
-# Extract message from: git commit -m "message" or git commit -m 'message'
-# Handle various quoting styles
+# Extract message from various formats:
+# 1. git commit -m "message"
+# 2. git commit -m 'message'
+# 3. git commit -m "$(cat <<'EOF'\nmessage\nEOF\n)"
 COMMIT_MSG=""
 
+# Try HEREDOC format first (Claude's preferred format)
+if echo "$COMMAND" | grep -qE 'cat\s+<<'; then
+    # Extract first line after HEREDOC marker (the commit title)
+    COMMIT_MSG=$(echo "$COMMAND" | sed -n "/<<['\"]\\{0,1\\}EOF['\"]\\{0,1\\}/,/^EOF/p" | sed '1d;$d' | head -1)
+fi
+
 # Try double quotes
-if echo "$COMMAND" | grep -qE '\-m\s+"[^"]+'; then
+if [[ -z "$COMMIT_MSG" ]] && echo "$COMMAND" | grep -qE '\-m\s+"[^"]+'; then
     COMMIT_MSG=$(echo "$COMMAND" | grep -oE '\-m\s+"[^"]+"' | sed 's/-m\s*"//' | sed 's/"$//')
 fi
 
@@ -70,6 +78,9 @@ if [[ -z "$COMMIT_MSG" ]]; then
     exit 0
 fi
 
+# Clean up: get first line only and trim whitespace
+COMMIT_MSG=$(echo "$COMMIT_MSG" | head -1 | xargs)
+
 log_debug "Checking commit message: $COMMIT_MSG"
 
 # ============================================================================
@@ -78,8 +89,8 @@ log_debug "Checking commit message: $COMMIT_MSG"
 
 # Conventional commit pattern:
 # type(scope): description  OR  type: description
-# type must be: feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert
-PATTERN='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\([a-z0-9\-]+\))?!?: .+'
+# type must be: feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert|merge
+PATTERN='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert|merge)(\([a-z0-9\-]+\))?!?: .+'
 
 if echo "$COMMIT_MSG" | grep -qE "$PATTERN"; then
     log_info "✓ Commit message follows conventional format"
@@ -113,6 +124,7 @@ Valid types:
   ci       - CI/CD changes
   build    - Build system changes
   revert   - Revert previous commit
+  merge    - Merge commit
 
 Examples:
   feat(auth): add OAuth2 login flow
