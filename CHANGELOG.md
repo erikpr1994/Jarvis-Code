@@ -5,6 +5,13 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.8.0...v2.9.0) (2026-01-14)
+
+
+### Features
+
+* **skills:** add spec writing + consolidate commands as thin wrappers ([#37](https://github.com/erikpr1994/Jarvis-Code/issues/37)) ([13c8bee](https://github.com/erikpr1994/Jarvis-Code/commit/13c8bee240f3f9e2625f8d5c8dffa56a35f87c22))
+
 ## [2.8.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.7.1...v2.8.0) (2026-01-13)
 
 
