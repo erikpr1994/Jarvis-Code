@@ -147,6 +147,7 @@ git diff main...HEAD --name-only
 
 | Change Type | Dispatch Agent |
 |-------------|----------------|
+| Any code changes | `code-simplifier` (always) |
 | Auth/security code | `security-reviewer` |
 | Database queries, loops, rendering | `performance-reviewer` |
 | package.json/lock files | `dependency-reviewer` |
@@ -158,6 +159,12 @@ git diff main...HEAD --name-only
 Use the Task tool to run specialized reviewers simultaneously:
 
 ```markdown
+Task: @code-simplifier (ALWAYS dispatch for code changes)
+Simplify and refine recently modified code.
+Focus: clarity, consistency, maintainability while preserving functionality.
+
+---
+
 Task: @security-reviewer
 Review changes for security vulnerabilities.
 Run: git diff main...HEAD
@@ -183,6 +190,10 @@ Collect and assess findings:
 
 ```markdown
 ## Local Review Summary
+
+### Code Simplification: [DONE/SKIPPED]
+- Files refined: [count]
+- [Key improvements]
 
 ### Security Review: [PASS/WARN/FAIL]
 - Critical: [count]
@@ -492,6 +503,7 @@ For small, low-risk changes, you may skip optional sub-agents:
 **Related skills:** coderabbit, tdd, verification, dispatching-parallel-agents, background-tasks
 
 **Review sub-agents (Phase 2):**
+- `code-simplifier` - Clarity, consistency, maintainability (always run)
 - `security-reviewer` - XSS, injection, auth vulnerabilities
 - `performance-reviewer` - Queries, rendering, bundle size
 - `dependency-reviewer` - Vulnerabilities, licenses, maintenance
@@ -505,5 +517,5 @@ For small, low-risk changes, you may skip optional sub-agents:
 
 ## Metadata
 
-**Version:** 3.0.0
-**Last Updated:** 2026-01-13
+**Version:** 3.1.0
+**Last Updated:** 2026-01-14
