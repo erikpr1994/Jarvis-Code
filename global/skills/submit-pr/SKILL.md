@@ -334,31 +334,59 @@ TaskOutput(task_id: "ci_watch_123", block: true, timeout: 600000)
 
 **Mark todo: Phase 6 → in_progress**
 
-Read feedback from CodeRabbit, Greptile, and other automated reviewers:
+### Step 1: Read All Comments
 
 ```bash
-# View all comments
 gh pr view $PR_NUMBER --comments
-
-# Check review status
-gh pr view $PR_NUMBER --json reviewDecision -q '.reviewDecision'
 ```
 
-### Addressing Automated Feedback
+### Step 2: Process EACH Comment
 
-1. Review each comment for actionable items
-2. Fix issues in code
-3. Commit and push fixes
-4. **Mark comments as resolved** on GitHub (important for PR hygiene)
-5. Re-run CI watch: `gh pr checks $PR_NUMBER --watch`
-6. Verify automated reviewers are satisfied
+**For every comment, choose ONE path:**
 
-**Resolving comments:**
-- After fixing an issue, go to the PR conversation and click "Resolve conversation" on each addressed comment
-- This signals to reviewers that feedback has been handled
-- Unresolved comments block merge in some configurations
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Comment received                                           │
+│      ↓                                                      │
+│  Valid feedback?                                            │
+│      ├── YES → FIX path                                     │
+│      └── NO  → DISMISS path                                 │
+└─────────────────────────────────────────────────────────────┘
+```
 
-**If no automated feedback or all addressed:** Proceed to Phase 7.
+**FIX path:**
+1. Make the code change
+2. Reply: "Fixed" or "Fixed in [commit]"
+3. Click **"Resolve conversation"**
+
+**DISMISS path:**
+1. Reply with explanation:
+   - "Not applicable: [reason]"
+   - "Intentional: [explanation]"
+   - "Out of scope for this PR"
+2. Click **"Resolve conversation"**
+
+> **Key rule:** EVERY comment ends with "Resolve conversation" clicked.
+> No comment should be left unresolved.
+
+### Step 3: Push Fixes and Re-verify
+
+```bash
+# Commit all fixes
+git add -A && git commit -m "fix: address review feedback"
+CLAUDE_SUBMIT_PR_SKILL=1 git push
+
+# Wait for CI
+gh pr checks $PR_NUMBER --watch
+```
+
+### Completion Criteria
+
+- [ ] All comments processed (fixed or dismissed)
+- [ ] All conversations resolved
+- [ ] CI passing after fixes
+
+**If no automated feedback:** Skip to Phase 7.
 
 **Mark todo: Phase 6 → completed**
 
@@ -517,5 +545,5 @@ For small, low-risk changes, you may skip optional sub-agents:
 
 ## Metadata
 
-**Version:** 3.1.0
+**Version:** 3.2.0
 **Last Updated:** 2026-01-14
