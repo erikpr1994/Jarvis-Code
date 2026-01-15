@@ -22,16 +22,36 @@ Systematically process PR review comments from CodeRabbit, Greptile, and human r
 
 ---
 
+## IRON LAW: All Conversations Must Be Resolved
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  EVERY comment → Reply → Click "Resolve conversation"       │
+│                                                             │
+│  No comment should EVER be left unresolved.                 │
+│  ALL paths end with "Resolve conversation" clicked.         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Why?**
+- Unresolved conversations block PR merge in many repos
+- Silent resolutions without replies are unprofessional
+- Tracking requires explicit categorization
+
+---
+
 ## Decision Tree
 
 ```
 For EACH comment:
     ↓
-Is it valid feedback?
-├── YES, can fix now → FIX path
-├── YES, but not this PR → DEFER path
-├── NO, disagree → DISMISS path
-└── NO, trivial/unrelated → OUT_OF_SCOPE path
+Categorize:
+├── FIX → Make change → Reply "Fixed" → RESOLVE ✓
+├── DEFER → Create issue → Reply "Tracked in #X" → RESOLVE ✓
+├── DISMISS → Reply "Intentional: [reason]" → RESOLVE ✓
+└── OUT_OF_SCOPE → Reply "Out of scope" → RESOLVE ✓
+                                                ↑
+                                    ALL paths end here
 ```
 
 ---
@@ -310,15 +330,33 @@ Intentional approach. [Explanation of why current code is correct].
 ## Completion Criteria
 
 - [ ] All comments categorized
-- [ ] All threads have replies
-- [ ] All threads resolved
-- [ ] Deferred items have tracking issue
+- [ ] **All threads have replies** (no silent resolutions)
+- [ ] **All threads resolved** (zero unresolved - verify with GraphQL)
+- [ ] Deferred items have tracking issue (if any)
 - [ ] Summary generated
+
+### Verification Query
+
+```bash
+# MUST return 0
+UNRESOLVED=$(gh api graphql -f query='
+query($owner: String!, $repo: String!, $pr: Int!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $pr) {
+      reviewThreads(first: 100) {
+        nodes { isResolved }
+      }
+    }
+  }
+}' ... | jq '[.data...nodes[] | select(.isResolved == false)] | length')
+
+[ "$UNRESOLVED" -eq 0 ] && echo "✅ All resolved" || echo "❌ $UNRESOLVED unresolved"
+```
 
 ---
 
 ## Metadata
 
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Last Updated:** 2026-01-15
 **Related skills:** submit-pr, coderabbit, code-review
