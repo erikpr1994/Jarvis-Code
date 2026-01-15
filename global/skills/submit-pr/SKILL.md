@@ -456,33 +456,109 @@ TaskOutput(task_id: "ci_watch_123", block: true, timeout: 600000)
 
 **Mark todo: Phase 6 → in_progress**
 
-> **Delegate to `pr-feedback-tracker` skill for systematic processing.**
+> **IRON LAW: Every conversation MUST be resolved. No exceptions.**
 
-### Step 1: Invoke PR Feedback Tracker
-
-Use the `pr-feedback-tracker` skill to process all comments:
+### The Rule
 
 ```
-/pr-feedback-tracker #$PR_NUMBER
+┌─────────────────────────────────────────────────────────────┐
+│  EVERY comment → Reply → Click "Resolve conversation"       │
+│                                                             │
+│  No comment should EVER be left unresolved.                 │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-The tracker will:
-1. Fetch all review threads
-2. Categorize each comment (Fixed, Deferred, Out of Scope, Dismissed)
-3. **Create tracking issues for deferred items** ← Key feature
-4. Reply to and resolve all threads
-5. Generate summary
+### Step 1: Fetch All Comments and Discussions
 
-### Step 2: Review Categories
+```bash
+# Get all review threads
+gh pr view $PR_NUMBER --comments
 
-| Category | Action | Creates Issue? |
-|----------|--------|----------------|
-| **Fixed** | Code changed | No |
-| **Deferred** | Valid but future PR | **Yes** |
-| **Out of Scope** | Trivial/unrelated | No |
-| **Dismissed** | Disagree with reason | No |
+# Check for unresolved conversations
+gh api graphql -f query='
+query($owner: String!, $repo: String!, $pr: Int!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $pr) {
+      reviewThreads(first: 100) {
+        nodes {
+          id
+          isResolved
+          comments(first: 1) {
+            nodes { body }
+          }
+        }
+      }
+    }
+  }
+}' -f owner="OWNER" -f repo="REPO" -F pr="$PR_NUMBER"
+```
 
-### Step 3: Push Fixes and Re-verify
+### Step 2: Process EACH Comment
+
+**For EVERY comment, follow this flow:**
+
+```
+Comment received
+    ↓
+Categorize:
+├── FIX → Make change → Reply "Fixed in [commit]" → RESOLVE
+├── DEFER → Create tracking issue → Reply "Tracked in #X" → RESOLVE
+├── OUT OF SCOPE → Reply "Out of scope: [reason]" → RESOLVE
+└── DISMISS → Reply "Intentional: [reason]" → RESOLVE
+                                                    ↑
+                                        ALL paths end here
+```
+
+### Categories and Actions
+
+| Category | When to Use | Reply Template | Creates Issue? |
+|----------|-------------|----------------|----------------|
+| **Fixed** | You made the code change | "Fixed in abc123" | No |
+| **Deferred** | Valid feedback, but not this PR | "Valid point. Tracked in #X for follow-up" | **Yes** |
+| **Out of Scope** | Trivial nitpick or unrelated | "Out of scope for this PR" | No |
+| **Dismissed** | You disagree with the feedback | "Intentional: [explanation]" | No |
+
+### Step 3: Create Tracking Issues for Deferred Items
+
+Use `pr-feedback-tracker` or manually create:
+
+```bash
+# Collect all deferred items into one tracking issue
+gh issue create \
+  --title "Follow-up: Deferred items from PR #$PR_NUMBER" \
+  --body "## Deferred Items
+- [ ] Item 1 description
+- [ ] Item 2 description
+
+Context: PR #$PR_NUMBER" \
+  --label "tech-debt"
+```
+
+### Step 4: Resolve ALL Threads
+
+```bash
+# Resolve a thread via GraphQL
+gh api graphql -f query='
+mutation($threadId: ID!) {
+  resolveReviewThread(input: {threadId: $threadId}) {
+    thread { isResolved }
+  }
+}' -f threadId="THREAD_ID"
+```
+
+### Step 5: Verify Zero Unresolved
+
+```bash
+# MUST return 0
+UNRESOLVED=$(gh api graphql -f query='...' | jq '[.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false)] | length')
+
+if [ "$UNRESOLVED" -gt 0 ]; then
+  echo "ERROR: $UNRESOLVED unresolved threads remain"
+  exit 1
+fi
+```
+
+### Step 6: Push Fixes and Re-verify CI
 
 ```bash
 # Commit all fixes
@@ -495,9 +571,9 @@ gh pr checks $PR_NUMBER --watch
 
 ### Completion Criteria
 
-- [ ] All comments categorized and processed
-- [ ] All threads resolved (with replies)
-- [ ] Deferred items tracked in GitHub issue
+- [ ] **ALL comments have replies** (no silent resolutions)
+- [ ] **ALL threads resolved** (zero unresolved)
+- [ ] Deferred items tracked in GitHub issue (if any)
 - [ ] CI passing after fixes
 
 **If no automated feedback:** Skip to Phase 7.
@@ -681,5 +757,5 @@ For small, low-risk changes, you may skip conditional sub-agents:
 
 ## Metadata
 
-**Version:** 3.4.0
+**Version:** 3.5.0
 **Last Updated:** 2026-01-15
