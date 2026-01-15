@@ -8,12 +8,12 @@ disable-model-invocation: false
 
 Create and execute implementation plans using Linear's hierarchical issues instead of markdown files.
 
-## What It Does
+## When to Use
 
-1. **Plan** - Create feature plans as hierarchical Linear issues
-2. **Execute** - Work through tasks with TDD enforcement
-3. **Track** - Update status and verify completion
-4. **View** - Check progress on plans and tasks
+- Starting a new feature or multi-phase implementation
+- Need to break down large work into atomic tasks
+- Want execution tracking within Linear instead of markdown
+- Coordinating work across phases or team members
 
 ## Setup (First Time)
 
@@ -23,179 +23,111 @@ Create and execute implementation plans using Linear's hierarchical issues inste
 # Follow OAuth prompts
 ```
 
-## Usage
+## Commands
 
-### Create a Plan
-
-```bash
-# Start planning a feature
-/linear plan "User Authentication"
-
-# With team specified
-/linear plan "User Authentication" --team Engineering
-```
-
-This creates:
-1. **Root issue** - `[Feature] User Authentication`
-2. **Phase issues** - `[Phase 1] Database`, `[Phase 2] Core`, etc.
-3. **Task issues** - Atomic, testable tasks under each phase
-
-### View Plans
+### Planning Commands
 
 ```bash
-# List active plans
+# Create a new feature plan
+/linear plan "Feature Name"
+
+# View all active plans
 /linear plans
 
-# View specific plan
-/linear plan ENG-100
-
-# View plan tree
+# View hierarchical plan structure
 /linear tree ENG-100
 ```
 
-### Execute Tasks
+### Execution Commands
 
 ```bash
-# Start next task
+# Start next unassigned task
 /linear next
 
-# Start specific task
+# Start a specific task
 /linear start ENG-107
 
-# Mark task done (with verification)
+# Complete current task (with verification)
 /linear done ENG-107
 
-# Add comment to task
+# View your assigned tasks
+/linear tasks
+```
+
+### Progress Commands
+
+```bash
+# View plan progress
+/linear progress ENG-100
+
+# View current sprint cycle
+/linear cycle
+
+# Add comment to task (after verification)
 /linear comment ENG-107 "Verified: npm test passes"
 ```
 
-### View Progress
+## Quick Reference
 
-```bash
-# My current tasks
-/linear tasks
+| Command | Purpose |
+|---------|---------|
+| `/linear plan "X"` | Create new feature plan |
+| `/linear plans` | List all active plans |
+| `/linear tree ID` | View plan hierarchy |
+| `/linear next` | Start next task in queue |
+| `/linear start ID` | Start specific task |
+| `/linear done` | Mark current task complete |
+| `/linear progress ID` | Check plan completion |
+| `/linear tasks` | View your assignments |
+| `/linear cycle` | View current sprint |
 
-# Plan progress
-/linear progress ENG-100
+## How Plans Are Structured
 
-# Current cycle
-/linear cycle
-```
-
-## Plan Creation Flow
-
-When you run `/linear plan "Feature Name"`:
-
-### Step 1: Gather Context
-
-Claude asks:
-- What's the goal?
-- What are the success criteria?
-- What's in/out of scope?
-
-### Step 2: Research
-
-Claude:
-- Reads relevant codebase files
-- Identifies existing patterns
-- Checks dependencies
-
-### Step 3: Create Structure
-
-Claude creates in Linear:
+Each plan creates a hierarchy in Linear:
 
 ```
 ENG-100: [Feature] Feature Name
-├── ENG-101: [Phase 1] Foundation
-│   ├── ENG-102: Task 1 (test)
-│   ├── ENG-103: Task 1 (impl)
-│   └── ...
-├── ENG-104: [Phase 2] Core
-│   └── ...
-├── ENG-105: [Phase 3] Integration
+├── ENG-101: [Phase 1] Phase Name
+│   ├── ENG-102: Write test for component
+│   ├── ENG-103: Implement component
+│   └── ENG-104: Integrate with page
+├── ENG-105: [Phase 2] Next Phase
 │   └── ...
 └── ENG-106: [Phase 4] Verification
     └── ...
 ```
 
-### Step 4: Confirm
+Every leaf task is atomic and testable—it contains exactly what to do, which file to edit, test code, and a verification command.
 
-Claude shows the plan tree and asks for approval before execution.
+## Detailed Workflow
 
-## Task Format
+For the complete planning workflow, including:
+- How issues are created and structured
+- Task format and requirements
+- TDD ordering and verification
+- Integration patterns
+- Full examples with code
 
-Every task issue contains:
+See the **linear skill** (`skill: "linear"`).
 
-```markdown
-## Action
-{Exactly what to do}
+## Example Usage
 
-## File
-`exact/path/to/file.ts`
-
-## Test (or Implementation)
-```typescript
-// Complete code
-```
-
-## Verify
+**Start a feature:**
 ```bash
-npm test -- file.test.ts
-# Expected: PASS
-```
+/linear plan "User Authentication System"
 ```
 
-## Execution Flow
-
-When executing tasks:
-
-1. **Pick task** - `/linear next` or `/linear start ENG-XXX`
-2. **Read issue** - Claude shows task details
-3. **Execute** - Claude follows TDD (test → implement)
-4. **Verify** - Run verification command
-5. **Complete** - `/linear done ENG-XXX` updates status
-
-## Examples
-
-**Create auth feature plan:**
-```
-/linear plan "JWT Authentication"
-```
-
-**View current plan tree:**
-```
-/linear tree ENG-100
-```
-
-**Start working on next task:**
-```
+**See what needs work:**
+```bash
 /linear next
 ```
 
-**Complete current task:**
-```
+**Mark it complete:**
+```bash
 /linear done
 ```
 
-**Check plan progress:**
-```
+**Check overall progress:**
+```bash
 /linear progress ENG-100
 ```
-
-## Quick Reference
-
-| Command | Action |
-|---------|--------|
-| `/linear plan "X"` | Create new plan |
-| `/linear plans` | List active plans |
-| `/linear tree ID` | View plan hierarchy |
-| `/linear next` | Start next task |
-| `/linear start ID` | Start specific task |
-| `/linear done` | Complete current task |
-| `/linear progress ID` | View plan progress |
-| `/linear tasks` | My assigned tasks |
-| `/linear cycle` | Current sprint |
-
-## Loads Skill
-
-This command loads the `linear` skill for detailed planning workflow and templates.

@@ -7,11 +7,29 @@ description: Use when planning features, tracking tasks, or managing implementat
 
 **Iron Law:** EVERY TASK MUST BE EXECUTABLE. Each issue is a testable, runnable piece of code.
 
+## When to Use
+
+- Planning a new feature or multi-phase implementation
+- Need to track work across multiple team members
+- Want atomic, verifiable tasks instead of vague descriptions
+- Coordinating work across phases with clear dependencies
+- Creating execution checkpoints for TDD workflow
+
 ## Overview
 
-Linear replaces markdown-based plans with hierarchical issues. Instead of writing plans to `docs/plans/`, create a structured issue tree in Linear where each leaf issue is an atomic, testable task.
+Linear replaces markdown-based plans with hierarchical issues. Instead of writing plans to `docs/plans/`, create a structured issue tree in Linear where each leaf issue is an atomic, testable task. Each level of the hierarchy must be more specific than its parent, culminating in executable code with verification commands.
 
-## Issue Hierarchy
+## Execution Model
+
+```
+1. CREATE ROOT   -> Feature issue with full context
+2. CREATE PHASES -> Child issues for each phase
+3. CREATE TASKS  -> Leaf issues for atomic work
+4. EXECUTE       -> Work through leaves in order
+5. VERIFY        -> Check phase completion
+```
+
+## Issue Hierarchy Example
 
 ```
 ENG-100: [Feature] User Authentication System
@@ -35,15 +53,7 @@ ENG-100: [Feature] User Authentication System
     └── ...
 ```
 
-## The Process
-
-```
-1. CREATE ROOT   -> Feature issue with full context
-2. CREATE PHASES -> Child issues for each phase
-3. CREATE TASKS  -> Leaf issues for atomic work
-4. EXECUTE       -> Work through leaves in order
-5. VERIFY        -> Check phase completion
-```
+Notice how each child is more specific than its parent, and leaf tasks are atomic.
 
 ## Step 1: Create Root Issue
 
@@ -513,3 +523,16 @@ COMPLETION    -> Verify passes + commit + status update + comment
 - "Implement X" without breakdown → Create subtasks
 - Skipping test issue → Never skip TDD
 - No exact file path → Be specific
+
+## Integration with Other Skills
+
+**Pairs with:**
+- **tdd** - Each task enforces test-first order
+- **session-management** - Track Linear plan progress in session checkpoints
+- **executing-plans** - Use Linear issues as the execution plan instead of markdown
+- **verification** - Document verification results in task comments
+- **brainstorming** - Capture feature requirements before creating Linear plan
+
+**Command reference:**
+- Use `/linear` command for quick operations (create, list, mark done)
+- Use `skill: "linear"` to access detailed planning workflow
