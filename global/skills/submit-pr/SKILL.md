@@ -6,13 +6,14 @@ description: |
 
 # Submit PR
 
-## CRITICAL: Complete ALL 7 Phases
+## CRITICAL: Complete ALL 8 Phases
 
-> **This skill has 7 phases. PR creation (Phase 4) is NOT the end.**
+> **This skill has 8 phases. PR creation (Phase 5) is NOT the end.**
 >
 > **You MUST execute ALL phases. Do NOT stop after creating the PR.**
 
 ```
+Phase 0: Update Plan    → Document what's being submitted
 Phase 1: Pre-Submit     → Local verification
 Phase 2: Sub-Agents     → Dispatch reviewers
 Phase 3: Fix Findings   → Address issues
@@ -28,10 +29,11 @@ Phase 7: Human Review   → Request review ← MUST DO
 
 ## Mandatory: Track All Phases with TodoWrite
 
-**BEFORE starting Phase 1**, create todos for ALL 7 phases:
+**BEFORE starting Phase 0**, create todos for ALL 8 phases:
 
 ```
 TodoWrite([
+  { content: "Phase 0: Update plan with PR summary", status: "pending" },
   { content: "Phase 1: Pre-submit checks", status: "pending" },
   { content: "Phase 2: Dispatch sub-agent reviewers", status: "pending" },
   { content: "Phase 3: Address sub-agent findings", status: "pending" },
@@ -51,6 +53,8 @@ This ensures phases 5-7 remain visible and tracked.
 ## Decision Tree (Reference)
 
 ```
+Phase 0: Update Plan
+         ↓
 Phase 1: Pre-Submit Checks Pass?
 ├── NO → Fix issues, re-run checks
 └── YES → Phase 2: Dispatch Sub-Agents
@@ -91,6 +95,57 @@ Orchestrates the full PR lifecycle: pre-submit verification → local sub-agent 
 - Tests are failing (fix tests first)
 - You haven't rebased on main recently
 - Changes include sensitive data or secrets
+
+---
+
+## Phase 0: Update Plan
+
+**Mark todo: Phase 0 → in_progress**
+
+Document what's being submitted before starting verification. This creates a clear record of intent.
+
+### Update Session/Plan File
+
+If a session or plan file exists, update it with PR summary:
+
+```markdown
+## PR Summary
+
+**Branch:** feature/my-feature
+**Target:** main
+**Type:** feat | fix | refactor | docs | chore
+
+### Changes
+- [What changed and why]
+- [Key files modified]
+
+### Reviewers to Dispatch
+- [ ] code-reviewer (always)
+- [ ] code-simplifier (always)
+- [ ] security-reviewer (if applicable)
+- [ ] [others based on change type]
+
+### Risk Assessment
+- **Breaking changes:** Yes/No
+- **Database migrations:** Yes/No
+- **Config changes:** Yes/No
+```
+
+### If No Session File
+
+Create a brief summary in your response:
+
+```
+PR Summary:
+- Branch: feature/my-feature → main
+- Changes: [1-2 sentence summary]
+- Key files: [list]
+- Reviewers needed: [list based on change type]
+```
+
+**Mark todo: Phase 0 → completed**
+
+**→ IMMEDIATELY proceed to Phase 1**
 
 ---
 
@@ -573,6 +628,11 @@ For small, low-risk changes, you may skip conditional sub-agents:
 
 ## Verification Checklist
 
+### Before Pre-Submit (Phase 0)
+- [ ] Plan/session file updated with PR summary
+- [ ] Reviewers to dispatch identified
+- [ ] Risk assessment documented
+
 ### Before Dispatching Sub-Agents (Phase 1)
 - [ ] All tests pass locally
 - [ ] Linter clean
@@ -593,7 +653,7 @@ For small, low-risk changes, you may skip conditional sub-agents:
 - [ ] Self-review completed
 
 ### Skill Completion (REQUIRED)
-- [ ] All 7 phase todos marked completed
+- [ ] All 8 phase todos marked completed
 - [ ] Human reviewers assigned
 - [ ] PR ready for review
 
