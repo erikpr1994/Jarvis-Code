@@ -456,40 +456,31 @@ TaskOutput(task_id: "ci_watch_123", block: true, timeout: 600000)
 
 **Mark todo: Phase 6 → in_progress**
 
-### Step 1: Read All Comments
+> **Delegate to `pr-feedback-tracker` skill for systematic processing.**
 
-```bash
-gh pr view $PR_NUMBER --comments
-```
+### Step 1: Invoke PR Feedback Tracker
 
-### Step 2: Process EACH Comment
-
-**For every comment, choose ONE path:**
+Use the `pr-feedback-tracker` skill to process all comments:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Comment received                                           │
-│      ↓                                                      │
-│  Valid feedback?                                            │
-│      ├── YES → FIX path                                     │
-│      └── NO  → DISMISS path                                 │
-└─────────────────────────────────────────────────────────────┘
+/pr-feedback-tracker #$PR_NUMBER
 ```
 
-**FIX path:**
-1. Make the code change
-2. Reply: "Fixed" or "Fixed in [commit]"
-3. Click **"Resolve conversation"**
+The tracker will:
+1. Fetch all review threads
+2. Categorize each comment (Fixed, Deferred, Out of Scope, Dismissed)
+3. **Create tracking issues for deferred items** ← Key feature
+4. Reply to and resolve all threads
+5. Generate summary
 
-**DISMISS path:**
-1. Reply with explanation:
-   - "Not applicable: [reason]"
-   - "Intentional: [explanation]"
-   - "Out of scope for this PR"
-2. Click **"Resolve conversation"**
+### Step 2: Review Categories
 
-> **Key rule:** EVERY comment ends with "Resolve conversation" clicked.
-> No comment should be left unresolved.
+| Category | Action | Creates Issue? |
+|----------|--------|----------------|
+| **Fixed** | Code changed | No |
+| **Deferred** | Valid but future PR | **Yes** |
+| **Out of Scope** | Trivial/unrelated | No |
+| **Dismissed** | Disagree with reason | No |
 
 ### Step 3: Push Fixes and Re-verify
 
@@ -504,8 +495,9 @@ gh pr checks $PR_NUMBER --watch
 
 ### Completion Criteria
 
-- [ ] All comments processed (fixed or dismissed)
-- [ ] All conversations resolved
+- [ ] All comments categorized and processed
+- [ ] All threads resolved (with replies)
+- [ ] Deferred items tracked in GitHub issue
 - [ ] CI passing after fixes
 
 **If no automated feedback:** Skip to Phase 7.
@@ -662,7 +654,10 @@ For small, low-risk changes, you may skip conditional sub-agents:
 ## Integration
 
 **Parent skill:** git-expert
-**Related skills:** coderabbit, tdd, verification, dispatching-parallel-agents, background-tasks
+**Related skills:** coderabbit, tdd, verification, dispatching-parallel-agents, background-tasks, **pr-feedback-tracker**
+
+**Phase 6 skill:**
+- `pr-feedback-tracker` - Categorizes feedback, creates tracking issues for deferred items
 
 **Core sub-agents (always run for code changes):**
 - `code-reviewer` - Comprehensive multi-file review, logic correctness
@@ -686,5 +681,5 @@ For small, low-risk changes, you may skip conditional sub-agents:
 
 ## Metadata
 
-**Version:** 3.3.0
+**Version:** 3.4.0
 **Last Updated:** 2026-01-15
