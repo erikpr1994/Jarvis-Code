@@ -1,7 +1,7 @@
 ---
 name: submit-pr
 description: |
-  Complete PR submission pipeline with local sub-agent review before pushing, CI verification, and automated review integration. Dispatches specialized review agents (security, performance, dependency) before code leaves the machine. Waits for CI with `gh pr checks --watch`. Integrates CodeRabbit and Greptile feedback.
+  Complete PR submission pipeline with local sub-agent review before pushing, CI verification, and automated review integration. Always dispatches code-reviewer and code-simplifier for code changes, plus conditional reviewers (security, performance, dependency, accessibility, i18n, type-design, etc.) based on change type. Waits for CI with `gh pr checks --watch`. Integrates CodeRabbit and Greptile feedback.
 ---
 
 # Submit PR
@@ -145,43 +145,106 @@ git diff main...HEAD --stat
 git diff main...HEAD --name-only
 ```
 
+### Core Reviewers (Always Dispatch for Code Changes)
+
+| Agent | Purpose |
+|-------|---------|
+| `code-reviewer` | Comprehensive multi-file review, logic correctness |
+| `code-simplifier` | Clarity, consistency, maintainability |
+
+### Conditional Reviewers (Based on Change Type)
+
 | Change Type | Dispatch Agent |
 |-------------|----------------|
-| Any code changes | `code-simplifier` (always) |
-| Auth/security code | `security-reviewer` |
-| Database queries, loops, rendering | `performance-reviewer` |
-| package.json/lock files | `dependency-reviewer` |
-| New files, reorganization | `structure-reviewer` |
-| Complex PR (10+ files) | `code-reviewer` (comprehensive) |
+| Auth, secrets, user data, APIs | `security-reviewer` |
+| Database queries, loops, rendering, large data | `performance-reviewer` |
+| package.json, lock files, dependencies | `dependency-reviewer` |
+| New files, folder changes, reorganization | `structure-reviewer` |
+| Test additions or modifications | `test-coverage-analyzer` |
+| UI components, frontend changes | `accessibility-auditor` |
+| User-facing strings, locale files | `i18n-validator` |
+| New types, interfaces, generics | `type-design-analyzer` |
+| Error handling, try/catch, promises | `silent-failure-hunter` |
+| Meta tags, SEO content, schema markup | `seo-specialist` |
 
 ### Dispatch Review Agents in Parallel
 
-Use the Task tool to run specialized reviewers simultaneously:
+Use the Task tool to run specialized reviewers simultaneously.
+
+**Core reviewers (ALWAYS dispatch for code changes):**
 
 ```markdown
-Task: @code-simplifier (ALWAYS dispatch for code changes)
-Simplify and refine recently modified code.
-Focus: clarity, consistency, maintainability while preserving functionality.
+Task: @code-reviewer (ALWAYS dispatch for code changes)
+Comprehensive review of all changed files.
+Focus: logic correctness, edge cases, error handling, code quality.
 
 ---
 
-Task: @security-reviewer
+Task: @code-simplifier (ALWAYS dispatch for code changes)
+Simplify and refine recently modified code.
+Focus: clarity, consistency, maintainability while preserving functionality.
+```
+
+**Conditional reviewers (dispatch based on change type):**
+
+```markdown
+Task: @security-reviewer (if auth, secrets, user data, APIs)
 Review changes for security vulnerabilities.
-Run: git diff main...HEAD
 Focus: authentication, authorization, input validation, data exposure, XSS, injection.
 
 ---
 
-Task: @performance-reviewer
+Task: @performance-reviewer (if queries, loops, rendering, large data)
 Analyze performance implications of changes.
-Run: git diff main...HEAD
 Focus: query efficiency, N+1 problems, rendering, bundle size, memory leaks.
 
 ---
 
-Task: @dependency-reviewer
-Review dependency changes (if package.json modified).
+Task: @dependency-reviewer (if package.json or lock files)
+Review dependency changes.
 Check: known vulnerabilities, license compatibility, maintenance status.
+
+---
+
+Task: @structure-reviewer (if new files or reorganization)
+Review file organization and project structure.
+Focus: naming conventions, folder hierarchy, module boundaries.
+
+---
+
+Task: @test-coverage-analyzer (if test additions or modifications)
+Analyze test adequacy and coverage gaps.
+Focus: edge cases, error paths, integration points.
+
+---
+
+Task: @accessibility-auditor (if UI components or frontend)
+WCAG 2.1 AA compliance review.
+Focus: keyboard navigation, screen reader, color contrast, ARIA.
+
+---
+
+Task: @i18n-validator (if user-facing strings or locale files)
+Internationalization coverage review.
+Focus: hardcoded strings, locale support, RTL compatibility.
+
+---
+
+Task: @type-design-analyzer (if new types, interfaces, generics)
+Type design quality review.
+Focus: encapsulation, invariants, type safety, usefulness.
+
+---
+
+Task: @silent-failure-hunter (if error handling, try/catch, promises)
+Find unhandled errors and silent failures.
+Focus: missing catch blocks, swallowed errors, promise rejection handling.
+
+---
+
+Task: @seo-specialist (if meta tags, SEO content, schema markup)
+SEO review for web content.
+Focus: meta tags, structured data, content optimization.
 ```
 
 ### Aggregate Sub-Agent Results
@@ -191,24 +254,28 @@ Collect and assess findings:
 ```markdown
 ## Local Review Summary
 
-### Code Simplification: [DONE/SKIPPED]
-- Files refined: [count]
-- [Key improvements]
+### Core Reviews (Always Run)
+| Agent | Status | Findings |
+|-------|--------|----------|
+| Code Review | [PASS/WARN/FAIL] | [summary] |
+| Code Simplification | [DONE/SKIPPED] | [files refined] |
 
-### Security Review: [PASS/WARN/FAIL]
-- Critical: [count]
-- Warnings: [count]
-- [Key findings]
+### Conditional Reviews (Based on Changes)
+| Agent | Status | Findings |
+|-------|--------|----------|
+| Security | [PASS/WARN/FAIL/N/A] | [summary] |
+| Performance | [PASS/WARN/FAIL/N/A] | [summary] |
+| Dependencies | [PASS/WARN/FAIL/N/A] | [summary] |
+| Structure | [PASS/WARN/FAIL/N/A] | [summary] |
+| Test Coverage | [PASS/WARN/FAIL/N/A] | [summary] |
+| Accessibility | [PASS/WARN/FAIL/N/A] | [summary] |
+| i18n | [PASS/WARN/FAIL/N/A] | [summary] |
+| Type Design | [PASS/WARN/FAIL/N/A] | [summary] |
+| Silent Failures | [PASS/WARN/FAIL/N/A] | [summary] |
+| SEO | [PASS/WARN/FAIL/N/A] | [summary] |
 
-### Performance Review: [PASS/WARN/FAIL]
-- Critical: [count]
-- Warnings: [count]
-- [Key findings]
-
-### Dependency Review: [PASS/WARN/FAIL]
-- Vulnerabilities: [count]
-- [Key findings]
-
+### Critical Issues: [count]
+### Warnings: [count]
 ### Overall: [READY TO PUSH / NEEDS FIXES]
 ```
 
@@ -465,13 +532,20 @@ CLAUDE_SUBMIT_PR_SKILL=1 gt stack submit
 gt log
 ```
 
-### Quick PR (Skip Optional Sub-Agents)
+### Quick PR (Skip Conditional Sub-Agents)
 
-For small, low-risk changes, you may skip optional sub-agents:
+For small, low-risk changes, you may skip conditional sub-agents:
 
 ```bash
-# Minimum required: security-reviewer for any code changes
-# Skip: performance-reviewer, dependency-reviewer, structure-reviewer
+# Minimum required (always run):
+#   - code-reviewer
+#   - code-simplifier
+#
+# Skip conditional reviewers if not relevant to changes:
+#   - security-reviewer (skip if no auth/API changes)
+#   - performance-reviewer (skip if no queries/loops)
+#   - dependency-reviewer (skip if no package changes)
+#   - etc.
 ```
 
 ---
@@ -530,14 +604,21 @@ For small, low-risk changes, you may skip optional sub-agents:
 **Parent skill:** git-expert
 **Related skills:** coderabbit, tdd, verification, dispatching-parallel-agents, background-tasks
 
-**Review sub-agents (Phase 2):**
-- `code-simplifier` - Clarity, consistency, maintainability (always run)
+**Core sub-agents (always run for code changes):**
+- `code-reviewer` - Comprehensive multi-file review, logic correctness
+- `code-simplifier` - Clarity, consistency, maintainability
+
+**Conditional sub-agents (based on change type):**
 - `security-reviewer` - XSS, injection, auth vulnerabilities
 - `performance-reviewer` - Queries, rendering, bundle size
 - `dependency-reviewer` - Vulnerabilities, licenses, maintenance
 - `structure-reviewer` - File organization, patterns
-- `code-reviewer` - Comprehensive multi-file review
 - `test-coverage-analyzer` - Test adequacy and gaps
+- `accessibility-auditor` - WCAG compliance for UI
+- `i18n-validator` - Internationalization coverage
+- `type-design-analyzer` - Type design quality
+- `silent-failure-hunter` - Unhandled errors
+- `seo-specialist` - SEO for web content
 
 **Architecture note:** Uses supervisor pattern. Sub-agents provide context isolation - each reviewer operates in a clean context focused on its domain. Results aggregate without any single context bearing the full burden.
 
@@ -545,5 +626,5 @@ For small, low-risk changes, you may skip optional sub-agents:
 
 ## Metadata
 
-**Version:** 3.2.0
-**Last Updated:** 2026-01-14
+**Version:** 3.3.0
+**Last Updated:** 2026-01-15
