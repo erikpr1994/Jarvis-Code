@@ -60,6 +60,17 @@
       "autoActivate": false
     },
     {
+      "id": "pr-feedback-tracker",
+      "name": "PR Feedback Tracker",
+      "skill": "process/pr-feedback-tracker",
+      "priority": "medium",
+      "triggers": {
+        "keywords": ["PR feedback", "review comments", "deferred items", "track feedback", "resolve conversations"],
+        "intents": ["pr-review-processing", "feedback-tracking", "deferred-work"]
+      },
+      "autoActivate": false
+    },
+    {
       "id": "patterns",
       "name": "Design Patterns",
       "skill": "domain/patterns",
