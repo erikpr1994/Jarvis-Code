@@ -5,6 +5,13 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.17.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.16.0...v2.17.0) (2026-01-15)
+
+
+### Features
+
+* **skills:** add pr-feedback-tracker skill ([#60](https://github.com/erikpr1994/Jarvis-Code/issues/60)) ([3da6598](https://github.com/erikpr1994/Jarvis-Code/commit/3da6598a823043aa67bf0a4af10813b125a527c5))
+
 ## [2.16.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.15.0...v2.16.0) (2026-01-15)
 
 
