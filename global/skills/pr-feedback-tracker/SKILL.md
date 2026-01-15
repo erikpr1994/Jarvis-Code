@@ -31,7 +31,7 @@ Is it valid feedback?
 ├── YES, can fix now → FIX path
 ├── YES, but not this PR → DEFER path
 ├── NO, disagree → DISMISS path
-└── NO, out of scope → SCOPE path
+└── NO, trivial/unrelated → OUT_OF_SCOPE path
 ```
 
 ---
@@ -118,10 +118,10 @@ mutation($threadId: ID!) {
 
 ```bash
 # 1. Collect all deferred items
-# 2. Create a single tracking issue
+# 2. Create a single tracking issue (note: unquoted EOF allows variable expansion)
 gh issue create \
   --title "Follow-up: Deferred items from PR #$PR_NUMBER" \
-  --body "$(cat <<'EOF'
+  --body "$(cat <<EOF
 ## Deferred from PR #$PR_NUMBER
 
 These items were identified during code review but deferred to keep the PR focused.
