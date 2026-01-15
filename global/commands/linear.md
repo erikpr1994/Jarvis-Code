@@ -1,133 +1,145 @@
 ---
 name: linear
-description: Plan and track features using Linear's hierarchical issues (replaces markdown plans)
+description: Track all work in Linear - features, bugs, TODOs, questions, tech debt
 disable-model-invocation: false
 ---
 
-# /linear - Plan with Linear
+# /linear - Work Tracking
 
-Create and execute implementation plans using Linear's hierarchical issues instead of markdown files.
+Single source of truth for all work. Features, bugs, TODOs, questions, and tech debt.
 
 ## When to Use
 
-- Starting a new feature or multi-phase implementation
-- Need to break down large work into atomic tasks
-- Want execution tracking within Linear instead of markdown
-- Coordinating work across phases or team members
+- **Features** - Multi-phase implementations (`/linear plan`)
+- **Bugs** - Something broken (`/linear bug`)
+- **TODOs** - Quick standalone tasks (`/linear todo`)
+- **Questions** - Discussions needing resolution (`/linear question`)
+- **Tech Debt** - Improvements for later (`/linear debt`)
 
 ## Setup (First Time)
 
 ```bash
-# Authenticate via MCP (run once)
-/mcp
-# Follow OAuth prompts
+/mcp  # Authenticate via OAuth
 ```
 
 ## Commands
 
-### Planning Commands
+### Create Issues
 
 ```bash
-# Create a new feature plan
-/linear plan "Feature Name"
+# Feature plan (hierarchical)
+/linear plan "User Authentication"
 
-# View all active plans
-/linear plans
+# Bug report
+/linear bug "Login fails with special chars"
 
-# View hierarchical plan structure
+# Quick TODO
+/linear todo "Add loading spinner to submit button"
+
+# Question for discussion
+/linear question "Should we use JWT or sessions?"
+
+# Tech debt item
+/linear debt "Refactor auth to use Redis sessions"
+```
+
+### View Issues
+
+```bash
+# My assigned issues
+/linear tasks
+
+# All bugs
+/linear bugs
+
+# All questions
+/linear questions
+
+# All tech debt
+/linear debt --list
+
+# View specific issue
+/linear ENG-123
+
+# View feature plan tree
 /linear tree ENG-100
 ```
 
-### Execution Commands
+### Work on Issues
 
 ```bash
 # Start next unassigned task
 /linear next
 
-# Start a specific task
-/linear start ENG-107
+# Start specific issue
+/linear start ENG-123
 
-# Complete current task (with verification)
-/linear done ENG-107
+# Complete issue
+/linear done ENG-123
 
-# View your assigned tasks
-/linear tasks
+# Add comment
+/linear comment ENG-123 "Fixed in commit abc123"
 ```
 
-### Progress Commands
+### Progress
 
 ```bash
-# View plan progress
+# Plan progress
 /linear progress ENG-100
 
-# View current sprint cycle
+# Current sprint
 /linear cycle
-
-# Add comment to task (after verification)
-/linear comment ENG-107 "Verified: npm test passes"
 ```
 
 ## Quick Reference
 
 | Command | Purpose |
 |---------|---------|
-| `/linear plan "X"` | Create new feature plan |
-| `/linear plans` | List all active plans |
+| `/linear plan "X"` | Create feature plan |
+| `/linear bug "X"` | Report bug |
+| `/linear todo "X"` | Create quick task |
+| `/linear question "X"` | Ask question |
+| `/linear debt "X"` | Log tech debt |
+| `/linear tasks` | My issues |
+| `/linear bugs` | All bugs |
+| `/linear next` | Start next task |
+| `/linear start ID` | Start specific issue |
+| `/linear done` | Complete issue |
 | `/linear tree ID` | View plan hierarchy |
-| `/linear next` | Start next task in queue |
-| `/linear start ID` | Start specific task |
-| `/linear done` | Mark current task complete |
-| `/linear progress ID` | Check plan completion |
-| `/linear tasks` | View your assignments |
-| `/linear cycle` | View current sprint |
+| `/linear cycle` | Current sprint |
 
-## How Plans Are Structured
+## Issue Types
 
-Each plan creates a hierarchy in Linear:
+| Type | Label | Hierarchy |
+|------|-------|-----------|
+| Feature | `feature` | Deep (Feature → Phase → Task) |
+| Bug | `bug` | Flat |
+| TODO | `task` | Single issue |
+| Question | `question` | Single issue |
+| Tech Debt | `tech-debt` | Single or grouped |
 
-```
-ENG-100: [Feature] Feature Name
-├── ENG-101: [Phase 1] Phase Name
-│   ├── ENG-102: Write test for component
-│   ├── ENG-103: Implement component
-│   └── ENG-104: Integrate with page
-├── ENG-105: [Phase 2] Next Phase
-│   └── ...
-└── ENG-106: [Phase 4] Verification
-    └── ...
+## Examples
+
+**Report a bug:**
+```bash
+/linear bug "Form validation breaks on Unicode input"
 ```
 
-Every leaf task is atomic and testable—it contains exactly what to do, which file to edit, test code, and a verification command.
-
-## Detailed Workflow
-
-For the complete planning workflow, including:
-- How issues are created and structured
-- Task format and requirements
-- TDD ordering and verification
-- Integration patterns
-- Full examples with code
-
-See the **linear skill** (`skill: "linear"`).
-
-## Example Usage
+**Quick TODO:**
+```bash
+/linear todo "Add retry logic to API client"
+```
 
 **Start a feature:**
 ```bash
-/linear plan "User Authentication System"
+/linear plan "OAuth2 Integration"
 ```
 
-**See what needs work:**
+**Log tech debt:**
 ```bash
-/linear next
+/linear debt "Replace moment.js with date-fns"
 ```
 
-**Mark it complete:**
-```bash
-/linear done
-```
+## Detailed Workflow
 
-**Check overall progress:**
-```bash
-/linear progress ENG-100
-```
+For templates, examples, and full workflow details, see the **linear skill** (`skill: "linear"`).

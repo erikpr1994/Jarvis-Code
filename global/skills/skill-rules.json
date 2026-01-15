@@ -189,7 +189,7 @@
       "enforcement": "suggest",
       "priority": "high",
       "path": "linear/SKILL.md",
-      "description": "Plan and track features using Linear's hierarchical issues",
+      "description": "Track all work - features, bugs, TODOs, questions, tech debt",
       "promptTriggers": {
         "keywords": [
           "linear",
@@ -201,12 +201,22 @@
           "project planning",
           "roadmap",
           "create issue",
-          "track task"
+          "track task",
+          "bug",
+          "bug report",
+          "todo",
+          "question",
+          "tech debt",
+          "technical debt"
         ],
         "intentPatterns": [
-          "(create|track|plan).*?(issue|task|feature)",
+          "(create|track|plan).*?(issue|task|feature|bug|todo)",
           "(linear|issue).*?(plan|create|track)",
-          "(project|feature).*?planning"
+          "(project|feature).*?planning",
+          "(report|log|file).*?bug",
+          "(add|create).*?todo",
+          "(ask|raise).*?question",
+          "(log|track).*?(tech|technical).*?debt"
         ]
       }
     },

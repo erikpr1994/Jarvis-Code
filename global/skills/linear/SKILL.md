@@ -1,23 +1,255 @@
 ---
 name: linear
-description: Use when planning features, tracking tasks, or managing implementation. Replaces local markdown plans with Linear's hierarchical issues. Triggers - linear, plan, issue, task, feature planning, implementation plan.
+description: Use when tracking any work - features, bugs, TODOs, questions, tech debt. Single source of truth for all tasks. Triggers - linear, plan, issue, task, bug, todo, question, tech debt.
 ---
 
-# Linear Planning
+# Linear Issue Management
 
-**Iron Law:** EVERY TASK MUST BE EXECUTABLE. Each issue is a testable, runnable piece of code.
+**Iron Law:** SINGLE SOURCE OF TRUTH. All work tracking lives in Linear, not scattered notes.
 
 ## When to Use
 
-- Planning a new feature or multi-phase implementation
-- Need to track work across multiple team members
-- Want atomic, verifiable tasks instead of vague descriptions
+- **Features** - Planning multi-phase implementations
+- **Bugs** - Reporting and tracking fixes
+- **TODOs** - Quick standalone tasks
+- **Questions** - Discussions needing resolution
+- **Tech Debt** - Improvements to address later
 - Coordinating work across phases with clear dependencies
 - Creating execution checkpoints for TDD workflow
 
 ## Overview
 
-Linear replaces markdown-based plans with hierarchical issues. Instead of writing plans to `docs/plans/`, create a structured issue tree in Linear where each leaf issue is an atomic, testable task. Each level of the hierarchy must be more specific than its parent, culminating in executable code with verification commands.
+Linear is the single source of truth for all work. Use it for features, bugs, TODOs, questions, and tech debt. Different issue types have different templates but share the same principle: **every issue should be actionable**.
+
+---
+
+## Issue Types
+
+### Quick Reference
+
+| Type | Label | When to Use | Hierarchy |
+|------|-------|-------------|-----------|
+| Feature | `feature` | Multi-phase work | Deep (Feature → Phase → Task) |
+| Bug | `bug` | Something broken | Flat or shallow |
+| TODO | `task` | Quick standalone work | Single issue |
+| Question | `question` | Needs discussion/decision | Single issue |
+| Tech Debt | `tech-debt` | Future improvements | Single or grouped |
+
+---
+
+## Bug Reports
+
+For reporting and tracking bugs.
+
+### Bug Template
+
+```markdown
+**Title:** [Bug] {Component} - {Brief description}
+**Labels:** bug, {priority}
+**Priority:** {Urgent/High/Medium/Low}
+
+## Description
+{What's broken}
+
+## Steps to Reproduce
+1. {Step 1}
+2. {Step 2}
+3. {Step 3}
+
+## Expected Behavior
+{What should happen}
+
+## Actual Behavior
+{What happens instead}
+
+## Environment
+- Branch/Commit: {ref}
+- OS: {if relevant}
+- Browser: {if relevant}
+
+## Files
+- `{path/to/relevant/file.ts}`
+
+## Fix Verification
+```bash
+{command to verify fix}
+# Expected: {result}
+```
+```
+
+### Bug Workflow
+
+```
+1. CREATE    -> Bug issue with reproduction steps
+2. TRIAGE    -> Set priority based on impact
+3. REPRODUCE -> Verify bug locally
+4. FIX       -> Create fix (TDD: test first)
+5. VERIFY    -> Run verification command
+6. CLOSE     -> Mark done with commit reference
+```
+
+---
+
+## Quick TODOs
+
+For standalone tasks that don't need hierarchy.
+
+### TODO Template
+
+```markdown
+**Title:** {Action verb} {component} - {description}
+**Labels:** task
+**Priority:** {priority}
+
+## Action
+{What needs to be done}
+
+## File
+`{exact/path/to/file.ts}`
+
+## Verification
+```bash
+{command}
+# Expected: {result}
+```
+
+## Done When
+- [ ] {Specific criterion}
+```
+
+### TODO Examples
+
+```
+Title: Add loading spinner to submit button
+Labels: task, ui
+
+## Action
+Add loading state to the form submit button during API call.
+
+## File
+`src/components/forms/SubmitButton.tsx`
+
+## Verification
+```bash
+npm test -- SubmitButton.test.tsx
+```
+
+## Done When
+- [ ] Button shows spinner during submit
+- [ ] Button is disabled while loading
+```
+
+---
+
+## Questions
+
+For discussions that need resolution before proceeding.
+
+### Question Template
+
+```markdown
+**Title:** [Question] {Topic}
+**Labels:** question
+**Priority:** Medium
+
+## Question
+{What needs to be decided}
+
+## Context
+{Why this matters, what prompted it}
+
+## Options
+1. **Option A**: {description}
+   - Pro: {benefit}
+   - Con: {drawback}
+
+2. **Option B**: {description}
+   - Pro: {benefit}
+   - Con: {drawback}
+
+## Decision
+{Leave blank until resolved}
+
+## Follow-up Issues
+{Issues to create after decision}
+```
+
+### Question Workflow
+
+```
+1. CREATE    -> Question with options
+2. DISCUSS   -> Add comments with perspectives
+3. DECIDE    -> Document decision in issue
+4. ACTION    -> Create follow-up issues
+5. CLOSE     -> Mark resolved
+```
+
+---
+
+## Tech Debt
+
+For improvements to address later.
+
+### Tech Debt Template
+
+```markdown
+**Title:** [Tech Debt] {Area} - {description}
+**Labels:** tech-debt, {priority}
+**Priority:** Low (unless blocking)
+
+## Current State
+{What exists now and why it's problematic}
+
+## Desired State
+{What it should look like}
+
+## Impact
+- Performance: {impact}
+- Maintainability: {impact}
+- Developer experience: {impact}
+
+## Effort Estimate
+{Small/Medium/Large}
+
+## Files Affected
+- `{path/to/file1.ts}`
+- `{path/to/file2.ts}`
+
+## Blocked By
+{Other issues that should be done first, if any}
+```
+
+### Tech Debt Examples
+
+```
+Title: [Tech Debt] Auth - Migrate from JWT to session tokens
+Labels: tech-debt, security
+
+## Current State
+Using JWT with long expiry. No revocation capability.
+
+## Desired State
+Session-based auth with Redis store and revocation.
+
+## Impact
+- Performance: Slight increase (Redis lookup)
+- Maintainability: Better (centralized sessions)
+- Developer experience: Better (easier debugging)
+
+## Effort Estimate
+Large (2-3 day feature)
+
+## Files Affected
+- `src/auth/jwt.ts` (remove)
+- `src/auth/session.ts` (create)
+- `src/middleware/auth.ts` (update)
+```
+
+---
+
+## Feature Planning (Hierarchical)
+
+For multi-phase work that needs breakdown.
 
 ## Execution Model
 
