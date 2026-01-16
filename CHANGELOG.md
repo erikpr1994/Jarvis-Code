@@ -5,6 +5,13 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.19.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.18.0...v2.19.0) (2026-01-16)
+
+
+### Features
+
+* **linear:** add comprehensive Linear integration skills ([#66](https://github.com/erikpr1994/Jarvis-Code/issues/66)) ([b836581](https://github.com/erikpr1994/Jarvis-Code/commit/b836581fe2c10fd328effc001e11fc699033ad6a))
+
 ## [2.18.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.17.1...v2.18.0) (2026-01-16)
 
 
