@@ -1,9 +1,9 @@
 ---
-name: reply-linear-feature-requests
-description: Handle Linear issues tagged with "feature-request". Decide to spec, add to roadmap, merge, or reject. Triggers - feature request, user request, customer feedback.
+name: review-linear-feature-requests
+description: Review Linear issues tagged with "feature-request". Decide to spec, add to roadmap, merge, or reject. Triggers - review feature request, user request, customer feedback.
 ---
 
-# Reply Linear Feature Requests
+# Review Linear Feature Requests
 
 **Iron Law:** Feature requests produce ROADMAP DECISIONS. Spec it, roadmap it, merge it, or reject it.
 
@@ -64,7 +64,48 @@ For each request, understand:
 - [List any related issues or features]
 ```
 
-### Step 3: Decision Framework
+### Step 3: Explore Codebase (For Feasibility)
+
+**When technical feasibility is unclear, explore the codebase:**
+
+```typescript
+// Dispatch Explore agent for feasibility assessment
+Task({
+  subagent_type: "Explore",
+  prompt: `
+    Assess feasibility for feature request: "[request title]"
+
+    Find:
+    1. Related existing functionality
+    2. Patterns that could be extended
+    3. Technical constraints or blockers
+    4. Estimated implementation effort
+
+    Return findings to inform roadmap decision.
+  `,
+  description: "Explore codebase for feature feasibility"
+});
+```
+
+**Present findings:**
+
+```markdown
+## Feasibility Analysis
+
+### Related Existing Code
+- `src/features/similar.ts` - Could extend this pattern
+- `src/api/endpoints.ts` - Would need new endpoint
+
+### Technical Assessment
+- **Feasibility:** Easy / Medium / Hard
+- **Effort:** 1-2 days / 1 week / 2+ weeks
+- **Dependencies:** [any blocking work]
+
+### Recommendation
+[Add to roadmap / Create spec for further discovery / Reject as infeasible]
+```
+
+### Step 4: Decision Framework
 
 ```
 Does it align with product vision?
@@ -76,7 +117,7 @@ Does it align with product vision?
                     └── NO → Add to Roadmap
 ```
 
-### Step 4: Execute Decision
+### Step 5: Execute Decision
 
 #### Create Spec
 ```markdown

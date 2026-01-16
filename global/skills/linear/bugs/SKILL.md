@@ -1,9 +1,9 @@
 ---
-name: reply-linear-bugs
-description: Fix Linear issues tagged with "bug". Either produces a PR with the fix or explains why it won't be fixed. Triggers - linear bugs, fix bugs, bug triage, resolve bugs.
+name: fix-linear-bugs
+description: Fix Linear issues tagged with "bug". Either produces a PR with the fix or explains why it won't be fixed. Triggers - fix bugs, linear bugs, bug triage, resolve bugs.
 ---
 
-# Reply Linear Bugs
+# Fix Linear Bugs
 
 **Iron Law:** Bugs produce either a FIX (PR) or an EXPLANATION (won't fix). No middle ground.
 
@@ -14,11 +14,11 @@ This skill handles Linear issues tagged with "bug". Every bug must be resolved w
 2. A documented explanation of why it won't be fixed
 
 ```
-Bug → Investigate → Reproduce → Decision
-                                  ↓
-                    ┌─────────────┴─────────────┐
-                    ↓                           ↓
-              FIX (PR)                  WON'T FIX (Explanation)
+Bug → Understand → EXPLORE CODEBASE → Reproduce → Decision
+                         ↓                            ↓
+              Find affected code          ┌──────────┴──────────┐
+                                          ↓                     ↓
+                                    FIX (PR)            WON'T FIX (Explanation)
 ```
 
 ## Valid Outcomes
@@ -75,7 +75,74 @@ Gather:
 - Environment/context
 - Impact/severity
 
-### Step 4: Reproduce the Bug
+### Step 4: Explore Codebase (MANDATORY)
+
+**Before attempting to reproduce, explore the codebase to find affected code:**
+
+```typescript
+// Dispatch Explore agent for comprehensive analysis
+Task({
+  subagent_type: "Explore",
+  prompt: `
+    Research context for bug: "[bug title]"
+
+    Bug details: [paste bug description]
+
+    Find:
+    1. Code files related to this functionality
+    2. Existing tests for this area (may reveal expected behavior)
+    3. Recent changes that might have introduced the bug
+    4. Related error handling or validation logic
+    5. Similar patterns elsewhere that work correctly
+
+    Return findings to inform debugging and reproduction.
+  `,
+  description: "Explore codebase for bug context"
+});
+```
+
+Or use direct search:
+
+```bash
+# Find related files
+Glob: "**/*[feature-name]*"
+
+# Search for error messages or related code
+Grep: "error message from bug report"
+
+# Check git history for recent changes
+git log --oneline -20 -- src/affected/path/
+```
+
+**Present findings to user:**
+
+```markdown
+## Codebase Analysis
+
+### Affected Code Found
+- `src/auth/login.ts` - Login handler (lines 45-89)
+- `src/auth/validate.ts` - Input validation (lines 12-34)
+- `src/utils/sanitize.ts` - Sanitization helper
+
+### Existing Tests
+- `tests/auth/login.test.ts` - Has 5 tests, none for special chars
+- Gap identified: No test coverage for edge case
+
+### Recent Changes (potential cause)
+- `abc123` (3 days ago): "refactor: improve input sanitization"
+  - Changed `sanitize.ts` - LIKELY CULPRIT
+
+### Related Patterns
+- `src/auth/register.ts:67` - Similar validation, works correctly
+- Difference: Register doesn't use sanitization on password
+
+### Key Findings
+1. **Likely root cause:** sanitize.ts:23 strips special chars
+2. **Test gap:** No tests for special character passwords
+3. **Working example:** Register flow handles this correctly
+```
+
+### Step 5: Reproduce the Bug
 
 **Before writing any fix, REPRODUCE the bug:**
 
@@ -95,7 +162,7 @@ Gather:
 **Environment:** [Your test environment]
 ```
 
-### Step 5: Decision Point
+### Step 6: Decision Point
 
 ```
 Can you reproduce it?
@@ -105,7 +172,7 @@ Can you reproduce it?
           └── YES → Proceed to fix
 ```
 
-### Step 6A: Fix the Bug (TDD)
+### Step 7A: Fix the Bug (TDD)
 
 **Use TDD process - test first:**
 
@@ -125,7 +192,7 @@ Can you reproduce it?
 **Files:** [Files to modify]
 ```
 
-### Step 6B: Submit PR
+### Step 7B: Submit PR
 
 After fix is verified locally:
 
@@ -139,7 +206,7 @@ Use /submit-pr skill for full PR pipeline
 - How fix addresses it
 - Test coverage added
 
-### Step 6C: Won't Fix / Close
+### Step 7C: Won't Fix / Close
 
 If not fixing, document clearly:
 
@@ -165,7 +232,7 @@ mcp__linear-server__update_issue({
 });
 ```
 
-### Step 7: Confirm Resolution
+### Step 8: Confirm Resolution
 
 ```markdown
 ## Bug Resolved
@@ -229,7 +296,7 @@ Tracking in the original issue. Closing this one.
 
 ## Example Session
 
-**User says:** `/reply-linear-bugs`
+**User says:** `/fix-linear-bugs`
 
 **Step 1-2 - List & Select:**
 ```
@@ -262,7 +329,39 @@ Which bug would you like to address?
 **Impact:** Users with special character passwords cannot login
 ```
 
-**Step 4 - Reproduce:**
+**Step 4 - Explore Codebase (MANDATORY):**
+```
+Dispatching Explore agent to research bug context...
+
+## Codebase Analysis
+
+### Affected Code Found
+- `src/auth/login.ts` - Login handler (lines 45-89)
+- `src/auth/validate.ts` - Input validation
+- `src/utils/sanitize.ts` - Sanitization helper
+
+### Existing Tests
+- `tests/auth/login.test.ts` - 5 tests, none for special chars
+- Gap: No test coverage for special character passwords
+
+### Recent Changes (potential cause)
+- `abc123` (3 days ago): "refactor: improve input sanitization"
+  - Changed `sanitize.ts` - LIKELY CULPRIT
+
+### Related Patterns
+- `src/auth/register.ts:67` - Similar validation, works correctly
+- Difference: Register doesn't sanitize password
+
+### Key Findings
+1. **Likely root cause:** sanitize.ts:23 strips special chars
+2. **Test gap:** No tests for special character passwords
+3. **Working example:** Register flow handles this correctly
+
+### Recommended Investigation
+Focus on `sanitize.ts` - compare with register flow.
+```
+
+**Step 5 - Reproduce:**
 ```
 ## Reproduction Attempt
 
@@ -274,20 +373,20 @@ Which bug would you like to address?
 **Result:** REPRODUCED - Got "Invalid credentials" error
 **Environment:** Local dev server
 
-**Finding:** Password comparison fails because special chars not escaped
+**Confirmed:** sanitize.ts:23 strips "@" and "!" before comparison
 ```
 
-**Step 5-6 - Fix:**
+**Step 6-7 - Fix (informed by exploration):**
 ```
 ## Bug Fix Plan
 
-**Root Cause:** Password sanitization strips special characters before comparison
-**Fix:** Remove sanitization from password comparison (sanitize only for display)
+**Root Cause:** sanitize.ts:23 strips special characters before password comparison
+**Fix:** Skip sanitization for password field (sanitize only display fields)
 
 **TDD Plan:**
 1. Write test: login with special char password should succeed
-2. Verify test fails (bug exists)
-3. Fix sanitization logic
+2. Verify test fails (confirms bug at sanitize.ts:23)
+3. Add password exclusion to sanitize function
 4. Verify test passes
 
 Proceeding with fix...
@@ -299,7 +398,7 @@ Proceeding with fix...
 ## Fix Complete
 
 **Test added:** `tests/auth/login.test.ts` - "handles special characters in password"
-**Files modified:** `src/auth/sanitize.ts`
+**Files modified:** `src/utils/sanitize.ts` (line 23)
 **All tests passing:** Yes
 
 Ready to submit PR?
@@ -309,13 +408,13 @@ Ready to submit PR?
 
 [/submit-pr flow happens]
 
-**Step 7 - Confirm:**
+**Step 8 - Confirm:**
 ```
 ## Bug Resolved
 
 **Bug:** PEA-301 - Login fails with special characters
 **Resolution:** PR #45 - Fix password sanitization
-**Root Cause:** Overly aggressive input sanitization
+**Root Cause:** Overly aggressive input sanitization (sanitize.ts:23)
 **Test Added:** Yes
 
 PR created, CI running. Linear issue will auto-close on merge.
@@ -328,9 +427,15 @@ Next bug?
 ## Quick Reference
 
 ```
-PROCESS: List → Select → Understand → Reproduce → Decide → Fix/Close → Confirm
+PROCESS: List → Select → Understand → EXPLORE CODEBASE → Reproduce → Decide → Fix/Close → Confirm
 OUTPUT:  PR (fix) OR Explanation (won't fix)
-ALWAYS:  Reproduce before fixing, TDD for fixes
+ALWAYS:  Explore codebase FIRST, reproduce before fixing, TDD for fixes
+
+MANDATORY EXPLORATION:
+- Use Explore agent for comprehensive analysis
+- Find affected code, existing tests, recent changes
+- Identify likely root cause BEFORE reproducing
+- Check git history for potential culprit commits
 
 VALID OUTCOMES:
 - PR with fix (TDD process)
@@ -340,6 +445,9 @@ VALID OUTCOMES:
 - Needs more info (ask questions)
 
 TOOLS:
+- Task(subagent_type: "Explore") - Codebase exploration
+- Glob, Grep, Read - Direct search
+- git log - Check recent changes
 - mcp__linear-server__list_issues (find bugs)
 - mcp__linear-server__get_issue (read details)
 - mcp__linear-server__create_comment (add explanation)
@@ -368,7 +476,7 @@ TOOLS:
 ```
 Bug found → Linear issue created
     ↓
-/reply-linear-bugs
+/fix-linear-bugs
     ↓
 ├── Fix → PR → Merge → Issue auto-closes
 └── Won't Fix → Comment → Close issue
@@ -376,8 +484,9 @@ Bug found → Linear issue created
 
 ## Trigger Keywords
 
-- "linear bugs"
 - "fix bugs"
+- "fix linear bugs"
+- "linear bugs"
 - "bug triage"
 - "resolve bugs"
 - "pending bugs"

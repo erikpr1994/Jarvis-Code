@@ -10,15 +10,28 @@ linear/
 ├── spec/             # Create Linear Project from spec (mirrors /spec)
 ├── design/           # Create Linear Document from design (mirrors /brainstorm how)
 ├── plan/             # Create Linear Issues from plan (mirrors /plan)
-├── questions/        # Reply to issues tagged "question" (decisions only)
+├── questions/        # Answer issues tagged "question" (decisions only)
 ├── bugs/             # Fix issues tagged "bug" (PR or won't fix)
-├── tech-debt/        # Handle issues tagged "tech-debt" (schedule/close)
-├── feature-requests/ # Handle feature requests (roadmap decisions)
+├── tech-debt/        # Resolve issues tagged "tech-debt" (schedule/close)
+├── feature-requests/ # Review feature requests (roadmap decisions)
 ├── cycle-planning/   # Plan issues for upcoming cycles
 ├── backlog-grooming/ # Clean up and maintain backlog
 ├── project-health/   # Generate project health reports
 └── refine/           # Refine tickets in triage or tagged "refine"
 ```
+
+## Naming Convention
+
+Skills use action-oriented names that describe what they DO:
+
+| Action | Command | Meaning |
+|--------|---------|---------|
+| **create** | `/create-linear-*` | Creates new Linear artifacts |
+| **answer** | `/answer-linear-questions` | Provides answers/decisions |
+| **fix** | `/fix-linear-bugs` | Fixes bugs with PRs |
+| **resolve** | `/resolve-linear-tech-debt` | Resolves by scheduling or closing |
+| **review** | `/review-linear-feature-requests` | Reviews and makes roadmap decisions |
+| **linear** | `/linear-*` | Linear operations (planning, health, etc.) |
 
 ## Skill Categories
 
@@ -33,12 +46,14 @@ linear/
 
 ### Response Skills (Linear → Action)
 
+**All response skills EXPLORE THE CODEBASE before making decisions.**
+
 | Skill | Trigger | Valid Outcomes |
 |-------|---------|----------------|
-| `/reply-linear-questions` | Tag: "question" | Decisions only (no code) |
-| `/reply-linear-bugs` | Tag: "bug" | PR or won't fix explanation |
-| `/reply-linear-tech-debt` | Tag: "tech-debt" | Schedule or close |
-| `/reply-linear-feature-requests` | Tag: "feature-request" | Spec, roadmap, merge, reject |
+| `/answer-linear-questions` | Tag: "question" | Decisions only (no code) |
+| `/fix-linear-bugs` | Tag: "bug" | PR or won't fix explanation |
+| `/resolve-linear-tech-debt` | Tag: "tech-debt" | Schedule or close |
+| `/review-linear-feature-requests` | Tag: "feature-request" | Spec, roadmap, merge, reject |
 
 ### Management Skills (Linear Operations)
 
@@ -58,6 +73,21 @@ linear/
 - `create-linear-plan` uses writing-plans process
 
 Only the output target differs.
+
+## Codebase Exploration (Response Skills)
+
+Response skills (`answer-`, `fix-`, `resolve-`, `review-`) all include **mandatory codebase exploration** before making decisions:
+
+```
+Issue → Read Details → EXPLORE CODEBASE → Informed Decision → Action
+                            ↓
+              - Find related files
+              - Check existing patterns
+              - Review git history
+              - Identify dependencies
+```
+
+This ensures decisions are based on actual codebase context, not just the issue description.
 
 ## Linear Hierarchy
 
@@ -110,16 +140,16 @@ await create_issue({
 
 ```
 Questions:
-  /reply-linear-questions → Analyze → Decision → Close/Create work
+  /answer-linear-questions → Explore codebase → Analyze → Decision → Close/Create work
 
 Bugs:
-  /reply-linear-bugs → Reproduce → Fix (TDD → PR) OR Explain (won't fix)
+  /fix-linear-bugs → Explore codebase → Reproduce → Fix (TDD → PR) OR Explain (won't fix)
 
 Tech Debt:
-  /reply-linear-tech-debt → Assess impact → Schedule now/later OR Close
+  /resolve-linear-tech-debt → Assess impact → Schedule now/later OR Close
 
 Feature Requests:
-  /reply-linear-feature-requests → Evaluate → Spec/Roadmap/Merge/Reject
+  /review-linear-feature-requests → Evaluate → Spec/Roadmap/Merge/Reject
 ```
 
 ## Management Workflow
@@ -142,10 +172,10 @@ Ticket Refinement:
 
 | Label | Meaning | Used By |
 |-------|---------|---------|
-| `question` | Needs decision | reply-linear-questions |
-| `bug` | Defect to fix | reply-linear-bugs |
-| `tech-debt` | Technical debt | reply-linear-tech-debt |
-| `feature-request` | User/customer request | reply-linear-feature-requests |
+| `question` | Needs decision | answer-linear-questions |
+| `bug` | Defect to fix | fix-linear-bugs |
+| `tech-debt` | Technical debt | resolve-linear-tech-debt |
+| `feature-request` | User/customer request | review-linear-feature-requests |
 | `refine` | Needs refinement | linear-refine-ticket |
 | `refined` | Ready for planning | linear-refine-ticket (output) |
 | `phase` | Plan phase (parent) | create-linear-plan |

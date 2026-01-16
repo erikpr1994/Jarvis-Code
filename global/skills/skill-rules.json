@@ -274,42 +274,41 @@
         ]
       }
     },
-    "reply-linear-questions": {
+    "answer-linear-questions": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
       "path": "linear/questions/SKILL.md",
-      "description": "Reply to Linear questions - produces decisions, not code changes",
+      "description": "Answer Linear questions - explores codebase, produces decisions, not code changes",
       "promptTriggers": {
         "keywords": [
-          "linear questions",
           "answer questions",
-          "review questions",
+          "linear questions",
           "question triage",
           "pending questions",
-          "reply-linear-questions"
+          "answer-linear-questions"
         ],
         "intentPatterns": [
-          "(linear|review|answer).*?question",
-          "question.*?(triage|review)",
+          "(linear|answer).*?question",
+          "question.*?(triage|answer)",
           "pending.*?question"
         ]
       }
     },
-    "reply-linear-bugs": {
+    "fix-linear-bugs": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
       "path": "linear/bugs/SKILL.md",
-      "description": "Fix Linear bugs - produces PR or explanation for won't fix",
+      "description": "Fix Linear bugs - explores codebase, produces PR or explanation for won't fix",
       "promptTriggers": {
         "keywords": [
-          "linear bugs",
           "fix bugs",
+          "linear bugs",
           "bug triage",
           "resolve bugs",
           "pending bugs",
-          "reply-linear-bugs"
+          "fix-linear-bugs"
         ],
         "intentPatterns": [
           "(linear|fix|resolve).*?bug",
@@ -318,40 +317,40 @@
         ]
       }
     },
-    "reply-linear-tech-debt": {
+    "resolve-linear-tech-debt": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
       "path": "linear/tech-debt/SKILL.md",
-      "description": "Handle Linear tech debt - schedule now, later, or close with reasoning",
+      "description": "Resolve Linear tech debt - schedule now, later, or close with reasoning",
       "promptTriggers": {
         "keywords": [
-          "tech debt",
+          "resolve tech debt",
           "technical debt",
           "debt triage",
           "cleanup",
-          "reply-linear-tech-debt"
+          "resolve-linear-tech-debt"
         ],
         "intentPatterns": [
           "(tech|technical).*?debt",
-          "debt.*?(triage|schedule)",
+          "debt.*?(triage|schedule|resolve)",
           "cleanup.*?backlog"
         ]
       }
     },
-    "reply-linear-feature-requests": {
+    "review-linear-feature-requests": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
       "path": "linear/feature-requests/SKILL.md",
-      "description": "Handle feature requests - spec, roadmap, merge, or reject",
+      "description": "Review feature requests - spec, roadmap, merge, or reject",
       "promptTriggers": {
         "keywords": [
+          "review feature request",
           "feature request",
           "user request",
           "customer feedback",
-          "feature triage",
-          "reply-linear-feature-requests"
+          "review-linear-feature-requests"
         ],
         "intentPatterns": [
           "feature.*?request",

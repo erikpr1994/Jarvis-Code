@@ -1,9 +1,9 @@
 ---
-name: reply-linear-tech-debt
-description: Handle Linear issues tagged with "tech-debt". Decide to address now, schedule, or close. Triggers - tech debt, technical debt, debt triage, cleanup.
+name: resolve-linear-tech-debt
+description: Resolve Linear issues tagged with "tech-debt". Decide to address now, schedule, or close. Triggers - resolve tech debt, technical debt, debt triage, cleanup.
 ---
 
-# Reply Linear Tech Debt
+# Resolve Linear Tech Debt
 
 **Iron Law:** Tech debt produces SCHEDULING DECISIONS. Address now, schedule, or close with reasoning.
 
@@ -59,7 +59,54 @@ For each tech debt issue, evaluate:
 **Dependencies:** [What must happen first or after]
 ```
 
-### Step 3: Prioritize
+### Step 3: Explore Codebase (Recommended)
+
+**For accurate assessment, explore the affected code:**
+
+```typescript
+// Dispatch Explore agent for context
+Task({
+  subagent_type: "Explore",
+  prompt: `
+    Research tech debt item: "[debt title]"
+
+    Find:
+    1. Affected code files and scope
+    2. How widespread is this pattern?
+    3. Dependencies on the affected code
+    4. Existing tests that would need updating
+    5. Is this already partially addressed?
+
+    Return findings to inform scheduling decision.
+  `,
+  description: "Explore codebase for tech debt assessment"
+});
+```
+
+**Present findings:**
+
+```markdown
+## Codebase Analysis
+
+### Affected Scope
+- `src/utils/oldPattern.ts` - Main file (200 lines)
+- 15 files import this module
+- Used in 3 critical paths
+
+### Actual Effort
+- Code to change: ~150 lines
+- Tests to update: 8 test files
+- Documentation: 2 files
+
+### Current State
+- 30% of codebase uses new pattern
+- This is the last holdout of old pattern
+
+### Recommendation
+Based on analysis: [DO NOW / SCHEDULE / CLOSE]
+```
+
+### Step 4: Prioritize
 
 Use this matrix:
 
@@ -69,7 +116,7 @@ High Impact     →   DO NOW        SCHEDULE SOON
 Low Impact      →   SCHEDULE      CONSIDER CLOSING
 ```
 
-### Step 4: Execute Decision
+### Step 5: Execute Decision
 
 #### Address Now
 ```typescript

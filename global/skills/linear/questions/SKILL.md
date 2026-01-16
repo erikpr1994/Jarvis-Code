@@ -1,9 +1,9 @@
 ---
-name: reply-linear-questions
-description: Reply to Linear issues tagged with "question". Reviews questions and produces decisions - never code changes or PRs. Triggers - linear questions, answer questions, review questions, question triage.
+name: answer-linear-questions
+description: Answer Linear issues tagged with "question". Explores codebase and produces decisions - never code changes or PRs. Triggers - answer questions, linear questions, question triage.
 ---
 
-# Reply Linear Questions
+# Answer Linear Questions
 
 **Iron Law:** Questions produce DECISIONS, not CODE. No GitHub PRs, no implementation.
 
@@ -239,7 +239,7 @@ Is the answer known?
 
 ## Example Session
 
-**User says:** `/reply-linear-questions`
+**User says:** `/answer-linear-questions`
 
 **Step 1 - List:**
 ```
