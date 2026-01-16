@@ -184,25 +184,17 @@
         ]
       }
     },
-    "linear": {
+    "linear-issue": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "linear/SKILL.md",
-      "description": "Track all work - features, bugs, TODOs, questions, tech debt",
+      "path": "linear/issue/SKILL.md",
+      "description": "Create individual Linear issues - bugs, TODOs, questions, tech debt",
       "promptTriggers": {
         "keywords": [
-          "linear",
-          "issue",
-          "task",
-          "backlog",
-          "sprint",
-          "cycle",
-          "project planning",
-          "roadmap",
+          "linear issue",
           "create issue",
           "track task",
-          "bug",
           "bug report",
           "todo",
           "question",
@@ -210,13 +202,246 @@
           "technical debt"
         ],
         "intentPatterns": [
-          "(create|track|plan).*?(issue|task|feature|bug|todo)",
-          "(linear|issue).*?(plan|create|track)",
-          "(project|feature).*?planning",
+          "(create|track).*?(issue|bug|todo)",
           "(report|log|file).*?bug",
           "(add|create).*?todo",
           "(ask|raise).*?question",
           "(log|track).*?(tech|technical).*?debt"
+        ]
+      }
+    },
+    "create-linear-spec": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/spec/SKILL.md",
+      "description": "Create Linear Project from spec - same process as /spec, outputs to Linear",
+      "promptTriggers": {
+        "keywords": [
+          "linear spec",
+          "spec to linear",
+          "create project from spec",
+          "linear project",
+          "create-linear-spec"
+        ],
+        "intentPatterns": [
+          "(linear|create).*?(spec|project)",
+          "spec.*?linear",
+          "project.*?from.*?spec"
+        ]
+      }
+    },
+    "create-linear-plan": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/plan/SKILL.md",
+      "description": "Create Linear Issues from plan - same process as /plan, outputs to Linear",
+      "promptTriggers": {
+        "keywords": [
+          "linear plan",
+          "plan to linear",
+          "create issues from plan",
+          "linear issues",
+          "create-linear-plan"
+        ],
+        "intentPatterns": [
+          "(linear|create).*?(plan|issues)",
+          "plan.*?linear",
+          "issues.*?from.*?plan"
+        ]
+      }
+    },
+    "create-linear-design": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/design/SKILL.md",
+      "description": "Create Linear Document from design - same process as /brainstorm how, outputs to Linear",
+      "promptTriggers": {
+        "keywords": [
+          "linear design",
+          "design to linear",
+          "technical design",
+          "architecture decision",
+          "linear document",
+          "create-linear-design"
+        ],
+        "intentPatterns": [
+          "(linear|create).*?(design|document)",
+          "design.*?linear",
+          "(technical|architecture).*?design"
+        ]
+      }
+    },
+    "reply-linear-questions": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/questions/SKILL.md",
+      "description": "Reply to Linear questions - produces decisions, not code changes",
+      "promptTriggers": {
+        "keywords": [
+          "linear questions",
+          "answer questions",
+          "review questions",
+          "question triage",
+          "pending questions",
+          "reply-linear-questions"
+        ],
+        "intentPatterns": [
+          "(linear|review|answer).*?question",
+          "question.*?(triage|review)",
+          "pending.*?question"
+        ]
+      }
+    },
+    "reply-linear-bugs": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/bugs/SKILL.md",
+      "description": "Fix Linear bugs - produces PR or explanation for won't fix",
+      "promptTriggers": {
+        "keywords": [
+          "linear bugs",
+          "fix bugs",
+          "bug triage",
+          "resolve bugs",
+          "pending bugs",
+          "reply-linear-bugs"
+        ],
+        "intentPatterns": [
+          "(linear|fix|resolve).*?bug",
+          "bug.*?(triage|fix)",
+          "pending.*?bug"
+        ]
+      }
+    },
+    "reply-linear-tech-debt": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/tech-debt/SKILL.md",
+      "description": "Handle Linear tech debt - schedule now, later, or close with reasoning",
+      "promptTriggers": {
+        "keywords": [
+          "tech debt",
+          "technical debt",
+          "debt triage",
+          "cleanup",
+          "reply-linear-tech-debt"
+        ],
+        "intentPatterns": [
+          "(tech|technical).*?debt",
+          "debt.*?(triage|schedule)",
+          "cleanup.*?backlog"
+        ]
+      }
+    },
+    "reply-linear-feature-requests": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/feature-requests/SKILL.md",
+      "description": "Handle feature requests - spec, roadmap, merge, or reject",
+      "promptTriggers": {
+        "keywords": [
+          "feature request",
+          "user request",
+          "customer feedback",
+          "feature triage",
+          "reply-linear-feature-requests"
+        ],
+        "intentPatterns": [
+          "feature.*?request",
+          "(user|customer).*?(request|feedback)",
+          "roadmap.*?decision"
+        ]
+      }
+    },
+    "linear-cycle-planning": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/cycle-planning/SKILL.md",
+      "description": "Plan issues for upcoming Linear cycle - prioritize and balance workload",
+      "promptTriggers": {
+        "keywords": [
+          "cycle planning",
+          "sprint planning",
+          "plan cycle",
+          "plan sprint",
+          "linear-cycle-planning"
+        ],
+        "intentPatterns": [
+          "(cycle|sprint).*?plan",
+          "plan.*?(cycle|sprint)",
+          "upcoming.*?(cycle|sprint)"
+        ]
+      }
+    },
+    "linear-backlog-grooming": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/backlog-grooming/SKILL.md",
+      "description": "Clean up Linear backlog - close stale, merge duplicates, update priorities",
+      "promptTriggers": {
+        "keywords": [
+          "backlog grooming",
+          "backlog cleanup",
+          "groom backlog",
+          "clean backlog",
+          "linear-backlog-grooming"
+        ],
+        "intentPatterns": [
+          "backlog.*?(groom|clean|review)",
+          "(groom|clean).*?backlog",
+          "stale.*?issue"
+        ]
+      }
+    },
+    "linear-project-health": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/project-health/SKILL.md",
+      "description": "Generate project health report - progress, blockers, risks, velocity",
+      "promptTriggers": {
+        "keywords": [
+          "project health",
+          "project status",
+          "project report",
+          "health report",
+          "linear-project-health"
+        ],
+        "intentPatterns": [
+          "project.*?(health|status|report)",
+          "(health|status).*?report",
+          "progress.*?report"
+        ]
+      }
+    },
+    "linear-refine-ticket": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/refine/SKILL.md",
+      "description": "Refine Linear tickets - add context, acceptance criteria, clarify scope",
+      "promptTriggers": {
+        "keywords": [
+          "refine ticket",
+          "ticket refinement",
+          "triage",
+          "improve ticket",
+          "refine issue",
+          "linear-refine-ticket"
+        ],
+        "intentPatterns": [
+          "refine.*?(ticket|issue)",
+          "(ticket|issue).*?refine",
+          "triage.*?(ticket|issue)"
         ]
       }
     },

@@ -1,0 +1,21 @@
+{
+    "session_id": "session-20260116104817",
+    "timestamp": "2026-01-16T10:48:17Z",
+    "compact_reason": "context_limit",
+    "tokens_used": 0,
+    "task": {"current_task": null, "progress": [], "decisions": []},
+    "context": {
+        "git_branch": "fix/linear-parentid-docs",
+        "uncommitted_changes": " M .claude/tasks/session-state.json; D global/skills/linear/SKILL.md; D global/skills/linear/templates/bug.md; D global/skills/linear/templates/feature.md; D global/skills/linear/templates/question.md; D global/skills/linear/templates/tech-debt.md; D global/skills/linear/templates/todo.md; M global/skills/skill-rules.json;?? .claude/tasks/session-current.md;?? global/skills/linear/README.md;",
+        "recent_files": "./linear/design/SKILL.md,./linear/plan/SKILL.md,./linear/spec/SKILL.md,./linear/README.md,./skill-rules.json,",
+        "working_directory": "/Users/erikpr94/Documents/Projects/Jarvis/.worktrees/linear-fix/global/skills"
+    },
+    "hot_memory": {
+        "preserved": true,
+        "file": "/Users/erikpr94/.claude/learning/.hot-memory.json"
+    },
+    "recovery_hints": {
+        "task_file": ".claude/tasks",
+        "continue_from": "Check session-state.json for context"
+    }
+}
