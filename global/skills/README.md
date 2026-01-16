@@ -74,7 +74,7 @@ The `skill-rules.json` file provides enhanced activation rules beyond the native
 
 This is a Jarvis extension - the native system only uses `name` and `description`.
 
-## Current Skills (45)
+## Current Skills (46)
 
 ### Process Skills
 - `brainstorming` - Structured ideation
@@ -82,12 +82,13 @@ This is a Jarvis extension - the native system only uses `name` and `description
 - `commit-discipline` - Git commit practices
 - `executing-plans` - Plan execution
 - `git-worktrees` - Git worktree workflow
+- `linear` - Plan and track features via Linear issues
 - `pr-workflow` - Pull request workflow
 - `session-management` - Session tracking
 - `systematic-debugging` - Debug methodology
 - `tdd` / `tdd-workflow` - Test-driven development
 - `verification` - Quality verification
-- `writing-plans` - Plan creation
+- `writing-plans` - Plan creation (markdown-based)
 
 ### Domain Skills
 - `analytics` - Analytics implementation

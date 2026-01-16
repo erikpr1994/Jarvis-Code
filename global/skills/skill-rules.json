@@ -184,6 +184,42 @@
         ]
       }
     },
+    "linear": {
+      "type": "process",
+      "enforcement": "suggest",
+      "priority": "high",
+      "path": "linear/SKILL.md",
+      "description": "Track all work - features, bugs, TODOs, questions, tech debt",
+      "promptTriggers": {
+        "keywords": [
+          "linear",
+          "issue",
+          "task",
+          "backlog",
+          "sprint",
+          "cycle",
+          "project planning",
+          "roadmap",
+          "create issue",
+          "track task",
+          "bug",
+          "bug report",
+          "todo",
+          "question",
+          "tech debt",
+          "technical debt"
+        ],
+        "intentPatterns": [
+          "(create|track|plan).*?(issue|task|feature|bug|todo)",
+          "(linear|issue).*?(plan|create|track)",
+          "(project|feature).*?planning",
+          "(report|log|file).*?bug",
+          "(add|create).*?todo",
+          "(ask|raise).*?question",
+          "(log|track).*?(tech|technical).*?debt"
+        ]
+      }
+    },
     "executing-plans": {
       "type": "process",
       "enforcement": "suggest",
