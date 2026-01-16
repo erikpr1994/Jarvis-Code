@@ -1,13 +1,22 @@
 {
-    "session_id": "session-20260116103355",
-    "timestamp": "2026-01-16T10:33:55Z",
+    "session_id": "session-20260116112207",
+    "timestamp": "2026-01-16T11:22:07Z",
     "compact_reason": "context_limit",
     "tokens_used": 0,
-    "task": {"current_task": null, "progress": [], "decisions": []},
+    "task": {
+    "current_task": "Session - Linear Workflow Integration",
+    "progress": {
+        "completed": 5,
+        "in_progress": 0
+0,
+        "pending": 3
+    },
+    "decisions": ""
+},
     "context": {
         "git_branch": "fix/linear-parentid-docs",
-        "uncommitted_changes": " M .claude/tasks/session-state.json;",
-        "recent_files": "",
+        "uncommitted_changes": "",
+        "recent_files": "./global/skills/linear/feature-requests/SKILL.md,./global/skills/linear/tech-debt/SKILL.md,./global/skills/linear/bugs/SKILL.md,./global/skills/linear/README.md,./global/skills/linear/backlog-grooming/SKILL.md,./global/skills/linear/cycle-planning/SKILL.md,./global/skills/linear/project-health/SKILL.md,./global/skills/linear/refine/SKILL.md,./global/skills/linear/questions/SKILL.md,./global/skills/skill-rules.json,",
         "working_directory": "/Users/erikpr94/Documents/Projects/Jarvis/.worktrees/linear-fix"
     },
     "hot_memory": {
