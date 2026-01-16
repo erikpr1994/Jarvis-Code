@@ -20,15 +20,47 @@ This skill runs the **brainstorming** skill in **Discovery Mode** and outputs th
 
 ## The Spec Rule
 
-> **A spec contains WHAT and WHY. Never HOW.**
+> **A spec contains WHAT and WHY. Never HOW. Never rejected decisions.**
 
-| In Spec | NOT In Spec |
-|---------|-------------|
+| In Project Description | NOT In Project Description |
+|------------------------|---------------------------|
 | User stories | Code snippets |
 | Acceptance criteria | Technical approach |
 | Success metrics | Database schema |
 | Requirements | API design |
-| Constraints | Implementation details |
+| Constraints | Rejected alternatives |
+| Diagrams (Mermaid) | Implementation details |
+| Prose explanations | Decision logs |
+
+## Content Guidelines
+
+**Project descriptions should be CLEAR and FOCUSED:**
+
+```
+✅ GOOD: "Users need real-time notifications so they don't miss important updates"
+❌ BAD:  "We considered polling but rejected it due to performance concerns"
+```
+
+### What Goes Where
+
+| Content | Location |
+|---------|----------|
+| **What we're building + Why** | Project Description |
+| **Rejected alternatives** | Separate Document: "Decision Log" |
+| **Technical research** | Separate Document: "Technical Research" |
+| **Meeting notes** | Separate Document: "Discovery Notes" |
+
+### No Code in Specs
+
+Projects contain **prose and diagrams only**. No code examples, no pseudo-code.
+
+```
+✅ GOOD: "The system validates user input before processing"
+✅ GOOD: Mermaid diagram showing data flow
+❌ BAD:  `if (!isValid(input)) throw new Error()`
+```
+
+Use `/create-linear-design` for technical approach with code patterns.
 
 ---
 
@@ -180,20 +212,20 @@ mcp__linear-server__create_project({
 
 ## Project Description Template
 
-The spec should be formatted as Markdown in the project description:
+The project description should be **clear, focused, and free of clutter**.
 
 ```markdown
-# [Feature Name] Spec
+# [Feature Name]
 
-**Status**: Draft
-**Created**: [Date]
+## Why This Matters
+[2-3 sentences on the problem being solved and why it's important]
 
-## Problem Statement
-[2-3 sentences on the problem being solved]
+## What We're Building
+[Clear description of the solution - prose only, no code]
 
 ## Target Users
-- **Primary**: [Who] - [Goal]
-- **Secondary**: [Who] - [Goal]
+- **Primary**: [Who] - [What they need]
+- **Secondary**: [Who] - [What they need]
 
 ## Success Metrics
 | Metric | Current | Target |
@@ -219,17 +251,43 @@ The spec should be formatted as Markdown in the project description:
 
 ---
 
-## Out of Scope
-- [Explicitly excluded 1]
-- [Explicitly excluded 2]
+## Scope Boundaries
+- ✅ **In scope**: [What IS included]
+- ❌ **Out of scope**: [What is NOT included - without explaining why]
 
 ## Open Questions
-- [ ] [Question 1]
-- [ ] [Question 2]
-
----
-*Generated via /create-linear-spec*
+- [ ] [Question needing resolution]
 ```
+
+**Notice what's NOT in the template:**
+- No "rejected alternatives" section
+- No "decision log" in description
+- No code snippets
+- No technical implementation details
+
+### Creating Supporting Documents (Optional)
+
+If you have valuable context that shouldn't clutter the main description, create separate documents:
+
+```typescript
+// Decision Log (if many alternatives were considered)
+mcp__linear-server__create_document({
+  title: "[Feature] Decision Log",
+  project: "project-uuid",
+  content: `# Decision Log
+
+## [Decision 1]: [Topic]
+**Chosen:** [What we picked]
+**Rejected:**
+- [Alternative 1] - [Why rejected]
+- [Alternative 2] - [Why rejected]
+
+## [Decision 2]: [Topic]
+...`
+});
+```
+
+Only create these documents if the context is valuable for future reference. Don't create them just to have them.
 
 ---
 
@@ -316,16 +374,38 @@ TOOLS:   mcp__linear-server__create_project
 6. SELECT     → Choose initiative
 7. CREATE     → Linear Project
 8. CONFIRM    → Return URL
+
+CONTENT RULES:
+✅ WHAT and WHY only
+✅ Prose and diagrams
+✅ User stories with AC
+❌ NO code snippets
+❌ NO rejected alternatives
+❌ NO implementation details
+❌ NO decision logs (use separate document)
 ```
 
 ## Red Flags - STOP
 
 - Skipping Discovery Mode and just converting a file
 - Adding implementation details to spec
+- **Including code snippets in project description**
+- **Including rejected alternatives in main description**
+- **Bloating description with decision logs**
 - No user stories, just feature list
 - Missing acceptance criteria
 - No prioritization
 - Creating without user validation
+
+### Content Audit Checklist
+
+Before creating the project, verify:
+
+- [ ] **No code** in description (prose and diagrams only)
+- [ ] **No rejected decisions** (move to separate document if valuable)
+- [ ] **Clear WHAT and WHY** - reader understands the goal in 30 seconds
+- [ ] **Concise** - no unnecessary sections or bloat
+- [ ] **User stories have acceptance criteria**
 
 ---
 
