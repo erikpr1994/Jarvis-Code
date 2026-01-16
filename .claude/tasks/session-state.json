@@ -1,18 +1,26 @@
 {
-    "session_id": "session-20260106234520",
-    "timestamp": "2026-01-06T23:45:20Z",
+    "session_id": "session-20260116112207",
+    "timestamp": "2026-01-16T11:22:07Z",
     "compact_reason": "context_limit",
     "tokens_used": 0,
-    "task": {"current_task": null, "progress": [], "decisions": []},
+    "task": {
+    "current_task": "Session - Linear Workflow Integration",
+    "progress": {
+        "completed": 5,
+        "in_progress": 0,
+        "pending": 3
+    },
+    "decisions": ""
+},
     "context": {
-        "git_branch": "feat/preferences-system",
-        "uncommitted_changes": " M .claude/tasks/session-state.json; M install.sh; M tests/jarvis/install/test-install.sh; M tests/jarvis/integration/test-full-flow.sh;",
-        "recent_files": "./archive/compactions/compact-20260106-234245.json,./archive/compactions/compact-20260106-234350.json,./install.sh,./tests/jarvis/install/test-install.sh,./tests/jarvis/integration/test-full-flow.sh,./.claude/tasks/session-state.json,./.claude/settings.local.json,./README.md,./learnings/.hot-memory.json,./global/config/defaults.json,",
-        "working_directory": "/Users/erikpr94/Documents/Projects/Jarvis"
+        "git_branch": "fix/linear-parentid-docs",
+        "uncommitted_changes": "",
+        "recent_files": "./global/skills/linear/feature-requests/SKILL.md,./global/skills/linear/tech-debt/SKILL.md,./global/skills/linear/bugs/SKILL.md,./global/skills/linear/README.md,./global/skills/linear/backlog-grooming/SKILL.md,./global/skills/linear/cycle-planning/SKILL.md,./global/skills/linear/project-health/SKILL.md,./global/skills/linear/refine/SKILL.md,./global/skills/linear/questions/SKILL.md,./global/skills/skill-rules.json,",
+        "working_directory": "/Users/erikpr94/Documents/Projects/Jarvis/.worktrees/linear-fix"
     },
     "hot_memory": {
         "preserved": true,
-        "file": "/Users/erikpr94/Documents/Projects/Jarvis/tests/jarvis/hooks/../../..//learnings/.hot-memory.json"
+        "file": "/Users/erikpr94/.claude/learning/.hot-memory.json"
     },
     "recovery_hints": {
         "task_file": ".claude/tasks",

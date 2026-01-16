@@ -2,6 +2,32 @@
 
 Use this template for multi-phase work requiring breakdown into subtasks.
 
+## CRITICAL: Creating Sub-Issues with `parentId`
+
+When creating hierarchical issues, **you MUST use the `parentId` parameter**:
+
+```
+mcp__linear-server__create_issue:
+  title: "Task title"
+  team: "Team Name"
+  parentId: "PARENT-ISSUE-UUID"  ← Use the parent's UUID, not identifier!
+```
+
+**DO NOT use `relatedTo`** - that creates a "related" relationship, not parent-child.
+
+| Relationship | Parameter | Result |
+|--------------|-----------|--------|
+| **Sub-issue (child)** | `parentId` | Appears nested under parent ✓ |
+| Related issue | `relatedTo` | Appears in "Related" section |
+| Blocking | `blockedBy` / `blocks` | Shows dependency |
+
+**Workflow:**
+1. Create root feature issue first → get its `id` (UUID)
+2. Create phase issues with `parentId: "<root-uuid>"`
+3. Create task issues with `parentId: "<phase-uuid>"`
+
+---
+
 ## Root Feature Template
 
 ```markdown

@@ -122,6 +122,18 @@ ENG-100: [Feature] {Feature Name}
 
 **Key principle:** Every leaf task must be immediately executable with a single unit of work.
 
+### CRITICAL: Use `parentId` for Sub-Issues
+
+```
+# 1. Create root feature → returns { id: "uuid-100", identifier: "ENG-100" }
+# 2. Create phases with parentId:
+mcp__linear-server__create_issue(parentId: "uuid-100", ...)  → ENG-101
+# 3. Create tasks with parentId:
+mcp__linear-server__create_issue(parentId: "uuid-101", ...)  → ENG-102
+```
+
+**DO NOT use `relatedTo`** - that creates "related" not parent-child!
+
 ---
 
 ## The Workflow
