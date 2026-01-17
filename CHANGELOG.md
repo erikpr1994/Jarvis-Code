@@ -5,6 +5,17 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.19.0...v3.0.0) (2026-01-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* **skills:** Skills renamed to match their slash command equivalents. Skills can now be invoked directly as /skill-name.
+
+### Code Refactoring
+
+* **skills:** rename skills to match command names, add TDD to execute ([#68](https://github.com/erikpr1994/Jarvis-Code/issues/68)) ([ec81d78](https://github.com/erikpr1994/Jarvis-Code/commit/ec81d7844b7d42ad67134226304fcaecd50c2785))
+
 ## [2.19.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.18.0...v2.19.0) (2026-01-16)
 
 
