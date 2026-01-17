@@ -122,10 +122,10 @@ This special meta-skill guides the auto-improvement system:
 |-------|--------|---------|
 | **test-driven-development** | Superpowers | Iron Law TDD (no exceptions) |
 | **verification-before-completion** | Superpowers/Peak-Health | Mandatory final verification |
-| **writing-plans** | Superpowers/Peak-Health | Structured planning methodology |
-| **executing-plans** | Superpowers/Peak-Health | Plan execution with checkpoints |
-| **systematic-debugging** | Superpowers/Peak-Health | Root cause analysis, defense in depth |
-| **brainstorming** | Superpowers | Ideation and creative thinking |
+| **plan** | Superpowers/Peak-Health | Structured planning methodology |
+| **execute** | Superpowers/Peak-Health | Plan execution with checkpoints |
+| **debug** | Superpowers/Peak-Health | Root cause analysis, defense in depth |
+| **brainstorm** | Superpowers | Ideation and creative thinking |
 
 ### 6.4 Execution Skills (On-Demand)
 
@@ -133,7 +133,7 @@ This special meta-skill guides the auto-improvement system:
 |-------|--------|---------|
 | **subagent-driven-development** | Superpowers/Peak-Health | Complex features requiring multi-stage review |
 | **dispatching-parallel-agents** | Superpowers/Peak-Health | Multiple independent tasks |
-| **session-management** | CodeFast | Multi-phase workflows |
+| **session** | CodeFast | Multi-phase workflows |
 | **sub-agent-invocation** | CodeFast | Agent delegation |
 
 ### 6.5 Domain Skills (Keyword-Triggered)
@@ -169,13 +169,13 @@ This special meta-skill guides the auto-improvement system:
 #### 6.7.1 All Skills Inventory
 
 **CodeFast (16 skills):**
-analytics, archon, browser-debugging, codebase-navigation, crawl-cli, documentation-research, frontend-design, git-commits, idea-to-product, infra-ops-clean, new-skills, payment-processing-clean, seo-content-generation, session-management, sub-agent-invocation
+analytics, archon, browser-debugging, codebase-navigation, crawl-cli, documentation-research, frontend-design, git-commits, idea-to-product, infra-ops-clean, new-skills, payment-processing-clean, seo-content-generation, session, sub-agent-invocation
 
 **Superpowers (14 skills):**
-brainstorming, dispatching-parallel-agents, executing-plans, finishing-a-development-branch, receiving-code-review, requesting-code-review, subagent-driven-development, systematic-debugging, test-driven-development, using-git-worktrees, using-superpowers, verification-before-completion, writing-plans, writing-skills
+brainstorm, dispatching-parallel-agents, execute, finishing-a-development-branch, receiving-code-review, requesting-code-review, subagent-driven-development, debug, test-driven-development, using-git-worktrees, using-superpowers, verification-before-completion, plan, writing-skills
 
 **Peak-Health (19 skills):**
-brainstorming, build-in-public, coderabbit, dispatching-parallel-agents, domain-expert, executing-plans, git-expert, subagent-driven-development, systematic-debugging, test-driven-development, using-skills, verification-before-completion, writing-agents, writing-commands, writing-design, writing-hooks, writing-plans, writing-rules, writing-skills
+brainstorm, build-in-public, coderabbit, dispatching-parallel-agents, domain-expert, execute, git-expert, subagent-driven-development, debug, test-driven-development, using-skills, verification-before-completion, writing-agents, writing-commands, writing-design, writing-hooks, plan, writing-rules, writing-skills
 
 **TOTAL: 49 skills (with significant overlap)**
 
@@ -189,7 +189,7 @@ brainstorming, build-in-public, coderabbit, dispatching-parallel-agents, domain-
 |-------|---------|----------|-------|
 | **using-skills** | Superpowers, Peak-Health | **KEEP Peak-Health** | Cleaner, 1% rule |
 | **writing-skills** | Superpowers, Peak-Health | **KEEP Superpowers** | More comprehensive, TDD approach |
-| **writing-plans** | Superpowers, Peak-Health | **KEEP Superpowers** | Well-structured |
+| **plan** | Superpowers, Peak-Health | **KEEP Superpowers** | Well-structured |
 | **writing-design** | Peak-Health | **KEEP** | Unique, valuable |
 | **writing-rules** | Peak-Health | **KEEP** | Unique, needed |
 | **writing-agents** | Peak-Health | **KEEP** | Unique, needed |
@@ -204,10 +204,10 @@ brainstorming, build-in-public, coderabbit, dispatching-parallel-agents, domain-
 |-------|---------|----------|-------|
 | **test-driven-development** | Superpowers, Peak-Health | **KEEP Superpowers** | Most comprehensive, bulletproofed |
 | **verification-before-completion** | Superpowers, Peak-Health | **KEEP Superpowers** | Well-designed |
-| **systematic-debugging** | Superpowers, Peak-Health | **KEEP Superpowers** | Multi-file with pressure tests |
-| **brainstorming** | Superpowers, Peak-Health | **MERGE** | Combine best of both |
-| **executing-plans** | Superpowers, Peak-Health | **KEEP Peak-Health** | Better integration |
-| **session-management** | CodeFast | **ADAPT** | Simplify, remove embedded agents |
+| **debug** | Superpowers, Peak-Health | **KEEP Superpowers** | Multi-file with pressure tests |
+| **brainstorm** | Superpowers, Peak-Health | **MERGE** | Combine best of both |
+| **execute** | Superpowers, Peak-Health | **KEEP Peak-Health** | Better integration |
+| **session** | CodeFast | **ADAPT** | Simplify, remove embedded agents |
 
 ##### EXECUTION SKILLS (On-Demand - ~5)
 
@@ -260,8 +260,8 @@ brainstorming, build-in-public, coderabbit, dispatching-parallel-agents, domain-
 
 | Category | Count | Skills |
 |----------|-------|--------|
-| **Meta (Always)** | 10 | using-skills, writing-skills, writing-plans, writing-design, writing-rules, writing-agents, writing-commands, writing-hooks, writing-patterns, improving-jarvis |
-| **Process (Always)** | 6 | test-driven-development, verification-before-completion, systematic-debugging, brainstorming, executing-plans, session-management |
+| **Meta (Always)** | 10 | using-skills, writing-skills, plan, writing-design, writing-rules, writing-agents, writing-commands, writing-hooks, writing-patterns, improving-jarvis |
+| **Process (Always)** | 6 | test-driven-development, verification-before-completion, debug, brainstorm, execute, session |
 | **Execution** | 3 | subagent-driven-development, dispatching-parallel-agents |
 | **Git** | 2 | git-expert (with sub-skills: submit-pr, worktrees, branch-finishing) |
 | **Code Review** | 1 | coderabbit |

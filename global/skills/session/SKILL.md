@@ -395,7 +395,7 @@ ARCHIVE: Learnings, follow-ups, rename file
 - **execute** - Track plan progress in session
 - **verification** - Document verification results
 - **brainstorm** - Record decision context
-- **tdd-workflow** - Track test state across sessions
+- **tdd** - Track test state across sessions
 - **git-expert** - Document branch and commit state
 
 ## Multi-Agent Session Coordination

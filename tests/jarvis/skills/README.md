@@ -12,7 +12,7 @@ test-<skill-name>.sh
 
 For example:
 - `test-git-expert.sh`
-- `test-systematic-debugging.sh`
+- `test-debug.sh`
 - `test-test-driven-development.sh`
 
 ## Writing a Skill Test
@@ -117,7 +117,7 @@ Verify the skill is triggered by appropriate prompts.
 
 ```bash
 test_trigger_prompts() {
-    assert_true "$(prompt_triggers_skill 'debug this error' 'systematic-debugging')" \
+    assert_true "$(prompt_triggers_skill 'debug this error' 'debug')" \
         "Debug prompts trigger debugging skill"
 }
 ```
@@ -127,7 +127,7 @@ Verify the skill is NOT triggered by unrelated prompts.
 
 ```bash
 test_non_trigger_prompts() {
-    assert_false "$(prompt_triggers_skill 'hello world' 'systematic-debugging')" \
+    assert_false "$(prompt_triggers_skill 'hello world' 'debug')" \
         "Generic prompts should not trigger debugging skill"
 }
 ```
@@ -139,7 +139,7 @@ Verify skills are prioritized correctly when multiple match.
 test_priority() {
     # Test that critical skills take precedence
     local prompt="implement a feature with tests"
-    # test-driven-development (critical) should rank higher than session-management
+    # test-driven-development (critical) should rank higher than session
 }
 ```
 

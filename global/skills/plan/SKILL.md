@@ -307,6 +307,6 @@ MINIMUM: 3 success criteria
 **Pairs with:**
 - **brainstorm** - Generate options before planning
 - **execute** - Execute the plan step by step
-- **tdd-workflow** - TDD pattern within each task
+- **tdd** - TDD pattern within each task
 - **verification** - Verify checkpoints
 - **subagent-driven-development** - Parallel execution

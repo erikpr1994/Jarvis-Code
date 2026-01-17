@@ -236,7 +236,7 @@ skills:
   always:
     - test-driven-development
     - verification-before-completion
-    - systematic-debugging
+    - debug
     - git-expert
   domain:
     - frontend-design

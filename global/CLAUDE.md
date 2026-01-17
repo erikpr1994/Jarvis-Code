@@ -14,12 +14,12 @@ SKILL ACTIVATION CHECK
 
 CRITICAL SKILLS (REQUIRED):
   -> test-driven-development
-  -> session-management
+  -> session
 ```
 
 **Required action:** Use the Skill tool twice:
 - `skill: "tdd"` (or `test-driven-development`)
-- `skill: "session-management"`
+- `skill: "session"`
 
 **DO NOT** ignore skill recommendations. They exist to ensure quality and consistency.
 

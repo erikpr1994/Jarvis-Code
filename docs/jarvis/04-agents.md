@@ -117,7 +117,7 @@ Based on analysis of all three systems, agents should be organized into:
 | **flutter-expert** | CodeFast | **KEEP (ADAPT)** | Flutter projects |
 | **ios-expert** | CodeFast | **KEEP (ADAPT)** | iOS projects |
 | **content-writer** | CodeFast | **KEEP (ADAPT)** | Content-heavy projects |
-| **debugger-detective** | CodeFast | **MERGE with systematic-debugging** | Complex debugging |
+| **debugger-detective** | CodeFast | **MERGE with debug** | Complex debugging |
 
 ---
 
@@ -213,7 +213,7 @@ Skills can have supporting documents for complex topics (Superpowers pattern):
 
 ```
 skills/
-├── systematic-debugging/
+├── debug/
 │   ├── SKILL.md                    # Main skill file
 │   ├── condition-based-waiting.md  # Supporting: async patterns
 │   ├── test-pressure-1.md          # Supporting: pressure scenario 1

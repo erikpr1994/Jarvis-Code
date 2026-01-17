@@ -41,7 +41,7 @@
 | File | Sections | Description |
 |------|----------|-------------|
 | [08-rules-and-patterns.md](./08-rules-and-patterns.md) | 9-10 | Rules, standards, pattern library |
-| [09-session-management.md](./09-session-management.md) | 11 | Session state, context persistence |
+| [09-session.md](./09-session.md) | 11 | Session state, context persistence |
 | [10-context-optimization.md](./10-context-optimization.md) | 12 | Tool output compression, wrappers |
 | [11-learning-system.md](./11-learning-system.md) | 13 | Auto-learning, self-improvement |
 

@@ -40,7 +40,7 @@ Instructions and guidance...
 
 | Category | Skills | Purpose |
 |----------|--------|---------|
-| Process | tdd-workflow, verification, code-review | How to approach work |
+| Process | tdd, verification, code-review | How to approach work |
 | Domain | typescript-patterns, react-patterns | Technology expertise |
 | Meta | writing-skills, using-skills | About the skill system |
 | Execution | dispatching-parallel-agents | Multi-agent orchestration |
@@ -86,7 +86,7 @@ This is a Jarvis extension - the native system only uses `name` and `description
 - `pr-workflow` - Pull request workflow
 - `session` - Session tracking
 - `debug` - Debug methodology
-- `tdd` / `tdd-workflow` - Test-driven development
+- `tdd` / `tdd` - Test-driven development
 - `verification` - Quality verification
 - `plan` - Plan creation (markdown-based)
 

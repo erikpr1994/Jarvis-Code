@@ -8,11 +8,11 @@
 
 | Command | Purpose | Delegates To |
 |---------|---------|--------------|
-| **/plan** | Create implementation plan | writing-plans skill |
-| **/execute** | Execute plan with verification | executing-plans skill |
-| **/brainstorm** | Ideation and options | brainstorming skill |
+| **/plan** | Create implementation plan | plan skill |
+| **/execute** | Execute plan with verification | execute skill |
+| **/brainstorm** | Ideation and options | brainstorm skill |
 | **/review** | Trigger code review | submit-pr skill |
-| **/debug** | Systematic debugging | systematic-debugging skill |
+| **/debug** | Systematic debugging | debug skill |
 
 ### 7.2 Scaffold Commands
 

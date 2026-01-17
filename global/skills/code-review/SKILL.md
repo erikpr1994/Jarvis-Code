@@ -66,4 +66,4 @@ git checkout feature-branch && npm test
 | Important issue | Request changes |
 | Only minor/nitpicks | Approve with comments |
 
-**Pairs with:** pr-workflow, verification, tdd-workflow
+**Pairs with:** pr-workflow, verification, tdd
