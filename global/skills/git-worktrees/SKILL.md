@@ -71,4 +71,4 @@ git worktree prune                         # Clean stale
 - Proceeding with failing baseline
 - Leaving stale worktrees
 
-**Pairs with:** pr-workflow, commit-discipline, tdd-workflow
+**Pairs with:** pr-workflow, commit-discipline, tdd

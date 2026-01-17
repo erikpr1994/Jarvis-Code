@@ -18,7 +18,7 @@
 | 06 | commands.md | ✅ | None |
 | 07 | hooks.md | ✅ | None (coderabbit-review.sh created) |
 | 08 | rules-and-patterns.md | ✅ | None |
-| 09 | session-management.md | ✅ | None |
+| 09 | session.md | ✅ | None |
 | 10 | context-optimization.md | ✅ | None |
 | 11 | learning-system.md | ✅ | None |
 | 12 | initialization.md | ⚠️ | Add symlinks, verification |
@@ -122,7 +122,7 @@ All 24 commands exist and are functional.
 
 ---
 
-## 09-session-management.md
+## 09-session.md
 
 **Status**: ✅ Complete
 **Action**: None

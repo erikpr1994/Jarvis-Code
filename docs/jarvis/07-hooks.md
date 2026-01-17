@@ -324,7 +324,7 @@ EOF
       "patterns": ["submit.*review", "ready.*PR"],
       "enforcement": "suggest"
     },
-    "systematic-debugging": {
+    "debug": {
       "priority": "high",
       "keywords": ["debug", "error", "failing", "broken", "not working"],
       "patterns": ["why.*fail", "investigate.*issue"],

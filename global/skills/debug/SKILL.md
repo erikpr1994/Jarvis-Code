@@ -1,5 +1,5 @@
 ---
-name: systematic-debugging
+name: debug
 description: Use when encountering bugs, test failures, or unexpected behavior. Hypothesis-driven debugging.
 ---
 
@@ -89,4 +89,4 @@ Write test that fails before fix, passes after. Proves fix works.
 
 ## Integration
 
-**Pairs with:** tdd-workflow (write failing test), verification (prove fix works)
+**Pairs with:** tdd (write failing test), verification (prove fix works)

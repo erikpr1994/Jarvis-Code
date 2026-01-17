@@ -1,22 +1,14 @@
 {
-    "session_id": "session-20260116112207",
-    "timestamp": "2026-01-16T11:22:07Z",
+    "session_id": "session-20260114181205",
+    "timestamp": "2026-01-14T18:12:05Z",
     "compact_reason": "context_limit",
     "tokens_used": 0,
-    "task": {
-    "current_task": "Session - Linear Workflow Integration",
-    "progress": {
-        "completed": 5,
-        "in_progress": 0,
-        "pending": 3
-    },
-    "decisions": ""
-},
+    "task": {"current_task": null, "progress": [], "decisions": []},
     "context": {
-        "git_branch": "fix/linear-parentid-docs",
-        "uncommitted_changes": "",
-        "recent_files": "./global/skills/linear/feature-requests/SKILL.md,./global/skills/linear/tech-debt/SKILL.md,./global/skills/linear/bugs/SKILL.md,./global/skills/linear/README.md,./global/skills/linear/backlog-grooming/SKILL.md,./global/skills/linear/cycle-planning/SKILL.md,./global/skills/linear/project-health/SKILL.md,./global/skills/linear/refine/SKILL.md,./global/skills/linear/questions/SKILL.md,./global/skills/skill-rules.json,",
-        "working_directory": "/Users/erikpr94/Documents/Projects/Jarvis/.worktrees/linear-fix"
+        "git_branch": "main",
+        "uncommitted_changes": "?? .worktrees/;?? global/agents/CLAUDE.md;?? global/agents/review/CLAUDE.md;?? global/skills/background-tasks/CLAUDE.md;?? global/skills/code-review/CLAUDE.md;?? global/skills/dispatching-parallel-agents/CLAUDE.md;?? global/skills/subagent-driven-development/CLAUDE.md;?? global/skills/submit-pr/CLAUDE.md;?? global/skills/verification/CLAUDE.md;",
+        "recent_files": "./CHANGELOG.md,./.worktrees/improve-phase6/init/init.sh,./.worktrees/improve-phase6/init/detect.sh,./.worktrees/improve-phase6/init/README.md,./.worktrees/improve-phase6/init/interview.md,./.worktrees/improve-phase6/init/CLAUDE.md,./.worktrees/improve-phase6/CHANGELOG.md,./.worktrees/improve-phase6/uninstall.sh,./.worktrees/improve-phase6/install.sh,./.worktrees/improve-phase6/tests/jarvis/install/test-install.sh,",
+        "working_directory": "/Users/erikpr94/Documents/Projects/Jarvis"
     },
     "hot_memory": {
         "preserved": true,

@@ -5,13 +5,13 @@ description: Create a feature specification with user stories and acceptance cri
 
 # /spec - Create Feature Specification
 
-Create a feature specification using structured brainstorming and prioritization.
+Create a feature specification using structured brainstorm and prioritization.
 
 > **The Spec Rule:** A spec contains WHAT and WHY. Never HOW. No code. No technical decisions.
 
 ## Delegates To
 
-This command invokes the **brainstorming** skill in **Discovery Mode**.
+This command invokes the **brainstorm** skill in **Discovery Mode**.
 
 ## Quick Reference
 
@@ -82,6 +82,6 @@ This command invokes the **brainstorming** skill in **Discovery Mode**.
 
 ## See Also
 
-- **Full methodology**: `skill: "brainstorming"` (Discovery Mode)
+- **Full methodology**: `skill: "brainstorm"` (Discovery Mode)
 - **Technical decisions**: `/brainstorm how...`
 - **Create plans**: `/plan`

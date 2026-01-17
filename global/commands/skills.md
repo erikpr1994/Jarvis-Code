@@ -78,10 +78,10 @@ Display all available skills, their activation keywords, and current loading sta
 |-------|-------------|--------|
 | **test-driven-development** | TDD methodology | Loaded |
 | **verification-before-completion** | Final verification | Loaded |
-| **systematic-debugging** | Debug methodology | Loaded |
-| **writing-plans** | Plan creation | Loaded |
-| **executing-plans** | Plan execution | Loaded |
-| **brainstorming** | Ideation sessions | Loaded |
+| **debug** | Debug methodology | Loaded |
+| **plan** | Plan creation | Loaded |
+| **execute** | Plan execution | Loaded |
+| **brainstorm** | Ideation sessions | Loaded |
 
 ### Domain Skills (Keyword-Triggered)
 | Skill | Triggers | Status |
@@ -155,7 +155,7 @@ Expert-level git operations including complex workflows, rebasing, cherry-pickin
 
 ### Related Skills
 - code-review
-- systematic-debugging
+- debug
 ```
 
 ## Skill Activation
@@ -164,14 +164,14 @@ Skills can be activated by:
 
 1. **Keywords in conversation**
    - "I need to set up payments" triggers `payment-processing`
-   - "Help me debug this" triggers `systematic-debugging`
+   - "Help me debug this" triggers `debug`
 
 2. **Explicit invocation**
    - "Use the git-expert skill"
    - "Load the frontend-design skill"
 
 3. **Command delegation**
-   - `/plan` loads `writing-plans`
+   - `/plan` loads `plan`
    - `/commit` loads `git-expert`
 
 ## Examples
@@ -188,7 +188,7 @@ Skills can be activated by:
 
 **Get details on a skill:**
 ```
-/skills systematic-debugging
+/skills debug
 ```
 
 **Find skills for a topic:**

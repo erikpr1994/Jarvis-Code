@@ -104,11 +104,11 @@ check_compaction_recovery() {
 # Default skill triggers (used if skill-rules.json not found)
 # Bash 3.2 compatible: using indexed arrays instead of associative arrays
 SKILL_NAMES=(
-    "session-management"
+    "session"
     "sub-agent-invocation"
     "test-driven-development"
     "git-expert"
-    "systematic-debugging"
+    "debug"
     "codebase-navigation"
     "documentation-research"
     "frontend-design"

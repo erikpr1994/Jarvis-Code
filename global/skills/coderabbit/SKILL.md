@@ -237,4 +237,4 @@ After CodeRabbit review:
 ## Integration
 
 **Related skills:** submit-pr, git-expert
-**Pairs with:** verification, tdd-workflow
+**Pairs with:** verification, tdd

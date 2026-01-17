@@ -217,7 +217,7 @@ SKILL ACTIVATION CHECK
 
 CRITICAL SKILLS (REQUIRED):
   -> test-driven-development
-  -> session-management
+  -> session
 ```
 
 Use the Skill tool: `skill: "tdd"`

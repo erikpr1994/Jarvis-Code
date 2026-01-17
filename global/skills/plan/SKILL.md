@@ -1,5 +1,5 @@
 ---
-name: writing-plans
+name: plan
 description: Use when you have a spec or requirements for a multi-step task, before touching code. Triggers - plan, design, architect, implementation plan, spec, requirements.
 ---
 
@@ -305,8 +305,8 @@ MINIMUM: 3 success criteria
 ## Integration
 
 **Pairs with:**
-- **brainstorming** - Generate options before planning
-- **executing-plans** - Execute the plan step by step
-- **tdd-workflow** - TDD pattern within each task
+- **brainstorm** - Generate options before planning
+- **execute** - Execute the plan step by step
+- **tdd** - TDD pattern within each task
 - **verification** - Verify checkpoints
 - **subagent-driven-development** - Parallel execution

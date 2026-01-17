@@ -312,5 +312,5 @@ No exceptions without your human partner's explicit permission.
 
 **Pairs with:**
 - **verification** - Verify tests pass before claiming complete
-- **systematic-debugging** - TDD approach to bug fixes
+- **debug** - TDD approach to bug fixes
 - **subagent-driven-development** - Sub-agents follow TDD

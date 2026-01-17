@@ -81,4 +81,4 @@ git commit --amend -m "new msg"    # Fix message
 | Tests failing | Don't commit. Fix first. |
 | WIP changes | Use stash, not commit |
 
-**Pairs with:** tdd-workflow, pr-workflow, verification
+**Pairs with:** tdd, pr-workflow, verification

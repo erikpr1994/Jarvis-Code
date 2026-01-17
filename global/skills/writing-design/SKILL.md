@@ -167,5 +167,5 @@ Good: Presenting genuine alternatives with honest trade-offs. For example, when 
 
 ## Integration
 
-**Related skills:** writing-plans, brainstorming
+**Related skills:** plan, brainstorm
 **Triggers:** design, RFC, ADR, tech spec, architecture, proposal

@@ -470,7 +470,7 @@ TOOLS:
 - **Linear MCP** - Issue operations
 - **TDD skill** - Test-first bug fixes
 - **submit-pr** - PR submission pipeline
-- **systematic-debugging** - For complex bugs
+- **debug** - For complex bugs
 
 **Workflow with Linear:**
 ```

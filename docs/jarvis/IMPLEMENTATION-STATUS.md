@@ -19,7 +19,7 @@
 | [06-commands](./06-commands.md) | 7 | ✅ Done | 100% | None |
 | [07-hooks](./07-hooks.md) | 8 | ✅ Done | 100% | None |
 | [08-rules-and-patterns](./08-rules-and-patterns.md) | 9-10 | ✅ Done | 100% | None |
-| [09-session-management](./09-session-management.md) | 11 | ✅ Done | 100% | None |
+| [09-session](./09-session.md) | 11 | ✅ Done | 100% | None |
 | [10-context-optimization](./10-context-optimization.md) | 12 | ✅ Done | 100% | None |
 | [11-learning-system](./11-learning-system.md) | 13 | ✅ Done | 100% | None |
 | [12-initialization](./12-initialization.md) | 14 | ✅ Done | 100% | None |
@@ -164,11 +164,11 @@ This document defines the vision and goals. Used for guidance, not direct implem
 ### Process Skills (12/7+ - exceeds spec)
 - [x] tdd-workflow.md
 - [x] verification.md
-- [x] systematic-debugging.md
-- [x] brainstorming.md
-- [x] executing-plans.md
-- [x] writing-plans.md
-- [x] session-management.md
+- [x] debug.md
+- [x] brainstorm.md
+- [x] execute.md
+- [x] plan.md
+- [x] session.md
 - [x] git-worktrees.md
 - [x] code-review.md
 - [x] pr-workflow.md
@@ -327,7 +327,7 @@ This document defines the vision and goals. Used for guidance, not direct implem
 
 ---
 
-## 09-session-management.md (Section 11)
+## 09-session.md (Section 11)
 
 **Status**: ✅ Complete
 **Progress**: 100%
@@ -335,7 +335,7 @@ This document defines the vision and goals. Used for guidance, not direct implem
 
 ### Session State
 - [x] `templates/session.md` - session file template
-- [x] `global/skills/process/session-management.md` - 430 lines
+- [x] `global/skills/process/session.md` - 430 lines
 - [x] Session detection in `session-start.sh`
 - [x] Session continuation logic
 
@@ -678,7 +678,7 @@ Contains interview summary and source references. No implementation needed.
 - All hooks tested
 
 ### Session 2 - Skills & Templates
-- writing-plans, mcp-integration skills
+- plan, mcp-integration skills
 - 5 folder-type templates
 - /generate-claude-md command
 

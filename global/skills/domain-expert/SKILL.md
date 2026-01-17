@@ -470,5 +470,5 @@ For [Project/Goal]:
 
 ## Integration
 
-**Related skills:** brainstorming, writing-plans, session-management
-**Process:** Use with writing-plans for domain-specific implementations
+**Related skills:** brainstorm, plan, session
+**Process:** Use with plan for domain-specific implementations

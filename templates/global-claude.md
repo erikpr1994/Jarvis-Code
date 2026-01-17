@@ -40,7 +40,7 @@ Use the SkillActivationHook system to determine which skills apply. Always follo
 **Session Files = Single Source of Truth**
 
 - ALL significant implementation work flows through `.claude/tasks/session-current.md`
-- For multi-phase implementations: Invoke `session-management` skill -> Invoke `sub-agent-invocation` skill -> Delegate to `master-orchestrator`
+- For multi-phase implementations: Invoke `session` skill -> Invoke `sub-agent-invocation` skill -> Delegate to `master-orchestrator`
 - All markdown files use lowercase-with-dashes naming (except SKILL.md files which remain uppercase)
 
 ### 4. Framework Improvement
@@ -75,7 +75,7 @@ Use the SkillActivationHook system to determine which skills apply. Always follo
 
 When multiple skills could apply:
 
-1. **Process skills first** (brainstorming, debugging) - determine HOW to approach
+1. **Process skills first** (brainstorm, debugging) - determine HOW to approach
 2. **Implementation skills second** (frontend-design, domain-specific) - guide execution
 
 ### Skill Types
@@ -172,7 +172,7 @@ Request -> Load Skills -> Route Decision -> Execute -> Commit
 - Simple/bounded task -> Direct sub-agent delegation
 - Complex/multi-phase -> Master Orchestrator -> Session -> Specialists
 
-**Key Skills**: `session-management`, `sub-agent-invocation`, `git-commits`, `codebase-navigation`
+**Key Skills**: `session`, `sub-agent-invocation`, `git-commits`, `codebase-navigation`
 
 ---
 

@@ -82,7 +82,7 @@ test_detect_debug_keywords() {
         echo "$input" | bash "$HOOK_PATH" 2>&1
     ) && exit_code=0 || exit_code=$?
 
-    # Should detect systematic-debugging skill
+    # Should detect debug skill
     if [[ "$output" == *"debugging"* ]] || [[ "$output" == *"SKILL"* ]] || [[ $exit_code -eq 0 ]]; then
         assert_true "1" "Hook detects debug keywords"
     else

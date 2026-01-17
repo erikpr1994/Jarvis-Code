@@ -146,7 +146,7 @@ Stored as JSON in learnings directory:
     ],
     "context": {
       "current_project": "jarvis",
-      "active_skills": ["session-management", "git-commits"],
+      "active_skills": ["session", "git-commits"],
       "recent_files": ["app/actions/*.ts"]
     }
   }

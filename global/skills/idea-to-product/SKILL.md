@@ -502,5 +502,5 @@ interface WaitlistEntry {
 
 ## Integration
 
-**Related skills:** brainstorming, writing-plans, analytics, payment-processing
+**Related skills:** brainstorm, plan, analytics, payment-processing
 **Tools:** Vercel, Supabase, Stripe, Product Hunt

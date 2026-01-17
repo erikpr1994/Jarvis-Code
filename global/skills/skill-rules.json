@@ -159,11 +159,11 @@
         ]
       }
     },
-    "writing-plans": {
+    "plan": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "writing-plans/SKILL.md",
+      "path": "plan/SKILL.md",
       "description": "Structured implementation plans before coding",
       "promptTriggers": {
         "keywords": [
@@ -444,11 +444,11 @@
         ]
       }
     },
-    "executing-plans": {
+    "execute": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "executing-plans/SKILL.md",
+      "path": "execute/SKILL.md",
       "description": "Checkpoint-verified plan execution",
       "promptTriggers": {
         "keywords": [
@@ -467,11 +467,11 @@
         ]
       }
     },
-    "brainstorming": {
+    "brainstorm": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "brainstorming/SKILL.md",
+      "path": "brainstorm/SKILL.md",
       "description": "Structured ideation with 3+ alternatives",
       "promptTriggers": {
         "keywords": [
@@ -491,11 +491,11 @@
         ]
       }
     },
-    "systematic-debugging": {
+    "debug": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "systematic-debugging/SKILL.md",
+      "path": "debug/SKILL.md",
       "description": "Hypothesis-driven debugging",
       "promptTriggers": {
         "keywords": [
@@ -1193,11 +1193,11 @@
         ]
       }
     },
-    "session-management": {
+    "session": {
       "type": "process",
       "enforcement": "suggest",
       "priority": "high",
-      "path": "session-management/SKILL.md",
+      "path": "session/SKILL.md",
       "description": "Session state tracking, context preservation, and multi-phase work continuity",
       "promptTriggers": {
         "keywords": [

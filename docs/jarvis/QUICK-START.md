@@ -69,8 +69,8 @@ Jarvis automatically activates relevant skills based on your prompts:
 
 | You Say | Skills Activated |
 |---------|-----------------|
-| "implement a feature" | session-management, test-driven-development |
-| "fix this bug" | systematic-debugging |
+| "implement a feature" | session, test-driven-development |
+| "fix this bug" | debug |
 | "review this code" | code-review agent |
 | "create tests" | test-generator agent |
 | "commit these changes" | git-expert |
