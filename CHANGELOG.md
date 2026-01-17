@@ -5,6 +5,13 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0](https://github.com/erikpr1994/Jarvis-Code/compare/v3.0.0...v3.1.0) (2026-01-17)
+
+
+### Features
+
+* **skills:** add priority ordering and Todo filter to linear skills ([#70](https://github.com/erikpr1994/Jarvis-Code/issues/70)) ([5614b05](https://github.com/erikpr1994/Jarvis-Code/commit/5614b05a64efb81263e5786eb0ccf38720b710bd))
+
 ## [3.0.0](https://github.com/erikpr1994/Jarvis-Code/compare/v2.19.0...v3.0.0) (2026-01-17)
 
 
