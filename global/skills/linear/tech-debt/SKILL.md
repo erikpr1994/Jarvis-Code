@@ -28,17 +28,43 @@ This skill handles Linear issues tagged with "tech-debt". Every tech debt item m
 
 ## The Workflow
 
-### Step 1: List Tech Debt
+### Step 1: List Tech Debt (Priority Order)
+
+**Filter by "Todo" status and work highest priority first:**
 
 ```typescript
 mcp__linear-server__list_issues({
   label: "tech-debt",
-  state: "backlog",  // Or "triage"
+  state: "Todo",  // Only unstarted debt items
   limit: 20
 });
+// Note: Linear API doesn't filter by priority - sort results client-side
 ```
 
-### Step 2: Assess Each Item
+**Sort results by priority (work in this sequence):**
+1. **Urgent** (priority: 1) - Blocking critical work
+2. **High** (priority: 2) - Significant impact
+3. **Normal** (priority: 3) - Standard cleanup
+4. **Low** (priority: 4) - Nice to have
+5. **No Priority** (priority: 0) - Needs assessment first
+
+**Present sorted by priority:**
+
+```markdown
+## Pending Tech Debt (Priority Order)
+
+| Priority | ID | Title | Category |
+|----------|-----|-------|----------|
+| 🔴 Urgent | PEA-100 | Security: Upgrade auth library | Security |
+| 🟠 High | PEA-101 | Refactor user service | Maintainability |
+| 🟡 Normal | PEA-102 | Add missing tests for checkout | Testing |
+
+**Recommendation:** Start with PEA-100 (Urgent priority)
+```
+
+**Default behavior:** If user says "next item" without specifying, always pick the highest priority unaddressed item.
+
+### Step 2: Assess Each Item (Starting from Highest Priority)
 
 For each tech debt issue, evaluate:
 
@@ -198,8 +224,11 @@ Use these to categorize and prioritize:
 ## Quick Reference
 
 ```
-PROCESS: List → Assess → Prioritize → Decide → Execute → Report
+FILTER:  state: "Todo" only (unstarted items)
+ORDER:   Urgent → High → Normal → Low → No Priority
+PROCESS: List (by priority) → Assess → Decide → Execute → Report
 OUTPUT:  Scheduling decisions (now, later, never)
+ALWAYS:  Work highest priority first
 
 MATRIX:
 - High Impact + Low Effort = DO NOW
