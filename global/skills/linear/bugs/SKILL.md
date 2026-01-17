@@ -7,6 +7,12 @@ description: Fix Linear issues tagged with "bug". Either produces a PR with the 
 
 **Iron Law:** Bugs produce either a FIX (PR) or an EXPLANATION (won't fix). No middle ground.
 
+> ⚠️ **ONE ISSUE AT A TIME**
+>
+> Work on ONE bug, submit PR, then move to the next.
+> Do NOT start a second bug until the first has a PR submitted.
+> This ensures focused work, clean commits, and proper review cycles.
+
 ## Overview
 
 This skill handles Linear issues tagged with "bug". Every bug must be resolved with either:
@@ -451,7 +457,7 @@ FILTER:  state: "Todo" only (unstarted bugs)
 ORDER:   Urgent → High → Normal → Low → No Priority
 PROCESS: List → Select (by priority) → Understand → EXPLORE CODEBASE → Reproduce → Decide → Fix/Close → Confirm
 OUTPUT:  PR (fix) OR Explanation (won't fix)
-ALWAYS:  Work highest priority first, explore codebase FIRST, reproduce before fixing, TDD for fixes
+ALWAYS:  ONE BUG AT A TIME → PR → next bug. Work highest priority first, TDD for fixes
 
 MANDATORY EXPLORATION:
 - Use Explore agent for comprehensive analysis
@@ -479,6 +485,7 @@ TOOLS:
 
 ## Red Flags - STOP
 
+- **Starting second bug before first has PR** → STOP, finish first bug
 - About to fix without reproducing → STOP, reproduce first
 - About to fix without test → STOP, write failing test first
 - Closing without explanation → STOP, document why
