@@ -7,6 +7,12 @@ description: Resolve Linear issues tagged with "tech-debt". Decide to address no
 
 **Iron Law:** Tech debt produces SCHEDULING DECISIONS. Address now, schedule, or close with reasoning.
 
+> ⚠️ **ONE ISSUE AT A TIME**
+>
+> Work on ONE tech debt item, submit PR (if addressing), then move to the next.
+> Do NOT start a second item until the first is resolved (PR submitted, scheduled, or closed).
+> This ensures focused work, clean commits, and proper review cycles.
+
 ## Overview
 
 This skill handles Linear issues tagged with "tech-debt". Every tech debt item must be:
@@ -228,7 +234,7 @@ FILTER:  state: "Todo" only (unstarted items)
 ORDER:   Urgent → High → Normal → Low → No Priority
 PROCESS: List (by priority) → Assess → Decide → Execute → Report
 OUTPUT:  Scheduling decisions (now, later, never)
-ALWAYS:  Work highest priority first
+ALWAYS:  ONE ITEM AT A TIME → resolve (PR/schedule/close) → next item. Work highest priority first
 
 MATRIX:
 - High Impact + Low Effort = DO NOW
@@ -244,6 +250,7 @@ TOOLS:
 
 ## Red Flags - STOP
 
+- **Starting second item before first is resolved** → STOP, finish first item
 - Addressing debt without assessing impact → STOP, assess first
 - Closing without explanation → STOP, document reasoning
 - All debt scheduled "later" indefinitely → STOP, some must be addressed
