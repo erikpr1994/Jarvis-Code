@@ -1,5 +1,5 @@
 ---
-name: executing-plans
+name: execute
 description: Use when following a written plan or task list. Checkpoint verification at each step. Triggers - execute plan, follow plan, implement plan, next step, continue, proceed.
 ---
 
@@ -13,7 +13,7 @@ Plans fail in execution, not conception. This skill ensures disciplined executio
 
 ## When to Use
 
-- Following a written plan (from writing-plans skill)
+- Following a written plan (from plan skill)
 - Working through a task list or checklist
 - Multi-phase implementations
 - Any sequential work with dependencies
@@ -44,7 +44,7 @@ Before executing anything, establish WHERE you are:
 **Blockers**: None / [describe blocker]
 ```
 
-**If no plan exists:** STOP. Invoke writing-plans skill first.
+**If no plan exists:** STOP. Invoke plan skill first.
 
 ## Step 2: Verify - Check Prerequisites
 
@@ -86,6 +86,72 @@ Focus on the CURRENT step. Do not anticipate future steps.
 - No more, no less
 - Future optimizations wait for their step
 - Resist "while I'm here" additions
+
+### TDD Within Steps (MANDATORY for Code)
+
+> **Iron Law:** Code step = TDD step. No exceptions.
+
+When a step involves writing code, TDD is NOT optional:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  1. Write test FIRST (watch it fail)                        │
+│  2. Write minimal code to pass                              │
+│  3. Refactor while green                                    │
+│  4. Then proceed to step verification                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**The sub-cycle within each code step:**
+
+```
+STEP START
+    ↓
+Is this a code step?
+├── NO → Execute normally
+└── YES → TDD cycle:
+          ├── Write failing test
+          ├── Verify test fails (RED)
+          ├── Write minimal code
+          ├── Verify test passes (GREEN)
+          ├── Refactor if needed
+          └── Continue to Step 4 (Confirm)
+```
+
+**Example - Step: "Add password validation"**
+
+```markdown
+## TDD Execution
+
+**Test first:**
+```typescript
+test('rejects passwords under 8 characters', () => {
+  expect(validatePassword('short')).toBe(false);
+});
+```
+
+**Run test:** FAILS (validatePassword doesn't exist) ✓ RED
+
+**Minimal code:**
+```typescript
+function validatePassword(password: string): boolean {
+  return password.length >= 8;
+}
+```
+
+**Run test:** PASSES ✓ GREEN
+
+**Proceed to Step 4 (Confirm) with full verification**
+```
+
+**Common TDD Violations During Execution:**
+
+| Violation | Reality |
+|-----------|---------|
+| "I'll add tests after" | Tests prove nothing after the fact |
+| "This is too simple for TDD" | Simple code breaks. Test it. |
+| "The plan didn't mention tests" | TDD is implicit for all code |
+| "I'll test at the end of the phase" | Test each step. Not at the end. |
 
 ## Step 4: Confirm - Verify Step Output
 
@@ -290,6 +356,8 @@ I'm here, let me add password reset since it's related..."
 - No progress tracking visible
 - Multiple steps "in progress" simultaneously
 - Ignoring blockers to continue
+- **Writing code without a failing test first**
+- **Skipping TDD "because the plan didn't mention tests"**
 
 **If you catch yourself doing any of these: STOP. Return to Step 1.**
 
@@ -299,6 +367,7 @@ Before marking a step complete:
 
 - [ ] Located current step in plan
 - [ ] Verified all prerequisites met
+- [ ] **If code step: followed TDD (test first, watch fail, then implement)**
 - [ ] Executed only the current step scope
 - [ ] Ran verification commands with evidence
 - [ ] Documented any deviations
@@ -320,8 +389,8 @@ NEVER:       Multiple steps at once
 ## Integration
 
 **Pairs with:**
-- **writing-plans** - Create plans before execution
-- **brainstorming** - Inform execution decisions
+- **plan** - Create plans before execution
+- **brainstorm** - Inform execution decisions
 - **verification** - Verify each checkpoint
-- **tdd-workflow** - TDD within each step
-- **session-management** - Track progress across sessions
+- **tdd** - TDD within each step (MANDATORY for code)
+- **session** - Track progress across sessions

@@ -323,4 +323,4 @@ Prototype solution using ORM B...
 
 ## Integration
 
-**Pairs with:** subagent-driven-development (for complex orchestration), systematic-debugging (parallel hypothesis testing), brainstorming (parallel ideation)
+**Pairs with:** subagent-driven-development (for complex orchestration), debug (parallel hypothesis testing), brainstorm (parallel ideation)

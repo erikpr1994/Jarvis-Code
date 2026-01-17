@@ -68,9 +68,9 @@ Skills use action-oriented names that describe what they DO:
 
 **Critical:** Linear workflows use the SAME PROCESS as their repo counterparts:
 
-- `create-linear-spec` uses brainstorming (Discovery Mode)
-- `create-linear-design` uses brainstorming (Approach Mode)
-- `create-linear-plan` uses writing-plans process
+- `create-linear-spec` uses brainstorm (Discovery Mode)
+- `create-linear-design` uses brainstorm (Approach Mode)
+- `create-linear-plan` uses plan process
 
 Only the output target differs.
 
@@ -121,15 +121,15 @@ await create_issue({
 ## Full Creation Workflow
 
 ```
-/spec [feature]           → Define WHAT/WHY (brainstorming Discovery)
+/spec [feature]           → Define WHAT/WHY (brainstorm Discovery)
     ↓
 /create-linear-spec       → Linear Project (spec in description)
     ↓
-/brainstorm how...        → Technical approach (brainstorming Approach)
+/brainstorm how...        → Technical approach (brainstorm Approach)
     ↓
 /create-linear-design     → Linear Document (design in project)
     ↓
-/plan [feature]           → Define HOW (writing-plans)
+/plan [feature]           → Define HOW (plan)
     ↓
 /create-linear-plan       → Linear Issues (phases + tasks)
     ↓

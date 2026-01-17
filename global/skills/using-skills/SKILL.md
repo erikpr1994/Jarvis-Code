@@ -57,7 +57,7 @@ When multiple skills could apply:
 
 Examples:
 - "Let's build X" -> brainstorming first, then implementation skills
-- "Fix this bug" -> systematic-debugging first, then domain skills
+- "Fix this bug" -> debug first, then domain skills
 - "Implement feature Y" -> TDD skill, then relevant domain skills
 
 ## Skill Types
@@ -72,9 +72,9 @@ The skill content tells you which.
 
 | Skill | When to Use |
 |-------|-------------|
-| session-management | Multi-step implementations, features, refactoring |
+| session | Multi-step implementations, features, refactoring |
 | test-driven-development | Any code that needs tests (most code) |
-| systematic-debugging | Errors, bugs, things not working |
+| debug | Errors, bugs, things not working |
 | git-expert | Commits, branches, PRs, version control |
 | codebase-navigation | Finding files, understanding structure |
 | documentation-research | Looking up library docs, APIs |

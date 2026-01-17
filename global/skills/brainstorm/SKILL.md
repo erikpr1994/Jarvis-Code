@@ -1,5 +1,5 @@
 ---
-name: brainstorming
+name: brainstorm
 description: Use when generating ideas, exploring options, defining requirements, or making decisions. Covers both discovery (what to build) and approach (how to build). Triggers - ideate, brainstorm, options, alternatives, explore, what if, could we, ways to, approaches, spec, requirements, user story.
 ---
 
@@ -483,7 +483,7 @@ NEVER:   Skip to implementation
 
 **Outputs to:**
 - **writing-design** - Technical architecture
-- **writing-plans** - Implementation steps
-- **executing-plans** - Execute the plan
+- **plan** - Implementation steps
+- **execute** - Execute the plan
 
 **Triggers:** brainstorm, ideate, options, alternatives, explore, spec, requirements, user story, what should, how could

@@ -88,7 +88,7 @@ allowed_tools: [Read, Write, Edit, Bash, Skill, Task]
 Initialize complete feature development workflow with TDD.
 
 ## Skills to Invoke
-1. session-management (create session file)
+1. session (create session file)
 2. test-driven-development (setup test structure)
 3. git-expert (create feature branch)
 

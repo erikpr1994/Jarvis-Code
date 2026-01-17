@@ -1,6 +1,6 @@
 ---
 name: create-linear-plan
-description: Create Linear Issues from requirements using the writing-plans process. Same process as /plan but outputs to Linear Issues instead of file. Triggers - linear plan, plan to linear, create issues from plan.
+description: Create Linear Issues from requirements using the plan process. Same process as /plan but outputs to Linear Issues instead of file. Triggers - linear plan, plan to linear, create issues from plan.
 ---
 
 # Create Linear Plan
@@ -9,11 +9,11 @@ description: Create Linear Issues from requirements using the writing-plans proc
 
 ## Overview
 
-This skill runs the **writing-plans** process and outputs the result to **Linear Issues** instead of a file.
+This skill runs the **plan** process and outputs the result to **Linear Issues** instead of a file.
 
 ```
-/plan [feature]           → writing-plans → docs/plans/*.md
-/create-linear-plan       → writing-plans → Linear Issues (phases + tasks)
+/plan [feature]           → plan → docs/plans/*.md
+/create-linear-plan       → plan → Linear Issues (phases + tasks)
 ```
 
 **Both use the same process. Only the output differs.**
@@ -332,7 +332,7 @@ Next: `/execute` or work in Linear
 ## Quick Reference
 
 ```
-PROCESS: Same as /plan (writing-plans)
+PROCESS: Same as /plan (plan)
 OUTPUT:  Linear Issues (phases as parents, tasks as sub-issues)
 TOOLS:   mcp__linear-server__create_issue (with parentId)
 
@@ -352,7 +352,7 @@ HIERARCHY:
 
 ## Red Flags - STOP
 
-- Skipping writing-plans process and just converting a file
+- Skipping plan process and just converting a file
 - Tasks that take more than 10 minutes
 - Using `relatedTo` instead of `parentId`
 - Missing checkpoints for phases
@@ -373,7 +373,7 @@ Linear milestones cannot be created via API/MCP. To use milestones:
 ## Integration
 
 **Uses:**
-- **writing-plans** skill - Same process
+- **plan** skill - Same process
 - **Linear MCP** - Output target
 
 **Mirrors:**

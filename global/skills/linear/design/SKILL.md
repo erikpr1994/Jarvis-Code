@@ -9,11 +9,11 @@ description: Create a Linear Document with technical design using Approach Mode 
 
 ## Overview
 
-This skill runs the **brainstorming** skill in **Approach Mode** and outputs the result to a **Linear Document** attached to a project.
+This skill runs the **brainstorm** skill in **Approach Mode** and outputs the result to a **Linear Document** attached to a project.
 
 ```
-/brainstorm how...        → brainstorming (Approach) → decision record (file)
-/create-linear-design     → brainstorming (Approach) → Linear Document (project)
+/brainstorm how...        → brainstorm (Approach) → decision record (file)
+/create-linear-design     → brainstorm (Approach) → Linear Document (project)
 ```
 
 **Both use the same process. Only the output differs.**
@@ -346,7 +346,7 @@ NEVER:   Skip to implementation without evaluating options
 ## Integration
 
 **Uses:**
-- **brainstorming** skill (Approach Mode) - Same process
+- **brainstorm** skill (Approach Mode) - Same process
 - **Linear MCP** - Output target
 
 **Mirrors:**

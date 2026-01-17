@@ -9,11 +9,11 @@ description: Create a Linear Project from requirements using Discovery Mode brai
 
 ## Overview
 
-This skill runs the **brainstorming** skill in **Discovery Mode** and outputs the result to a **Linear Project** instead of a file.
+This skill runs the **brainstorm** skill in **Discovery Mode** and outputs the result to a **Linear Project** instead of a file.
 
 ```
-/spec [feature]           → brainstorming (Discovery) → docs/specs/*.md
-/create-linear-spec       → brainstorming (Discovery) → Linear Project
+/spec [feature]           → brainstorm (Discovery) → docs/specs/*.md
+/create-linear-spec       → brainstorm (Discovery) → Linear Project
 ```
 
 **Both use the same process. Only the output differs.**
@@ -362,7 +362,7 @@ Then: `/plan notifications` → `/create-linear-plan`
 ## Quick Reference
 
 ```
-PROCESS: Same as /spec (brainstorming Discovery Mode)
+PROCESS: Same as /spec (brainstorm Discovery Mode)
 OUTPUT:  Linear Project (spec in description)
 TOOLS:   mcp__linear-server__create_project
 
@@ -412,7 +412,7 @@ Before creating the project, verify:
 ## Integration
 
 **Uses:**
-- **brainstorming** skill (Discovery Mode) - Same process
+- **brainstorm** skill (Discovery Mode) - Same process
 - **Linear MCP** - Output target
 
 **Mirrors:**

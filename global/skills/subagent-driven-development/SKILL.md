@@ -256,4 +256,4 @@ Agent → Orchestrator
 
 ## Integration
 
-**Pairs with:** dispatching-parallel-agents (for independent subtasks), verification (final check), session-management (complex workflows)
+**Pairs with:** dispatching-parallel-agents (for independent subtasks), verification (final check), session (complex workflows)

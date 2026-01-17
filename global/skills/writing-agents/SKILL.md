@@ -84,7 +84,7 @@ model: claude-sonnet-4-20250514
 Analyze code for security issues: injection, auth flaws, data exposure.
 
 ## Skills to Load
-- systematic-debugging (for tracing attack vectors)
+- debug (for tracing attack vectors)
 
 ## Input Format
 - File paths or code snippets to review

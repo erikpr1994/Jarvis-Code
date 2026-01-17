@@ -1,5 +1,5 @@
 ---
-name: session-management
+name: session
 description: Use when work spans multiple phases, requires context handoff, or exceeds single conversation scope. Triggers - session, multi-phase, handoff, continue, resume, checkpoint, long-running.
 ---
 
@@ -392,9 +392,9 @@ ARCHIVE: Learnings, follow-ups, rename file
 ## Integration with Other Skills
 
 **Pairs with:**
-- **executing-plans** - Track plan progress in session
+- **execute** - Track plan progress in session
 - **verification** - Document verification results
-- **brainstorming** - Record decision context
+- **brainstorm** - Record decision context
 - **tdd-workflow** - Track test state across sessions
 - **git-expert** - Document branch and commit state
 

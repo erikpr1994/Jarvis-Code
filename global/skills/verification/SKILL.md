@@ -295,4 +295,4 @@ This is non-negotiable.
 **Pairs with:**
 - **tdd** - Verification is built into TDD cycle
 - **git-expert** - Verify before commits and PRs
-- **executing-plans** - Verify each phase before proceeding
+- **execute** - Verify each phase before proceeding

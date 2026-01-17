@@ -253,5 +253,5 @@ FEATURE      -> Multi-phase hierarchical work
 
 **Pairs with:**
 - **tdd** - Test-first for fixes
-- **session-management** - Track Linear progress in sessions
+- **session** - Track Linear progress in sessions
 - **verification** - Document verification results
