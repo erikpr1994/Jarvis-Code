@@ -35,30 +35,45 @@ Bug → Understand → EXPLORE CODEBASE → Reproduce → Decision
 
 ## The Workflow
 
-### Step 1: List Pending Bugs
+### Step 1: List Pending Bugs (Priority Order)
+
+**Filter by "Todo" status and work highest priority first:**
 
 ```typescript
 mcp__linear-server__list_issues({
   label: "bug",
-  state: "started",  // Or "triage", "backlog"
+  state: "Todo",  // Only unstarted bugs
   limit: 20
 });
+// Note: Linear API doesn't filter by priority - sort results client-side
 ```
 
-### Step 2: Select a Bug
+**Sort results by priority (work in this sequence):**
+1. **Urgent** (priority: 1) - Drop everything
+2. **High** (priority: 2) - Address soon
+3. **Normal** (priority: 3) - Standard queue
+4. **Low** (priority: 4) - When time permits
+5. **No Priority** (priority: 0) - Needs triage first
 
-Present bugs to user:
+### Step 2: Select a Bug (Highest Priority First)
+
+Present bugs sorted by priority:
 
 ```markdown
-## Pending Bugs
+## Pending Bugs (Priority Order)
 
-| ID | Title | Priority | Age |
-|----|-------|----------|-----|
-| PEA-301 | Login fails with special characters | High | 1 day |
-| PEA-315 | Pagination shows wrong count | Medium | 3 days |
+| Priority | ID | Title | Age |
+|----------|-----|-------|-----|
+| 🔴 Urgent | PEA-301 | Login fails with special characters | 1 day |
+| 🟠 High | PEA-315 | Pagination shows wrong count | 3 days |
+| 🟡 Normal | PEA-320 | Tooltip misaligned | 5 days |
+
+**Recommendation:** Start with PEA-301 (highest priority)
 
 Which bug would you like to address?
 ```
+
+**Default behavior:** If user says "next bug" without specifying, always pick the highest priority unaddressed bug.
 
 ### Step 3: Understand the Bug
 
@@ -298,12 +313,17 @@ Tracking in the original issue. Closing this one.
 
 **User says:** `/fix-linear-bugs`
 
-**Step 1-2 - List & Select:**
+**Step 1-2 - List & Select (Priority Order):**
 ```
-Found 2 bugs:
+## Pending Bugs (Todo Status, Priority Order)
 
-1. PEA-301: Login fails with special characters (High, 1 day old)
-2. PEA-315: Pagination shows wrong count (Medium, 3 days old)
+| Priority | ID | Title | Age |
+|----------|-----|-------|-----|
+| 🔴 Urgent | PEA-299 | Payment fails silently | 2 hours |
+| 🟠 High | PEA-301 | Login fails with special characters | 1 day |
+| 🟡 Normal | PEA-315 | Pagination shows wrong count | 3 days |
+
+**Recommendation:** Start with PEA-299 (Urgent priority)
 
 Which bug would you like to address?
 ```
@@ -427,9 +447,11 @@ Next bug?
 ## Quick Reference
 
 ```
-PROCESS: List → Select → Understand → EXPLORE CODEBASE → Reproduce → Decide → Fix/Close → Confirm
+FILTER:  state: "Todo" only (unstarted bugs)
+ORDER:   Urgent → High → Normal → Low → No Priority
+PROCESS: List → Select (by priority) → Understand → EXPLORE CODEBASE → Reproduce → Decide → Fix/Close → Confirm
 OUTPUT:  PR (fix) OR Explanation (won't fix)
-ALWAYS:  Explore codebase FIRST, reproduce before fixing, TDD for fixes
+ALWAYS:  Work highest priority first, explore codebase FIRST, reproduce before fixing, TDD for fixes
 
 MANDATORY EXPLORATION:
 - Use Explore agent for comprehensive analysis
