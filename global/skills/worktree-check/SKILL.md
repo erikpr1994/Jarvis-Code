@@ -1,6 +1,6 @@
 ---
 name: worktree-check
-description: Use before git write operations (commit, push, merge, rebase) to verify you are in a git worktree. Guides worktree setup if missing. Keywords: worktree, isolation, git commit, git push.
+description: "Use before git write operations (commit, push, merge, rebase) to verify you are in a git worktree. Guides worktree setup if missing. Keywords: worktree, isolation, git commit, git push."
 ---
 
 # Worktree Check
