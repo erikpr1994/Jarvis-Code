@@ -44,7 +44,27 @@ Before executing anything, establish WHERE you are:
 **Blockers**: None / [describe blocker]
 ```
 
-**If no plan exists:** STOP. Invoke plan skill first.
+### Finding the Plan
+
+Plans can exist in multiple locations. Check ALL before creating a new one:
+
+1. **Local files:**
+   - `.claude/tasks/session-current.md`
+   - `plan.md`, `PLAN.md`, or similar in project root
+   - Session or task files with plan content
+
+2. **Linear (check before creating new plan):**
+   ```typescript
+   // Check for existing Linear project/plan
+   mcp__linear-server__list_projects({ query: "[feature name]" });
+   mcp__linear-server__list_issues({ project: "[project name]", state: "Todo" });
+   ```
+
+3. **User context:**
+   - Ask: "Do you have an existing plan I should follow?"
+
+**If plan exists:** Use it. Do NOT create a new one.
+**If no plan exists anywhere:** STOP. Invoke `/plan` or `/create-linear-plan` first.
 
 ## Step 2: Verify - Check Prerequisites
 
@@ -378,12 +398,14 @@ Before marking a step complete:
 ## Quick Reference
 
 ```
+FIRST:       Check if plan exists (local files, Linear, user context)
 BEFORE step: Check prerequisites
 DURING step: Only current scope
 AFTER step:  Verify output
 ALWAYS:      Document deviations
 NEVER:       Skip checkpoints
 NEVER:       Multiple steps at once
+NEVER:       Create new plan if one already exists
 ```
 
 ## Integration
