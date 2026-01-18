@@ -5,6 +5,13 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.1](https://github.com/erikpr1994/Jarvis-Code/compare/v3.1.0...v3.1.1) (2026-01-18)
+
+
+### Bug Fixes
+
+* **skills:** enforce one issue at a time workflow ([#72](https://github.com/erikpr1994/Jarvis-Code/issues/72)) ([904af53](https://github.com/erikpr1994/Jarvis-Code/commit/904af53b4aec822367928263daf01595e79287ba))
+
 ## [3.1.0](https://github.com/erikpr1994/Jarvis-Code/compare/v3.0.0...v3.1.0) (2026-01-17)
 
 
