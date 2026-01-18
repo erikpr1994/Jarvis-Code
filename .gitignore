@@ -8,3 +8,5 @@ Agent-Skills-for-Context-Engineering
 # Local data
 learnings/
 archive/
+
+.worktrees/

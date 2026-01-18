@@ -1,0 +1,29 @@
+# Jarvis Codex rules
+# Place in ~/.codex/rules/jarvis.rules
+
+# Block direct git push; require the submit-pr skill flow instead.
+prefix_rule(
+  pattern=["git", "push"],
+  decision="forbidden",
+  justification="Use the $submit-pr skill to run pushes after worktree and verification checks."
+)
+
+# Prompt before commits to encourage worktree usage.
+prefix_rule(
+  pattern=["git", "commit"],
+  decision="prompt",
+  justification="Confirm you are in a worktree. If not, use the $git-worktrees or $git-expert skill to create one before committing."
+)
+
+# Prompt before merges/rebases to avoid direct main-branch changes.
+prefix_rule(
+  pattern=["git", "merge"],
+  decision="prompt",
+  justification="Confirm you are in a worktree or isolated branch before merging. Consider using $git-expert for the safe flow."
+)
+
+prefix_rule(
+  pattern=["git", "rebase"],
+  decision="prompt",
+  justification="Confirm you are in a worktree or isolated branch before rebasing. Consider using $git-expert for the safe flow."
+)
