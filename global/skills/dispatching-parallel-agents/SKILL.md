@@ -1,6 +1,6 @@
 ---
 name: dispatching-parallel-agents
-description: Use when multiple independent tasks can run simultaneously. Maximizes throughput through parallel Task tool invocations.
+description: "Use when multiple independent tasks can run simultaneously. Maximizes throughput through parallel Task tool invocations."
 ---
 
 # Dispatching Parallel Agents

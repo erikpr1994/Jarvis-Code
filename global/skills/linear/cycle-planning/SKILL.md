@@ -1,6 +1,6 @@
 ---
 name: linear-cycle-planning
-description: Plan issues for an upcoming Linear cycle/sprint. Review backlog, prioritize, assign to cycle, balance workload. Triggers - cycle planning, sprint planning, plan cycle.
+description: "Plan issues for an upcoming Linear cycle/sprint. Review backlog, prioritize, assign to cycle, balance workload. Triggers - cycle planning, sprint planning, plan cycle."
 ---
 
 # Linear Cycle Planning

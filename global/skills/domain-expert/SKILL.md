@@ -1,6 +1,6 @@
 ---
 name: domain-expert
-description: Meta-skill for rapidly learning new domains. Covers domain research process, expert consultation simulation, knowledge validation, and documentation generation.
+description: "Meta-skill for rapidly learning new domains. Covers domain research process, expert consultation simulation, knowledge validation, and documentation generation."
 ---
 
 # Domain Expert

@@ -1,6 +1,6 @@
 ---
 name: review-linear-feature-requests
-description: Review Linear issues tagged with "feature-request". Decide to spec, add to roadmap, merge, or reject. Triggers - review feature request, user request, customer feedback.
+description: "Review Linear issues tagged with \"feature-request\". Decide to spec, add to roadmap, merge, or reject. Triggers - review feature request, user request, customer feedback."
 ---
 
 # Review Linear Feature Requests

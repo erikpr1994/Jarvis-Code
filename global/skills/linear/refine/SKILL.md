@@ -1,6 +1,6 @@
 ---
 name: linear-refine-ticket
-description: Refine Linear tickets tagged "refine" or in triage. Pull GitHub context, clarify scope, add acceptance criteria, improve descriptions. Triggers - refine ticket, ticket refinement, triage, improve ticket.
+description: "Refine Linear tickets tagged \"refine\" or in triage. Pull GitHub context, clarify scope, add acceptance criteria, improve descriptions. Triggers - refine ticket, ticket refinement, triage, improve ticket."
 ---
 
 # Linear Refine Ticket

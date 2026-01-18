@@ -1,6 +1,6 @@
 ---
 name: session
-description: Use when work spans multiple phases, requires context handoff, or exceeds single conversation scope. Triggers - session, multi-phase, handoff, continue, resume, checkpoint, long-running.
+description: "Use when work spans multiple phases, requires context handoff, or exceeds single conversation scope. Triggers - session, multi-phase, handoff, continue, resume, checkpoint, long-running."
 ---
 
 # Session Management

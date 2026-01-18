@@ -1,6 +1,6 @@
 ---
 name: improving-jarvis
-description: Use when identifying opportunities to improve the Jarvis system, adding patterns, creating skills, or updating rules based on repeated guidance.
+description: "Use when identifying opportunities to improve the Jarvis system, adding patterns, creating skills, or updating rules based on repeated guidance."
 ---
 
 # Improving Jarvis

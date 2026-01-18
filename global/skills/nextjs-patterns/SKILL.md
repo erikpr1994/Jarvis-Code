@@ -1,6 +1,6 @@
 ---
 name: nextjs-patterns
-description: Next.js App Router patterns, server actions, caching, and routing. Use when working with Next.js 14+ features.
+description: "Next.js App Router patterns, server actions, caching, and routing. Use when working with Next.js 14+ features."
 ---
 
 # Next.js Patterns

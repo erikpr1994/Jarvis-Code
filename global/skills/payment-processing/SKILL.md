@@ -1,6 +1,6 @@
 ---
 name: payment-processing
-description: Use when implementing payment flows with Stripe or Polar. Covers checkout integration, webhooks, subscriptions, and error handling.
+description: "Use when implementing payment flows with Stripe or Polar. Covers checkout integration, webhooks, subscriptions, and error handling."
 ---
 
 # Payment Processing

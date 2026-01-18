@@ -1,6 +1,6 @@
 ---
 name: build-in-public
-description: Use when sharing development progress publicly. Covers progress sharing, changelog writing, social media updates, community engagement, and milestone announcements.
+description: "Use when sharing development progress publicly. Covers progress sharing, changelog writing, social media updates, community engagement, and milestone announcements."
 ---
 
 # Build in Public

@@ -1,6 +1,6 @@
 ---
 name: pr-workflow
-description: Use when creating PRs, managing stacked PRs, or completing feature branches.
+description: "Use when creating PRs, managing stacked PRs, or completing feature branches."
 ---
 
 # PR Workflow

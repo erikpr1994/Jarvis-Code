@@ -1,6 +1,6 @@
 ---
 name: answer-linear-questions
-description: Answer Linear issues tagged with "question". Explores codebase and produces decisions - never code changes or PRs. Triggers - answer questions, linear questions, question triage.
+description: "Answer Linear issues tagged with \"question\". Explores codebase and produces decisions - never code changes or PRs. Triggers - answer questions, linear questions, question triage."
 ---
 
 # Answer Linear Questions

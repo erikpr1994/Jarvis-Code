@@ -1,6 +1,6 @@
 ---
 name: fix-linear-bugs
-description: Fix Linear issues tagged with "bug". Either produces a PR with the fix or explains why it won't be fixed. Triggers - fix bugs, linear bugs, bug triage, resolve bugs.
+description: "Fix Linear issues tagged with \"bug\". Either produces a PR with the fix or explains why it won't be fixed. Triggers - fix bugs, linear bugs, bug triage, resolve bugs."
 ---
 
 # Fix Linear Bugs

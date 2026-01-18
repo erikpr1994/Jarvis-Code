@@ -1,6 +1,6 @@
 ---
 name: create-linear-spec
-description: Create a Linear Project from requirements using Discovery Mode brainstorming. Same process as /spec but outputs to Linear instead of file. Triggers - linear spec, spec to linear, create project from spec, linear project.
+description: "Create a Linear Project from requirements using Discovery Mode brainstorming. Same process as /spec but outputs to Linear instead of file. Triggers - linear spec, spec to linear, create project from spec, linear project."
 ---
 
 # Create Linear Spec

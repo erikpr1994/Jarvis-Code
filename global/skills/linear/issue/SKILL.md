@@ -1,6 +1,6 @@
 ---
 name: linear
-description: Intelligent work tracking. Automatically classifies issues, gathers codebase context, and creates well-formed Linear tickets. Triggers - linear, issue, track, bug, todo, fix, question, debt.
+description: "Intelligent work tracking. Automatically classifies issues, gathers codebase context, and creates well-formed Linear tickets. Triggers - linear, issue, track, bug, todo, fix, question, debt."
 ---
 
 # Linear Issue Management

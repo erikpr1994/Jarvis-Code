@@ -1,6 +1,6 @@
 ---
 name: test-driven-development
-description: Use when implementing any feature, bugfix, or code change. Invoke BEFORE writing implementation code. The Iron Law - no production code without a failing test first.
+description: "Use when implementing any feature, bugfix, or code change. Invoke BEFORE writing implementation code. The Iron Law - no production code without a failing test first."
 ---
 
 # Test-Driven Development (TDD)

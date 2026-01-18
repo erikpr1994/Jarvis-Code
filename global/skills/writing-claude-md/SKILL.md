@@ -1,6 +1,6 @@
 ---
 name: writing-claude-md
-description: Use when creating or updating CLAUDE.md files at any level (global, project, folder). Covers inheritance rules and token budgets.
+description: "Use when creating or updating CLAUDE.md files at any level (global, project, folder). Covers inheritance rules and token budgets."
 ---
 
 # Writing CLAUDE.md Files

@@ -1,6 +1,6 @@
 ---
 name: execute
-description: Use when following a written plan or task list. Checkpoint verification at each step. Triggers - execute plan, follow plan, implement plan, next step, continue, proceed.
+description: "Use when following a written plan or task list. Checkpoint verification at each step. Triggers - execute plan, follow plan, implement plan, next step, continue, proceed."
 ---
 
 # Executing Plans

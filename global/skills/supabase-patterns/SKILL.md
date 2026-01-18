@@ -1,6 +1,6 @@
 ---
 name: supabase-patterns
-description: Supabase client setup, Row Level Security (RLS), edge functions, and real-time. Use when working with Supabase database, auth, or edge functions.
+description: "Supabase client setup, Row Level Security (RLS), edge functions, and real-time. Use when working with Supabase database, auth, or edge functions."
 ---
 
 # Supabase Patterns

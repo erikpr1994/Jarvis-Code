@@ -1,6 +1,6 @@
 ---
 name: api-design
-description: REST/GraphQL API design patterns, error handling, and versioning. Use when designing APIs, handling errors, or making API architecture decisions.
+description: "REST/GraphQL API design patterns, error handling, and versioning. Use when designing APIs, handling errors, or making API architecture decisions."
 ---
 
 # API Design Patterns

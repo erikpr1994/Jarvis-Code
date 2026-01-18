@@ -1,6 +1,6 @@
 ---
 name: writing-commands
-description: Use when creating slash commands, user-invokable shortcuts, or command-based workflows with frontmatter and skill delegation.
+description: "Use when creating slash commands, user-invokable shortcuts, or command-based workflows with frontmatter and skill delegation."
 ---
 
 # Writing Commands

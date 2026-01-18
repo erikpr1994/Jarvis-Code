@@ -1,6 +1,6 @@
 ---
 name: writing-rules
-description: Use when creating or updating rules in CLAUDE.md, settings, or rule files. Covers confidence thresholds and false positive prevention.
+description: "Use when creating or updating rules in CLAUDE.md, settings, or rule files. Covers confidence thresholds and false positive prevention."
 ---
 
 # Writing Rules

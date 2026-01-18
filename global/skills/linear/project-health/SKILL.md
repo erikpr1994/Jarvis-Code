@@ -1,6 +1,6 @@
 ---
 name: linear-project-health
-description: Generate health report for a Linear project. Progress vs plan, blocked issues, overdue items, risk assessment. Triggers - project health, project status, project report.
+description: "Generate health report for a Linear project. Progress vs plan, blocked issues, overdue items, risk assessment. Triggers - project health, project status, project report."
 ---
 
 # Linear Project Health

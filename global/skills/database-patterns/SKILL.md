@@ -1,6 +1,6 @@
 ---
 name: database-patterns
-description: Schema design, migrations, queries, and indexing strategies. Use when designing database schemas, writing migrations, or optimizing queries.
+description: "Schema design, migrations, queries, and indexing strategies. Use when designing database schemas, writing migrations, or optimizing queries."
 ---
 
 # Database Patterns

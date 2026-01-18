@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Use when you have a spec or requirements for a multi-step task, before touching code. Triggers - plan, design, architect, implementation plan, spec, requirements.
+description: "Use when you have a spec or requirements for a multi-step task, before touching code. Triggers - plan, design, architect, implementation plan, spec, requirements."
 ---
 
 # Writing Plans

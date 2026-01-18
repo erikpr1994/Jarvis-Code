@@ -1,6 +1,6 @@
 ---
 name: react-patterns
-description: React component patterns, hooks, server components, and composition. Use when building React components or deciding between patterns.
+description: "React component patterns, hooks, server components, and composition. Use when building React components or deciding between patterns."
 ---
 
 # React Patterns
