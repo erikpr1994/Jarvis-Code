@@ -1,6 +1,6 @@
 ---
 name: brainstorm
-description: Use when generating ideas, exploring options, defining requirements, or making decisions. Covers both discovery (what to build) and approach (how to build). Triggers - ideate, brainstorm, options, alternatives, explore, what if, could we, ways to, approaches, spec, requirements, user story.
+description: "Use when generating ideas, exploring options, defining requirements, or making decisions. Covers both discovery (what to build) and approach (how to build). Triggers - ideate, brainstorm, options, alternatives, explore, what if, could we, ways to, approaches, spec, requirements, user story."
 ---
 
 # Brainstorming

@@ -1,6 +1,6 @@
 ---
 name: git-expert
-description: Use when working with git operations including commits, branches, worktrees, PRs, and Graphite stacked PRs. Covers the full git workflow from feature isolation to PR submission.
+description: "Use when working with git operations including commits, branches, worktrees, PRs, and Graphite stacked PRs. Covers the full git workflow from feature isolation to PR submission."
 ---
 
 # Git Expert

@@ -1,6 +1,6 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing. Invoke BEFORE committing, creating PRs, or making any success claims. The Iron Law - evidence before assertions, always.
+description: "Use when about to claim work is complete, fixed, or passing. Invoke BEFORE committing, creating PRs, or making any success claims. The Iron Law - evidence before assertions, always."
 ---
 
 # Verification Before Completion

@@ -1,6 +1,6 @@
 ---
 name: typescript-patterns
-description: TypeScript idioms, type guards, utility types, and type-safe patterns. Use when working with TypeScript types, generics, or type safety issues.
+description: "TypeScript idioms, type guards, utility types, and type-safe patterns. Use when working with TypeScript types, generics, or type safety issues."
 ---
 
 # TypeScript Patterns

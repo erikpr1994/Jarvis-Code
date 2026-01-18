@@ -1,6 +1,6 @@
 ---
 name: commit-discipline
-description: Use when making commits. Conventional commits, atomic changes.
+description: "Use when making commits. Conventional commits, atomic changes."
 ---
 
 # Commit Discipline

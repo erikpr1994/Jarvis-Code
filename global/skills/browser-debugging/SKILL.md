@@ -1,6 +1,6 @@
 ---
 name: browser-debugging
-description: Use when debugging frontend issues in the browser. Covers DevTools usage, network debugging, performance profiling, and console patterns.
+description: "Use when debugging frontend issues in the browser. Covers DevTools usage, network debugging, performance profiling, and console patterns."
 ---
 
 # Browser Debugging

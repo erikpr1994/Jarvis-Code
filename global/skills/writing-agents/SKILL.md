@@ -1,6 +1,6 @@
 ---
 name: writing-agents
-description: Use when creating new agents, defining agent roles, or configuring agent handoff protocols and model selection.
+description: "Use when creating new agents, defining agent roles, or configuring agent handoff protocols and model selection."
 ---
 
 # Writing Agents

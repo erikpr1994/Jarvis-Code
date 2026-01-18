@@ -1,6 +1,6 @@
 ---
 name: pr-feedback-tracker
-description: Process PR review feedback, categorize comments, create tracking issues for deferred items, and resolve conversations. Can be invoked standalone or during submit-pr Phase 6.
+description: "Process PR review feedback, categorize comments, create tracking issues for deferred items, and resolve conversations. Can be invoked standalone or during submit-pr Phase 6."
 ---
 
 # PR Feedback Tracker

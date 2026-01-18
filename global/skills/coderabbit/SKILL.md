@@ -1,6 +1,6 @@
 ---
 name: coderabbit
-description: Use when working with CodeRabbit AI code review. Covers triggering reviews, interpreting feedback, addressing comments, and PR workflow integration.
+description: "Use when working with CodeRabbit AI code review. Covers triggering reviews, interpreting feedback, addressing comments, and PR workflow integration."
 ---
 
 # CodeRabbit Integration

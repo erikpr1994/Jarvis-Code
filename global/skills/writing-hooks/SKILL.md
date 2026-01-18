@@ -1,6 +1,6 @@
 ---
 name: writing-hooks
-description: Use when creating hooks for prompt interception, permission handling, or event-triggered automation with timeout and bypass handling.
+description: "Use when creating hooks for prompt interception, permission handling, or event-triggered automation with timeout and bypass handling."
 ---
 
 # Writing Hooks

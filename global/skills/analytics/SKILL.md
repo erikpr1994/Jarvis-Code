@@ -1,6 +1,6 @@
 ---
 name: analytics
-description: Use when implementing analytics, event tracking, or setting up dashboards. Covers privacy-first tracking, event patterns, and common analytics tools.
+description: "Use when implementing analytics, event tracking, or setting up dashboards. Covers privacy-first tracking, event patterns, and common analytics tools."
 ---
 
 # Analytics Integration

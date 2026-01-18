@@ -1,6 +1,6 @@
 ---
 name: linear-backlog-grooming
-description: Review and clean up the Linear backlog. Close stale issues, update priorities, merge duplicates, request clarification. Triggers - backlog grooming, backlog cleanup, groom backlog.
+description: "Review and clean up the Linear backlog. Close stale issues, update priorities, merge duplicates, request clarification. Triggers - backlog grooming, backlog cleanup, groom backlog."
 ---
 
 # Linear Backlog Grooming

@@ -1,6 +1,6 @@
 ---
 name: create-linear-design
-description: Create a Linear Document with technical design using Approach Mode brainstorming. Same process as /brainstorm how, outputs to Linear Document. Triggers - linear design, design to linear, technical design, architecture decision.
+description: "Create a Linear Document with technical design using Approach Mode brainstorming. Same process as /brainstorm how, outputs to Linear Document. Triggers - linear design, design to linear, technical design, architecture decision."
 ---
 
 # Create Linear Design

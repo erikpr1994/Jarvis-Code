@@ -1,6 +1,6 @@
 ---
 name: create-linear-plan
-description: Create Linear Issues from requirements using the plan process. Same process as /plan but outputs to Linear Issues instead of file. Triggers - linear plan, plan to linear, create issues from plan.
+description: "Create Linear Issues from requirements using the plan process. Same process as /plan but outputs to Linear Issues instead of file. Triggers - linear plan, plan to linear, create issues from plan."
 ---
 
 # Create Linear Plan

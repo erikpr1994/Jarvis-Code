@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: Use when designing UI components, implementing accessibility, responsive layouts, or integrating with design systems.
+description: "Use when designing UI components, implementing accessibility, responsive layouts, or integrating with design systems."
 ---
 
 # Frontend Design

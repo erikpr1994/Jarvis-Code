@@ -1,6 +1,6 @@
 ---
 name: idea-to-product
-description: Use when rapidly prototyping ideas into products. Covers MVP scoping, feature prioritization, tech stack selection, timeline estimation, and launch checklist.
+description: "Use when rapidly prototyping ideas into products. Covers MVP scoping, feature prioritization, tech stack selection, timeline estimation, and launch checklist."
 ---
 
 # Idea to Product

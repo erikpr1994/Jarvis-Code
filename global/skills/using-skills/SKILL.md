@@ -1,6 +1,6 @@
 ---
 name: using-skills
-description: Core skill for understanding and using the Jarvis skill system. Loaded at every session start.
+description: "Core skill for understanding and using the Jarvis skill system. Loaded at every session start."
 type: meta
 priority: critical
 ---

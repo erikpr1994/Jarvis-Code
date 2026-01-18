@@ -1,6 +1,6 @@
 ---
 name: resolve-linear-tech-debt
-description: Resolve Linear issues tagged with "tech-debt". Decide to address now, schedule, or close. Triggers - resolve tech debt, technical debt, debt triage, cleanup.
+description: "Resolve Linear issues tagged with \"tech-debt\". Decide to address now, schedule, or close. Triggers - resolve tech debt, technical debt, debt triage, cleanup."
 ---
 
 # Resolve Linear Tech Debt

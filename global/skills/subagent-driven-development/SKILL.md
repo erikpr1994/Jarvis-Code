@@ -1,6 +1,6 @@
 ---
 name: subagent-driven-development
-description: Use for complex features requiring multi-stage review, architectural work, or multi-file changes. Orchestrates specialized agents for coordinated implementation.
+description: "Use for complex features requiring multi-stage review, architectural work, or multi-file changes. Orchestrates specialized agents for coordinated implementation."
 ---
 
 # Subagent-Driven Development

@@ -1,6 +1,6 @@
 ---
 name: writing-design
-description: Use when creating design documents, technical specs, architecture decisions, or system documentation. Covers structure, audience, and validation.
+description: "Use when creating design documents, technical specs, architecture decisions, or system documentation. Covers structure, audience, and validation."
 ---
 
 # Writing Design Documents

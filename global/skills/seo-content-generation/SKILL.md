@@ -1,6 +1,6 @@
 ---
 name: seo-content-generation
-description: Use when optimizing for search engines, creating content, or implementing structured data. Covers meta tags, schema markup, and content structure.
+description: "Use when optimizing for search engines, creating content, or implementing structured data. Covers meta tags, schema markup, and content structure."
 ---
 
 # SEO & Content Generation

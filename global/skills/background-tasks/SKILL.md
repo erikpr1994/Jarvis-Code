@@ -1,6 +1,6 @@
 ---
 name: background-tasks
-description: Efficient handling of long-running commands. Use when running tests, builds, or any command that takes more than a few seconds. Prevents token waste from polling.
+description: "Efficient handling of long-running commands. Use when running tests, builds, or any command that takes more than a few seconds. Prevents token waste from polling."
 ---
 
 # Background Tasks

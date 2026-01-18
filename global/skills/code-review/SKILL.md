@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Use when reviewing code changes or conducting PR reviews.
+description: "Use when reviewing code changes or conducting PR reviews."
 ---
 
 # Code Review

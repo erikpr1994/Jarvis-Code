@@ -1,6 +1,6 @@
 ---
 name: mcp-integration
-description: Use when working with MCP servers for enhanced capabilities like documentation retrieval, database access, or specialized tools. Triggers - mcp, context7, documentation lookup, external docs.
+description: "Use when working with MCP servers for enhanced capabilities like documentation retrieval, database access, or specialized tools. Triggers - mcp, context7, documentation lookup, external docs."
 ---
 
 # MCP Integration Patterns

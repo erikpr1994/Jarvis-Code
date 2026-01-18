@@ -1,6 +1,6 @@
 ---
 name: debug
-description: Use when encountering bugs, test failures, or unexpected behavior. Hypothesis-driven debugging.
+description: "Use when encountering bugs, test failures, or unexpected behavior. Hypothesis-driven debugging."
 ---
 
 # Systematic Debugging

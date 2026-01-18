@@ -1,6 +1,6 @@
 ---
 name: git-worktrees
-description: Use for parallel branch development with workspace isolation.
+description: "Use for parallel branch development with workspace isolation."
 ---
 
 # Git Worktrees

@@ -1,6 +1,6 @@
 ---
 name: testing-patterns
-description: Vitest, Playwright, and testing strategies. Use when writing tests, setting up test infrastructure, or debugging test failures.
+description: "Vitest, Playwright, and testing strategies. Use when writing tests, setting up test infrastructure, or debugging test failures."
 ---
 
 # Testing Patterns

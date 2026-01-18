@@ -1,6 +1,6 @@
 ---
 name: crawl-cli
-description: Use when implementing web scraping, data extraction, or automated browser interactions. Covers Puppeteer, Playwright, rate limiting, and ethical scraping.
+description: "Use when implementing web scraping, data extraction, or automated browser interactions. Covers Puppeteer, Playwright, rate limiting, and ethical scraping."
 ---
 
 # Web Crawling & Data Extraction

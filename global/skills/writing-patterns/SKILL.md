@@ -1,6 +1,6 @@
 ---
 name: writing-patterns
-description: Use when documenting reusable code patterns, architectural approaches, or established solutions with keyword triggers and anti-patterns.
+description: "Use when documenting reusable code patterns, architectural approaches, or established solutions with keyword triggers and anti-patterns."
 ---
 
 # Writing Patterns

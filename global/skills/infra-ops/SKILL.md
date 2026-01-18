@@ -1,6 +1,6 @@
 ---
 name: infra-ops
-description: Use when working with infrastructure, deployments, Docker, CI/CD, or server management. Covers containerization, deployment workflows, and DevOps patterns.
+description: "Use when working with infrastructure, deployments, Docker, CI/CD, or server management. Covers containerization, deployment workflows, and DevOps patterns."
 ---
 
 # Infrastructure Operations
