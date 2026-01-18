@@ -101,6 +101,24 @@ The installer will prompt you to configure which hooks and rules you want enable
 | `/commit` | Smart commit with verification |
 | `/skills` | List available skills |
 
+## Codex Integration
+
+Codex reads repo-level `AGENTS.md` and discovers skills in `.codex/skills/`. To make Jarvis skills available in Codex, sync them from `global/skills` (copy is recommended; Codex ignores symlinked directories):
+
+```bash
+./scripts/codex-sync.sh --scope repo --mode copy
+# Or install user-wide:
+./scripts/codex-sync.sh --scope user --mode copy
+```
+
+Jarvis agents/commands live under `global/agents` and `global/commands`. Codex doesn’t load those directly, so reference them via skills or docs as needed.
+
+To approximate Claude hooks in Codex, install the rules template:
+
+```bash
+./scripts/codex-install-rules.sh
+```
+
 ## Configuration
 
 ### Interactive Setup
