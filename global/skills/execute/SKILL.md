@@ -22,6 +22,7 @@ Plans fail in execution, not conception. This skill ensures disciplined executio
 ## The Execution Loop
 
 ```
+0. SYNC    -> Ensure workspace is current with origin/main
 1. LOCATE  -> Find current step in plan
 2. VERIFY  -> Check prerequisites are met
 3. EXECUTE -> Complete the step (and only this step)
@@ -29,6 +30,38 @@ Plans fail in execution, not conception. This skill ensures disciplined executio
 5. UPDATE  -> Mark complete, document deviations
 6. REPEAT  -> Move to next step
 ```
+
+## Step 0: Sync - Create Worktree from Latest Origin
+
+Before starting ANY execution, create an isolated worktree from the latest remote state.
+
+**Use the git-worktrees skill** for the full workflow. Key points:
+
+```bash
+# ALWAYS fetch first
+git fetch origin
+
+# Create worktree from origin/main (NOT local main)
+git worktree add .worktrees/feature-name origin/main -b feature/feature-name
+cd .worktrees/feature-name
+
+# Install dependencies and verify baseline
+```
+
+```markdown
+## Workspace Setup Check
+
+- [ ] Ran `git fetch origin`
+- [ ] Created worktree from `origin/main` (not local main)
+- [ ] Dependencies installed
+- [ ] Baseline tests pass
+```
+
+**Why `origin/main`?** Local `main` may be behind remote. Always base new work on the latest remote state to avoid merge conflicts and building on stale code.
+
+**NEVER skip this step.** Starting execution on stale code leads to painful rebases and wasted effort.
+
+**See:** git-worktrees skill for full worktree workflow.
 
 ## Step 1: Locate - Find Current Step
 
@@ -347,6 +380,7 @@ I'm here, let me add password reset since it's related..."
 
 ## Red Flags - STOP and Start Over
 
+- **Starting execution without a worktree from `origin/main`**
 - Executing steps out of order
 - Skipping prerequisite verification
 - Making changes not in current step
@@ -363,6 +397,12 @@ I'm here, let me add password reset since it's related..."
 
 ## Verification Checklist
 
+Before starting execution:
+
+- [ ] Ran `git fetch origin`
+- [ ] Created worktree from `origin/main` (see git-worktrees skill)
+- [ ] Dependencies installed and baseline tests pass
+
 Before marking a step complete:
 
 - [ ] Located current step in plan
@@ -378,17 +418,20 @@ Before marking a step complete:
 ## Quick Reference
 
 ```
+FIRST:       Sync with origin/main
 BEFORE step: Check prerequisites
 DURING step: Only current scope
 AFTER step:  Verify output
 ALWAYS:      Document deviations
 NEVER:       Skip checkpoints
 NEVER:       Multiple steps at once
+NEVER:       Execute on stale code
 ```
 
 ## Integration
 
 **Pairs with:**
+- **git-worktrees** - Create isolated workspace from origin/main (Step 0)
 - **plan** - Create plans before execution
 - **brainstorm** - Inform execution decisions
 - **verification** - Verify each checkpoint

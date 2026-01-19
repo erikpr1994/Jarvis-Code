@@ -10,9 +10,10 @@ Work on multiple branches simultaneously. Each worktree = isolated workspace.
 ## Workflow
 
 ```
+FETCH   -> git fetch origin (ensure latest remote state)
 LOCATE  -> Find .worktrees/ or worktrees/
 VERIFY  -> Ensure directory is gitignored
-CREATE  -> git worktree add .worktrees/name -b branch/name
+CREATE  -> git worktree add .worktrees/name origin/main -b branch/name
 SETUP   -> Install dependencies
 BASELINE -> Verify tests pass
 WORK    -> Implement in isolation
@@ -22,14 +23,17 @@ CLEANUP -> git worktree remove when done
 ## Create Worktree
 
 ```bash
+# ALWAYS fetch first to get latest remote state
+git fetch origin
+
 # Check existing directories
 ls -d .worktrees worktrees 2>/dev/null
 
 # Verify gitignored
 git check-ignore -q .worktrees || echo ".worktrees/" >> .gitignore
 
-# Create
-git worktree add .worktrees/feature-auth -b feature/auth
+# Create from origin/main (NOT local main) to ensure latest code
+git worktree add .worktrees/feature-auth origin/main -b feature/auth
 cd .worktrees/feature-auth
 
 # Setup
@@ -38,6 +42,8 @@ cd .worktrees/feature-auth
 # Baseline
 npm test  # Must pass before changes
 ```
+
+**Why `origin/main`?** Local `main` may be behind remote. Always base new work on the latest remote state to avoid merge conflicts and building on stale code.
 
 ## Cleanup
 
@@ -67,6 +73,8 @@ git worktree prune                         # Clean stale
 
 ## Red Flags
 
+- **Skipping `git fetch origin` before creating worktree**
+- **Creating from local `main` instead of `origin/main`**
 - Creating without verifying gitignored
 - Proceeding with failing baseline
 - Leaving stale worktrees
