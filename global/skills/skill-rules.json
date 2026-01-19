@@ -825,6 +825,31 @@
         ]
       }
     },
+    "gh-cli": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "path": "gh-cli/SKILL.md",
+      "description": "GitHub CLI patterns for PR reviews, comments, and API operations",
+      "promptTriggers": {
+        "keywords": [
+          "gh api",
+          "gh pr",
+          "github api",
+          "review thread",
+          "resolve thread",
+          "pr comment",
+          "reply to comment",
+          "graphql github"
+        ],
+        "intentPatterns": [
+          "(gh|github).*?(api|cli)",
+          "(review|pr).*?(thread|comment)",
+          "(resolve|reply).*?(thread|comment)",
+          "graphql.*?(github|pr|review)"
+        ]
+      }
+    },
     "submit-pr": {
       "type": "domain",
       "enforcement": "suggest",
