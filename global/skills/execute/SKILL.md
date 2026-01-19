@@ -31,42 +31,37 @@ Plans fail in execution, not conception. This skill ensures disciplined executio
 6. REPEAT  -> Move to next step
 ```
 
-## Step 0: Sync - Ensure Workspace is Current
+## Step 0: Sync - Create Worktree from Latest Origin
 
-Before starting ANY execution, ensure your workspace has the latest changes:
+Before starting ANY execution, create an isolated worktree from the latest remote state.
+
+**Use the git-worktrees skill** for the full workflow. Key points:
 
 ```bash
-# Fetch latest from remote
+# ALWAYS fetch first
 git fetch origin
 
-# Check if behind origin/main
-git log HEAD..origin/main --oneline
+# Create worktree from origin/main (NOT local main)
+git worktree add .worktrees/feature-name origin/main -b feature/feature-name
+cd .worktrees/feature-name
+
+# Install dependencies and verify baseline
 ```
 
 ```markdown
-## Workspace Sync Check
+## Workspace Setup Check
 
-**Branch**: feature/auth-system
-**Base**: main
-**Remote Status**:
-- [ ] Fetched latest from origin
-- [ ] Branch is up to date with origin/main (or rebased)
-- [ ] No conflicting changes in progress
-
-**If behind origin/main**:
-1. Stash or commit current work
-2. Rebase: `git rebase origin/main`
-3. Resolve any conflicts
-4. Continue execution
+- [ ] Ran `git fetch origin`
+- [ ] Created worktree from `origin/main` (not local main)
+- [ ] Dependencies installed
+- [ ] Baseline tests pass
 ```
 
-**Why this matters:**
-- Prevents merge conflicts later
-- Ensures you're building on latest code
-- Avoids duplicate work if someone else made similar changes
-- Catches breaking changes early
+**Why `origin/main`?** Local `main` may be behind remote. Always base new work on the latest remote state to avoid merge conflicts and building on stale code.
 
 **NEVER skip this step.** Starting execution on stale code leads to painful rebases and wasted effort.
+
+**See:** git-worktrees skill for full worktree workflow.
 
 ## Step 1: Locate - Find Current Step
 
@@ -385,7 +380,7 @@ I'm here, let me add password reset since it's related..."
 
 ## Red Flags - STOP and Start Over
 
-- **Starting execution without syncing with origin/main**
+- **Starting execution without a worktree from `origin/main`**
 - Executing steps out of order
 - Skipping prerequisite verification
 - Making changes not in current step
@@ -404,8 +399,9 @@ I'm here, let me add password reset since it's related..."
 
 Before starting execution:
 
-- [ ] Fetched latest from origin
-- [ ] Workspace is current with origin/main (rebased if needed)
+- [ ] Ran `git fetch origin`
+- [ ] Created worktree from `origin/main` (see git-worktrees skill)
+- [ ] Dependencies installed and baseline tests pass
 
 Before marking a step complete:
 
@@ -435,6 +431,7 @@ NEVER:       Execute on stale code
 ## Integration
 
 **Pairs with:**
+- **git-worktrees** - Create isolated workspace from origin/main (Step 0)
 - **plan** - Create plans before execution
 - **brainstorm** - Inform execution decisions
 - **verification** - Verify each checkpoint
