@@ -22,6 +22,7 @@ Plans fail in execution, not conception. This skill ensures disciplined executio
 ## The Execution Loop
 
 ```
+0. SYNC    -> Ensure workspace is current with origin/main
 1. LOCATE  -> Find current step in plan
 2. VERIFY  -> Check prerequisites are met
 3. EXECUTE -> Complete the step (and only this step)
@@ -29,6 +30,43 @@ Plans fail in execution, not conception. This skill ensures disciplined executio
 5. UPDATE  -> Mark complete, document deviations
 6. REPEAT  -> Move to next step
 ```
+
+## Step 0: Sync - Ensure Workspace is Current
+
+Before starting ANY execution, ensure your workspace has the latest changes:
+
+```bash
+# Fetch latest from remote
+git fetch origin
+
+# Check if behind origin/main
+git log HEAD..origin/main --oneline
+```
+
+```markdown
+## Workspace Sync Check
+
+**Branch**: feature/auth-system
+**Base**: main
+**Remote Status**:
+- [ ] Fetched latest from origin
+- [ ] Branch is up to date with origin/main (or rebased)
+- [ ] No conflicting changes in progress
+
+**If behind origin/main**:
+1. Stash or commit current work
+2. Rebase: `git rebase origin/main`
+3. Resolve any conflicts
+4. Continue execution
+```
+
+**Why this matters:**
+- Prevents merge conflicts later
+- Ensures you're building on latest code
+- Avoids duplicate work if someone else made similar changes
+- Catches breaking changes early
+
+**NEVER skip this step.** Starting execution on stale code leads to painful rebases and wasted effort.
 
 ## Step 1: Locate - Find Current Step
 
@@ -347,6 +385,7 @@ I'm here, let me add password reset since it's related..."
 
 ## Red Flags - STOP and Start Over
 
+- **Starting execution without syncing with origin/main**
 - Executing steps out of order
 - Skipping prerequisite verification
 - Making changes not in current step
@@ -363,6 +402,11 @@ I'm here, let me add password reset since it's related..."
 
 ## Verification Checklist
 
+Before starting execution:
+
+- [ ] Fetched latest from origin
+- [ ] Workspace is current with origin/main (rebased if needed)
+
 Before marking a step complete:
 
 - [ ] Located current step in plan
@@ -378,12 +422,14 @@ Before marking a step complete:
 ## Quick Reference
 
 ```
+FIRST:       Sync with origin/main
 BEFORE step: Check prerequisites
 DURING step: Only current scope
 AFTER step:  Verify output
 ALWAYS:      Document deviations
 NEVER:       Skip checkpoints
 NEVER:       Multiple steps at once
+NEVER:       Execute on stale code
 ```
 
 ## Integration
