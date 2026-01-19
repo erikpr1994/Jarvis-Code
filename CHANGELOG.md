@@ -5,6 +5,13 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0](https://github.com/erikpr1994/Jarvis-Code/compare/v3.1.3...v3.2.0) (2026-01-19)
+
+
+### Features
+
+* **skills:** add gh-cli skill for GitHub API patterns ([#80](https://github.com/erikpr1994/Jarvis-Code/issues/80)) ([5bad716](https://github.com/erikpr1994/Jarvis-Code/commit/5bad716192674e05966424dd37c8bfa963b2bbd7))
+
 ## [3.1.3](https://github.com/erikpr1994/Jarvis-Code/compare/v3.1.2...v3.1.3) (2026-01-19)
 
 
