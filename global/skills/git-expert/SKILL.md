@@ -1,13 +1,13 @@
 ---
 name: git-expert
-description: "Use when working with git operations including commits, branches, worktrees, PRs, and Graphite stacked PRs. Covers the full git workflow from feature isolation to PR submission."
+description: "Use when working with git operations including commits, branches, worktrees, and PRs. Covers the full git workflow from feature isolation to PR submission."
 ---
 
 # Git Expert
 
 ## Overview
 
-Expert git workflow skill covering isolation (worktrees), commits, branching, and PR submission with support for both traditional Git and Graphite stacked PRs.
+Expert git workflow skill covering isolation (worktrees), commits, branching, and PR submission using GitHub CLI (gh).
 
 **Core principles:**
 - Isolation: Work in worktrees to avoid context pollution
@@ -292,92 +292,6 @@ git worktree remove .worktrees/my-feature
 
 ---
 
-## 4. Graphite Stacked PRs
-
-### Overview
-
-Graphite enables stacked PRs - a workflow where related changes are organized as dependent branches, each becoming a focused PR that can be reviewed and merged independently.
-
-### When to Use Graphite
-
-- Complex features that benefit from incremental review
-- Changes that build on each other logically
-- When you want faster PR review cycles
-- Team uses stacked PR workflow
-
-### Graphite Commands
-
-```bash
-# Create new branch in stack
-gt branch create feature-part-1
-
-# Track existing branch
-gt branch track
-
-# Move to parent branch
-gt branch checkout --parent
-
-# Move to child branch
-gt branch checkout --child
-
-# See stack structure
-gt log
-
-# Submit stack for review
-gt stack submit
-
-# Sync with remote
-gt sync
-```
-
-### Stacking Workflow
-
-```bash
-# 1. Start from main
-gt branch create auth-types
-# Make changes...
-git add . && git commit -m "feat: add auth type definitions"
-
-# 2. Stack on top
-gt branch create auth-logic
-# Make changes that depend on auth-types...
-git add . && git commit -m "feat: implement auth validation"
-
-# 3. Stack another
-gt branch create auth-api
-# Make changes that depend on auth-logic...
-git add . && git commit -m "feat: add auth API endpoints"
-
-# 4. View the stack
-gt log
-
-# 5. Submit all PRs in stack
-gt stack submit
-```
-
-### Rebasing Stack
-
-When base changes:
-
-```bash
-# Sync entire stack with remote
-gt sync
-
-# Restack after conflicts
-gt restack
-```
-
-### Graphite vs Standard Git
-
-| Scenario | Use Graphite | Use Standard Git |
-|----------|--------------|------------------|
-| Large feature, incremental review | Yes | No |
-| Single isolated change | No | Yes |
-| Team uses stacked PRs | Yes | No |
-| Quick hotfix | No | Yes |
-
----
-
 ## Branch Naming
 
 | Type | Pattern | Example |
@@ -453,10 +367,6 @@ git commit -m "type: description"
 # Standard PR
 git push -u origin feature/name
 gh pr create
-
-# Graphite stack
-gt branch create name
-gt stack submit
 
 # Cleanup
 git worktree remove .worktrees/feature

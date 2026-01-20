@@ -3,7 +3,7 @@
 # Event: PreToolUse
 # Tools: Bash
 # Purpose: Block direct PR submission commands and pushes to feature branches - require submit-pr skill
-# Blocks: gt submit, gh pr create, hub pull-request, git push to feature branches
+# Blocks: gh pr create, hub pull-request, git push to feature branches
 
 set -euo pipefail
 
@@ -64,20 +64,7 @@ log_debug "Checking command: $COMMAND"
 # ============================================================================
 
 # Pattern matching for PR submission commands
-# Matches: gt submit, gh pr create, and variations
-
-# Check for Graphite submit command
-if echo "$COMMAND" | grep -qE '\bgt\s+submit\b'; then
-    log_warn "Blocked direct gt submit command"
-    cat << EOF
-{
-  "decision": "block",
-  "reason": "DIRECT SUBMIT BLOCKED: Use the 'submit-pr' skill instead.\n\nTO FIX: Use the Skill tool with skill: \"submit-pr\" to load the PR submission workflow.\n\nThe submit-pr skill provides:\n- Pre-submission checklist (tests, lint, typecheck)\n- PR description template\n- CodeRabbit integration\n- Review request process\n\nDO NOT just add the bypass variable - actually invoke the skill to follow the proper process."
-}
-EOF
-    finalize_hook 1
-    exit 0
-fi
+# Matches: gh pr create and variations
 
 # Check for GitHub CLI PR creation
 if echo "$COMMAND" | grep -qE '\bgh\s+pr\s+create\b'; then
