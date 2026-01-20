@@ -88,7 +88,6 @@ Orchestrates the full PR lifecycle: pre-submit verification → local sub-agent 
 - Creating your first PR in a new repository
 - Unsure about PR description format or best practices
 - Need comprehensive pre-push quality checks
-- Preparing stacked PRs with Graphite
 
 **Do NOT use when:**
 - Work is still in progress (use draft PR instead)
@@ -643,16 +642,6 @@ gh pr create --draft --title "WIP: feature implementation"
 
 ```bash
 gh pr ready
-```
-
-### Stacked PRs with Graphite
-
-```bash
-# Submit entire stack
-CLAUDE_SUBMIT_PR_SKILL=1 gt stack submit
-
-# View stack status
-gt log
 ```
 
 ### Quick PR (Skip Conditional Sub-Agents)
