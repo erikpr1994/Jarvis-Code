@@ -5,6 +5,13 @@ All notable changes to Jarvis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0](https://github.com/erikpr1994/Jarvis-Code/compare/v3.2.0...v3.3.0) (2026-01-20)
+
+
+### Features
+
+* **hooks:** add soft suggestion hook for gh-cli skill ([#82](https://github.com/erikpr1994/Jarvis-Code/issues/82)) ([887d06d](https://github.com/erikpr1994/Jarvis-Code/commit/887d06df1124b9fe185a1c3eb1c29daa0878490f))
+
 ## [3.2.0](https://github.com/erikpr1994/Jarvis-Code/compare/v3.1.3...v3.2.0) (2026-01-19)
 
 
