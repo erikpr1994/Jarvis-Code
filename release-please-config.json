@@ -5,7 +5,7 @@
   "bump-patch-for-minor-pre-major": true,
   "extra-files": [
     {
-      "type": "generic",
+      "type": "plain-text",
       "path": "VERSION"
     }
   ],
