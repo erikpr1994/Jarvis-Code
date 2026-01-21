@@ -141,6 +141,11 @@
             "type": "command",
             "command": "bash \"~/.claude/hooks/gh-cli-suggest.sh\"",
             "description": "Suggest gh-cli skill when using GitHub CLI commands"
+          },
+          {
+            "type": "command",
+            "command": "bash \"~/.claude/hooks/gh-checks-watch.sh\"",
+            "description": "Suggest --watch flag instead of sleep polling for gh pr checks"
           }
         ]
       }
@@ -159,6 +164,7 @@
       "pre-commit": false,
       "coderabbit-review": false,
       "gh-cli-suggest": false,
+      "gh-checks-watch": false,
       "metrics-capture": true,
       "learning-capture": true,
       "pre-compact-preserve": false
@@ -175,6 +181,7 @@
       "pre-commit": 10000,
       "coderabbit-review": 2000,
       "gh-cli-suggest": 1000,
+      "gh-checks-watch": 1000,
       "metrics-capture": 5000,
       "learning-capture": 5000,
       "pre-compact-preserve": 5000
@@ -195,6 +202,7 @@
       "JARVIS_SKIP_LEARNING": "Skip learning capture hook",
       "SKIP_CODERABBIT": "Skip CodeRabbit review context (coderabbit-review bypass)",
       "GH_CLI_SKILL_LOADED": "Indicates gh-cli skill is loaded (gh-cli-suggest bypass)",
+      "CLAUDE_ALLOW_SLEEP_POLLING": "Allow sleep-based polling instead of --watch (gh-checks-watch bypass)",
       "JARVIS_ALLOW_MAIN_PUSH": "Allow direct push to main/master (git-safety-guard bypass)",
       "CLAUDE_ALLOW_BASH_WRITE": "Allow Bash file writes with > >> tee (git-safety-guard bypass)"
     }
