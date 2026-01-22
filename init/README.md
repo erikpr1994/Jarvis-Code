@@ -161,7 +161,7 @@ Template document defining all interview questions. Used as reference for the in
 
 1. **Detection Confirmation** - Verify auto-detected values
 2. **Project Type** - SaaS, client, OSS, internal, personal
-3. **Git Workflow** - Graphite, GitHub Flow, GitFlow, trunk-based
+3. **Git Workflow** - GitHub Flow, GitFlow, trunk-based
 4. **Code Review** - CodeRabbit, GitHub, both, none
 5. **TDD Strictness** - Iron law, strong, flexible
 6. **Test Types** - Unit, integration, E2E, visual, performance

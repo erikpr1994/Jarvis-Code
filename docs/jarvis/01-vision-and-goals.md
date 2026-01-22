@@ -63,7 +63,7 @@ Jarvis is an AI development system that provides **disciplined speed through exp
 
 | Aspect | Preference | Details |
 |--------|------------|---------|
-| **Git Workflow** | Graphite + Worktrees | Stacked PRs, worktree isolation, no direct git/gh |
+| **Git Workflow** | GitHub CLI + Worktrees | Feature branches, worktree isolation, submit-pr skill |
 | **Code Review** | CodeRabbit + Multi-agent | 5+ specialized review agents running in parallel |
 | **Testing** | TDD (Iron Law) | Red-Green-Refactor, no exceptions |
 | **Task Granularity** | Adaptive | Micro for risky, larger for straightforward |

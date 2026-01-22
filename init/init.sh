@@ -179,26 +179,18 @@ interview_interactive() {
     # Q3: Git Workflow
     echo ""
     echo -e "${BOLD}Q2: Git Workflow${NC}"
-    echo "  1) Graphite (stacked PRs)"
-    echo "  2) GitHub Flow (feature branches)"
-    echo "  3) GitFlow (develop/release/hotfix)"
-    echo "  4) Trunk-based (main only)"
+    echo "  1) GitHub Flow (feature branches)"
+    echo "  2) GitFlow (develop/release/hotfix)"
+    echo "  3) Trunk-based (main only)"
 
-    # Check for Graphite CLI
-    if command -v gt &> /dev/null; then
-        echo -e "  ${GREEN}[Graphite CLI detected - recommended]${NC}"
-        default_git="1"
-    else
-        default_git="2"
-    fi
+    default_git="1"
 
-    read -p "Select [1-4] (default: ${default_git}): " git_choice
+    read -p "Select [1-3] (default: ${default_git}): " git_choice
 
     case "${git_choice:-$default_git}" in
-        1) git_workflow="graphite" ;;
-        2) git_workflow="github-flow" ;;
-        3) git_workflow="gitflow" ;;
-        4) git_workflow="trunk" ;;
+        1) git_workflow="github-flow" ;;
+        2) git_workflow="gitflow" ;;
+        3) git_workflow="trunk" ;;
         *) git_workflow="github-flow" ;;
     esac
 
@@ -718,14 +710,6 @@ generate_git_rules() {
     local git_workflow="$1"
 
     case "$git_workflow" in
-        "graphite")
-            cat << 'EOF'
-- Use stacked PRs with Graphite
-- Keep PRs small and focused
-- Each PR should be independently reviewable
-- Use `gt create` for new branches
-EOF
-            ;;
         "github-flow")
             cat << 'EOF'
 - Create feature branches from main

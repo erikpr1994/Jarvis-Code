@@ -105,7 +105,7 @@ All 24 commands exist and are functional.
 - [x] Added settings: runInBackground, timeout (2000ms), bypass (SKIP_CODERABBIT)
 
 ### What It Does
-- Detects `gt submit` and `gh pr create` commands
+- Detects `gh pr create` commands
 - Adds context about CodeRabbit's automatic review
 - Provides helpful commands (`@coderabbitai full review`, etc.)
 - Checks for `.coderabbit.yaml` config

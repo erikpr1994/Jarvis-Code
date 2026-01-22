@@ -94,10 +94,6 @@ id: git-workflow
 category: workflow
 question: "How do you manage git branches?"
 options:
-  - value: "graphite"
-    label: "Graphite (stacked PRs)"
-    description: "Small, focused PRs that stack on each other"
-    detection: "command -v gt"
   - value: "github-flow"
     label: "GitHub Flow"
     description: "Feature branches off main, PR to merge"
@@ -108,9 +104,6 @@ options:
     label: "Trunk-based"
     description: "Direct commits to main with feature flags"
 default: "github-flow"
-default_if:
-  - condition: "graphite-cli-detected"
-    value: "graphite"
 affects:
   - component: skills
     how: "Activates git-expert skill with appropriate workflow"
@@ -351,7 +344,7 @@ After completing the interview, generate a JSON configuration:
     "template": "detected-or-selected-template"
   },
   "workflow": {
-    "git": "graphite|github-flow|gitflow|trunk",
+    "git": "github-flow|gitflow|trunk",
     "review": "coderabbit|github|both|none",
     "tdd": "iron-law|strong|flexible",
     "test_types": ["unit", "integration", "e2e"]

@@ -53,7 +53,7 @@ Key decisions documented in:
 | **Verification** | Full (tests + review + build + confirm) |
 | **Patterns** | Index only (load full on demand) |
 | **Session Persistence** | Full lifecycle (spec → plan → track → archive) |
-| **Git Workflow** | Graphite + worktrees + CodeRabbit |
+| **Git Workflow** | GitHub CLI + worktrees + CodeRabbit |
 | **Memory Management** | Tiered: hot (session), warm (7d), cold (30d+) with auto-archival |
 | **Code Review** | All dimensions (arch, security, perf, a11y, SEO) |
 | **Init Flow** | Hybrid (auto-detect + interview + templates) |

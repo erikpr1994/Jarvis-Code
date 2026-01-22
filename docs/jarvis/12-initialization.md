@@ -127,8 +127,7 @@ Options:
 How do you manage git branches?
 
 Options:
-- [ ] Graphite (stacked PRs) ← Default if Graphite CLI detected
-- [ ] GitHub Flow (feature branches)
+- [ ] GitHub Flow (feature branches) ← Default
 - [ ] GitFlow (develop/release/hotfix)
 - [ ] Trunk-based (main only)
 
@@ -366,7 +365,7 @@ rules: []  # No default rules
     "confirmed": true
   },
   "workflow": {
-    "git": "graphite",
+    "git": "github-flow",
     "review": "coderabbit",
     "tdd": "iron-law"
   },
