@@ -192,7 +192,7 @@ fi
 **Enforcement:**
 ```bash
 # Hook: pr-size-check.sh
-# Event: PreToolUse (Bash with gh pr create or gt submit)
+# Event: PreToolUse (Bash with gh pr create)
 
 LINES_CHANGED=$(git diff --stat origin/main...HEAD | tail -1 | grep -oE '[0-9]+' | head -1)
 

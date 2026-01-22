@@ -416,11 +416,6 @@ detect_tools() {
         tools=$(echo "$tools" | jq '.formatting = "prettier"')
     fi
 
-    # Git workflow tools
-    if command -v gt &> /dev/null; then
-        tools=$(echo "$tools" | jq '.git_workflow = "graphite"')
-    fi
-
     # CI/CD
     if [[ -d "${project_dir}/.github/workflows" ]]; then
         tools=$(echo "$tools" | jq '.ci = "github-actions"')

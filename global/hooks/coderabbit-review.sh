@@ -50,11 +50,6 @@ log_debug "Checking command: $COMMAND"
 # Check if this is a PR-related command
 IS_PR_COMMAND=false
 
-if echo "$COMMAND" | grep -qE '\bgt\s+submit\b'; then
-    IS_PR_COMMAND=true
-    log_info "Detected gt submit command"
-fi
-
 if echo "$COMMAND" | grep -qE '\bgh\s+pr\s+create\b'; then
     IS_PR_COMMAND=true
     log_info "Detected gh pr create command"

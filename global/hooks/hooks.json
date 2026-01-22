@@ -110,7 +110,7 @@
           {
             "type": "command",
             "command": "bash \"~/.claude/hooks/block-direct-submit.sh\"",
-            "description": "Block direct gt submit or gh pr create commands"
+            "description": "Block direct gh pr create and git push to feature branches"
           },
           {
             "type": "command",
@@ -191,7 +191,7 @@
       "CLAUDE_ALLOW_MAIN_MODIFICATIONS": "Allow modifications on main/master branch (require-isolation bypass)",
       "CONDUCTOR_ROOT_PATH": "Indicates Conductor session (require-isolation bypass)",
       "CLAUDE_SUBMIT_PR_SKILL": "Set by submit-pr skill (block-direct-submit bypass)",
-      "CLAUDE_ALLOW_DIRECT_SUBMIT": "Allow direct gt submit/gh pr create commands",
+      "CLAUDE_ALLOW_DIRECT_SUBMIT": "Allow direct gh pr create commands",
       "CLAUDE_SKIP_COMMIT_FORMAT": "Skip conventional commit format validation",
       "CLAUDE_SKIP_QUALITY_CHECK": "Skip lint/typecheck before commit",
       "CLAUDE_ALLOW_ANY": "Allow 'any' types in TypeScript",

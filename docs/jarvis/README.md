@@ -91,7 +91,7 @@
 | Decision | Choice |
 |----------|--------|
 | TDD Discipline | Iron Law (no exceptions) |
-| Git Workflow | Graphite + worktrees |
+| Git Workflow | GitHub CLI + worktrees |
 | Code Review | CodeRabbit + multi-agent |
 | Memory | Tiered (hot/warm/cold) |
 | Skill Loading | Summarize + lazy load |

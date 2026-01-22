@@ -97,7 +97,7 @@ TOOL_INPUT=$(echo "$INPUT" | jq -r '.tool_input')
 - session-start.sh (SessionStart) - Injects using-skills skill
 - session-start-update-main.sh (SessionStart) - Updates main branch context
 - require-isolation.sh (PreToolUse: Edit/Write) - Blocks main branch modifications
-- block-direct-submit.sh (PreToolUse: Bash) - Blocks direct gt submit
+- block-direct-submit.sh (PreToolUse: Bash) - Blocks direct gh pr create
 - coderabbit-review.sh (PreToolUse: Bash) - Runs CodeRabbit before submit
 
 **TOTAL: 7 hooks from source systems**
